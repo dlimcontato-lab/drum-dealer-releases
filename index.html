@@ -61,7 +61,8 @@
   .bpm-box .bpm-val small{font-family:'Archivo',sans-serif;font-weight:700;font-size:.7rem}
   .seq{display:grid;grid-template-columns:86px repeat(16,minmax(26px,1fr));gap:6px;min-width:640px}
   .lab{font-family:'Archivo Black',sans-serif;font-size:.72rem;letter-spacing:.04em;color:var(--card);
-       background:var(--graphite);border:var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center}
+       background:var(--graphite);border:var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;
+       cursor:pointer;padding:0}
   .step{aspect-ratio:.82;border:var(--border);border-radius:5px;cursor:pointer;position:relative;padding:0;background:var(--card)}
   .step::after{content:'';position:absolute;top:5px;left:50%;transform:translateX(-50%);
                width:9px;height:9px;border:2px solid var(--ink);border-radius:50%;background:transparent}
@@ -134,7 +135,7 @@
       <button class="dd-btn" id="rand" style="background:var(--yellow)">Rand</button>
     </div>
     <div class="seq" id="seq"></div>
-    <p class="demo-hint">É uma prévia com os samples de fábrica de verdade, direto no navegador. Clique nos steps pra editar o groove, mexa no BPM, aperte RAND. O plugin completo faz muito mais — baixa lá em cima.</p>
+    <p class="demo-hint">É uma prévia com os samples de fábrica de verdade, direto no navegador. Clique nos steps pra editar o groove, mexa no BPM, aperte RAND — ele troca o padrão <b>e os samples</b>, igual no plugin. Clicar no nome do instrumento troca só o sample dele. O plugin completo faz muito mais — baixa lá em cima.</p>
   </div>
 </section>
 
@@ -152,13 +153,23 @@
     [0,0,0,0, 0,0,0,1, 0,0,0,0, 0,0,0,0],
   ];
   let bpm = 126, playing = false, step = 0, timer = null, nextTime = 0;
-  let ctx = null; const buffers = {};
+  let ctx = null;
+  const VARIANTS = 4;                       // kick0..kick3 etc.
+  const buffers = {};                       // buffers[inst][variante]
+  const current = [0, 0, 0, 0, 0, 0];       // variante ativa por instrumento
 
   const seqEl = document.getElementById('seq');
   const cells = [];
   for (let r = 0; r < 6; r++) {
-    const lab = document.createElement('div');
+    const lab = document.createElement('button');
     lab.className = 'lab'; lab.textContent = INSTS[r];
+    lab.title = 'Trocar o sample de ' + INSTS[r];
+    lab.addEventListener('click', async () => {      // igual ao plugin: clique = novo sample
+      await ensureAudio();
+      current[r] = (current[r] + 1 + Math.floor(Math.random() * (VARIANTS - 1))) % VARIANTS;
+      playHit(r, 0);
+      lab.animate([{transform:'translate(2px,2px)'},{transform:'none'}], {duration:120});
+    });
     seqEl.appendChild(lab);
     cells[r] = [];
     for (let c = 0; c < 16; c++) {
@@ -175,18 +186,22 @@
   async function ensureAudio() {
     if (!ctx) {
       ctx = new (window.AudioContext || window.webkitAudioContext)();
-      await Promise.all(FILES.map(async (f, i) => {
-        const res = await fetch('audio/' + f + '.m4a');
-        buffers[i] = await ctx.decodeAudioData(await res.arrayBuffer());
+      await Promise.all(FILES.flatMap((f, i) => {
+        buffers[i] = [];
+        return Array.from({length: VARIANTS}, (_, v) =>
+          fetch('audio/' + f + v + '.m4a')
+            .then(r => r.arrayBuffer())
+            .then(ab => ctx.decodeAudioData(ab))
+            .then(buf => { buffers[i][v] = buf; }));
       }));
     }
     if (ctx.state === 'suspended') await ctx.resume();
   }
 
   function playHit(inst, when) {
-    if (!buffers[inst]) return;
+    if (!buffers[inst] || !buffers[inst][current[inst]]) return;
     const src = ctx.createBufferSource();
-    src.buffer = buffers[inst];
+    src.buffer = buffers[inst][current[inst]];
     const g = ctx.createGain(); g.gain.value = inst === 0 ? 1 : .75;
     src.connect(g).connect(ctx.destination);
     src.start(when || ctx.currentTime);
@@ -225,7 +240,11 @@
   document.getElementById('bpm-down').addEventListener('click', () => setBpm(-2));
   document.getElementById('bpm-up').addEventListener('click', () => setBpm(2));
 
-  document.getElementById('rand').addEventListener('click', () => {
+  document.getElementById('rand').addEventListener('click', async () => {
+    await ensureAudio();
+    // igual ao plugin: RAND troca os samples junto com o padrão
+    for (let r = 0; r < 6; r++)
+      current[r] = (current[r] + 1 + Math.floor(Math.random() * (VARIANTS - 1))) % VARIANTS;
     for (let c = 0; c < 16; c++) {
       grid[0][c] = c % 4 === 0 ? 1 : (Math.random() < .08 ? 1 : 0);       // kick: 4x4 + surpresa
       grid[1][c] = (c === 14 && Math.random() < .8) || Math.random() < .06 ? 1 : 0; // snare: virada
