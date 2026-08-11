@@ -48,10 +48,10 @@
   /* ---- demo tocável (motor WASM real) ---- */
   .demo{padding:20px;overflow-x:auto}
   .demo-controls{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:18px}
-  .knob{width:34px;height:34px;border:var(--border);border-radius:50%;background:var(--graphite);
+  .knob{width:30px;height:30px;border:var(--border);border-radius:50%;background:var(--graphite);
         position:relative;cursor:ns-resize;touch-action:none;margin:0 auto}
-  .knob::after{content:'';position:absolute;left:50%;top:2px;width:3px;height:12px;background:var(--card);
-        border-radius:2px;transform-origin:50% 14px;transform:translateX(-50%) rotate(var(--rot,0deg))}
+  .knob::after{content:'';position:absolute;left:50%;top:2px;width:3px;height:10px;background:var(--card);
+        border-radius:2px;transform-origin:50% 12px;transform:translateX(-50%) rotate(var(--rot,0deg))}
   .knob.orange{background:var(--orange)}
   .knob.orange::after{background:var(--ink)}
   .kcell{display:flex;flex-direction:column;align-items:center;gap:2px}
@@ -82,8 +82,10 @@
   .bpm-box button:last-child{border-right:none;border-left:var(--border)}
   .bpm-box .bpm-val{font-family:'Archivo Black',sans-serif;font-size:1.1rem;padding:10px 14px;min-width:104px;text-align:center}
   .bpm-box .bpm-val small{font-family:'Archivo',sans-serif;font-weight:700;font-size:.7rem}
-  .seq{display:grid;grid-template-columns:44px 44px repeat(5,44px) 78px repeat(16,minmax(24px,1fr)) 44px 44px;
-       gap:6px;min-width:1080px;align-items:stretch}
+  /* seção da demo pode ser mais larga que o texto do site */
+  .wrap-demo{max-width:1300px;margin:0 auto;padding:0 20px}
+  .seq{display:grid;grid-template-columns:40px 40px repeat(5,38px) 64px repeat(16,minmax(22px,1fr)) 38px 38px;
+       gap:5px;min-width:940px;align-items:stretch}
   .lab{font-family:'Archivo Black',sans-serif;font-size:.72rem;letter-spacing:.04em;color:var(--card);
        background:var(--graphite);border:var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;
        cursor:pointer;padding:0}
@@ -146,7 +148,7 @@
 </div>
 <p class="wrap note">Grátis. Já vem com a biblioteca de samples de fábrica — instalou, apertou play, tem som.</p>
 
-<section class="wrap">
+<section class="wrap-demo">
   <h2><span class="chip">Teste agora</span></h2>
   <div class="card demo">
     <div class="demo-controls">
