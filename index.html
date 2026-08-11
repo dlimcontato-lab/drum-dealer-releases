@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Drum Dealer — Rhythm Composer DD 001</title>
+<meta name="description" content="Drum machine + gerador de MIDI para Mac e Windows. Ableton, FL Studio, Logic e qualquer DAW com VST3 ou AU.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@500;700&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='6' y='6' width='88' height='88' rx='12' fill='%23e8762c' stroke='%2314120f' stroke-width='7'/><circle cx='50' cy='50' r='16' fill='%23f2ead9' stroke='%2314120f' stroke-width='7'/></svg>">
+<style>
+  :root{
+    --bg:#e8e0cf; --card:#f2ead9; --ink:#14120f;
+    --orange:#e8762c; --red:#d92b26; --yellow:#e8c53a; --graphite:#2b2925;
+    --border:2.5px solid var(--ink);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:'Archivo',system-ui,sans-serif;line-height:1.55}
+  .wrap{max-width:1060px;margin:0 auto;padding:0 20px}
+
+  .chip{display:inline-block;background:var(--orange);border:var(--border);border-radius:6px;
+        padding:4px 14px;font-family:'Archivo Black',sans-serif;font-size:.85rem;letter-spacing:.06em;
+        box-shadow:3px 3px 0 var(--ink);text-transform:uppercase}
+  .card{background:var(--card);border:var(--border);border-radius:6px;box-shadow:4px 4px 0 var(--ink)}
+
+  header{padding:56px 0 24px}
+  h1{font-family:'Archivo Black',sans-serif;font-size:clamp(2.6rem,7vw,4.6rem);letter-spacing:.01em;line-height:1.05}
+  .tag{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:1.15rem;margin-top:6px}
+  .stripe{height:10px;border:var(--border);border-radius:4px;margin:18px 0 0;max-width:420px;
+          background:linear-gradient(90deg,var(--red) 0 25%,var(--orange) 0 50%,var(--yellow) 0 75%,var(--graphite) 0 100%)}
+
+  .hero{padding:26px 0 8px}
+  .hero img{width:100%;display:block;border:var(--border);border-radius:6px;box-shadow:6px 6px 0 var(--ink)}
+
+  .downloads{display:flex;gap:18px;flex-wrap:wrap;padding:30px 0 6px}
+  .btn{flex:1 1 260px;display:block;text-align:center;text-decoration:none;color:var(--ink);
+       font-family:'Archivo Black',sans-serif;font-size:1.15rem;text-transform:uppercase;letter-spacing:.04em;
+       background:var(--orange);border:var(--border);border-radius:6px;box-shadow:4px 4px 0 var(--ink);
+       padding:18px 22px;transition:transform .05s, box-shadow .05s}
+  .btn small{display:block;font-family:'Archivo',sans-serif;font-weight:500;font-size:.8rem;text-transform:none;letter-spacing:0;margin-top:4px}
+  .btn:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink)}
+  .btn.alt{background:var(--yellow)}
+  .note{font-size:.85rem;padding:8px 2px 0;opacity:.85}
+
+  section{padding:34px 0}
+
+  /* ---- demo tocável ---- */
+  .demo{padding:20px;overflow-x:auto}
+  .demo-controls{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+  .dd-btn{font-family:'Archivo Black',sans-serif;text-transform:uppercase;font-size:1rem;letter-spacing:.03em;
+          color:var(--ink);background:var(--orange);border:var(--border);border-radius:6px;
+          box-shadow:3px 3px 0 var(--ink);padding:10px 22px;cursor:pointer}
+  .dd-btn:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink)}
+  .dd-btn.playing{background:var(--red)}
+  .bpm-box{display:flex;align-items:center;gap:0;border:var(--border);border-radius:6px;box-shadow:3px 3px 0 var(--ink);overflow:hidden;background:var(--bg)}
+  .bpm-box button{font-family:'Archivo Black',sans-serif;font-size:1.1rem;border:none;background:var(--yellow);
+                  border-right:var(--border);padding:10px 16px;cursor:pointer;color:var(--ink)}
+  .bpm-box button:last-child{border-right:none;border-left:var(--border)}
+  .bpm-box .bpm-val{font-family:'Archivo Black',sans-serif;font-size:1.1rem;padding:10px 14px;min-width:104px;text-align:center}
+  .bpm-box .bpm-val small{font-family:'Archivo',sans-serif;font-weight:700;font-size:.7rem}
+  .seq{display:grid;grid-template-columns:86px repeat(16,minmax(26px,1fr));gap:6px;min-width:640px}
+  .lab{font-family:'Archivo Black',sans-serif;font-size:.72rem;letter-spacing:.04em;color:var(--card);
+       background:var(--graphite);border:var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center}
+  .step{aspect-ratio:.82;border:var(--border);border-radius:5px;cursor:pointer;position:relative;padding:0;background:var(--card)}
+  .step::after{content:'';position:absolute;top:5px;left:50%;transform:translateX(-50%);
+               width:9px;height:9px;border:2px solid var(--ink);border-radius:50%;background:transparent}
+  .step.on::after{background:var(--ink)}
+  .g1{background:var(--red)} .g2{background:var(--orange)} .g3{background:var(--yellow)} .g4{background:var(--card)}
+  .step.ph{filter:brightness(.55)}
+  .demo-hint{font-size:.85rem;margin-top:14px;opacity:.85}
+  h2{margin:0 0 18px}
+
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
+  .feat{padding:18px}
+  .feat b{font-family:'Archivo Black',sans-serif;display:block;margin-bottom:6px;font-size:1rem;text-transform:uppercase;letter-spacing:.03em}
+  .feat .dot{display:inline-block;width:14px;height:14px;border:var(--border);border-radius:50%;margin-right:8px;vertical-align:-1px}
+  .dot.red{background:var(--red)} .dot.orange{background:var(--orange)}
+  .dot.yellow{background:var(--yellow)} .dot.graphite{background:var(--graphite)}
+
+  .compat{padding:20px}
+  .compat ul{list-style:none;display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+  .compat li{background:var(--bg);border:var(--border);border-radius:6px;padding:6px 14px;font-weight:700;font-size:.9rem;box-shadow:3px 3px 0 var(--ink)}
+  .compat p{margin-top:12px;font-size:.9rem}
+
+  .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+  .os{padding:20px}
+  .os h3{font-family:'Archivo Black',sans-serif;text-transform:uppercase;margin-bottom:12px}
+  .os ol{padding-left:22px;display:grid;gap:8px;font-size:.95rem}
+  .os .warn{margin-top:14px;background:var(--yellow);border:var(--border);border-radius:6px;padding:10px 12px;font-size:.85rem;box-shadow:3px 3px 0 var(--ink)}
+  code{background:var(--graphite);color:var(--card);border-radius:4px;padding:1px 7px;font-size:.85em;white-space:nowrap}
+
+  .samples{padding:20px}
+  .samples p{margin-top:8px;font-size:.95rem}
+
+  footer{padding:36px 0 46px;font-size:.85rem;opacity:.8}
+</style>
+</head>
+<body>
+
+<header class="wrap">
+  <span class="chip">VST3 · AU · Standalone</span>
+  <h1>DRUM DEALER</h1>
+  <p class="tag">Rhythm Composer&nbsp;&nbsp;—&nbsp;&nbsp;DD 001</p>
+  <div class="stripe"></div>
+</header>
+
+<div class="wrap hero">
+  <img src="drum-dealer-ui.png" alt="Interface do Drum Dealer: sequencer de 16 steps com 6 instrumentos, painéis GROOVE, FILL e MIDI GEN">
+</div>
+
+<div class="wrap downloads">
+  <a class="btn" href="https://github.com/dlimcontato-lab/drum-dealer-releases/releases/latest/download/DrumDealer-macOS.pkg">
+    &#63743; Baixar para Mac
+    <small>.pkg — Intel e Apple Silicon</small>
+  </a>
+  <a class="btn alt" href="https://github.com/dlimcontato-lab/drum-dealer-releases/releases/latest/download/DrumDealer-Windows-Setup.exe">
+    &#10052; Baixar para Windows
+    <small>.exe — Windows 10/11, 64 bits</small>
+  </a>
+</div>
+<p class="wrap note">Grátis. Já vem com a biblioteca de samples de fábrica — instalou, apertou play, tem som.</p>
+
+<section class="wrap">
+  <h2><span class="chip">Teste agora</span></h2>
+  <div class="card demo">
+    <div class="demo-controls">
+      <button class="dd-btn" id="play">&#9654; Play</button>
+      <div class="bpm-box">
+        <button id="bpm-down" aria-label="Diminuir BPM">&#8722;</button>
+        <span class="bpm-val"><span id="bpm">126</span> <small>BPM</small></span>
+        <button id="bpm-up" aria-label="Aumentar BPM">+</button>
+      </div>
+      <button class="dd-btn" id="rand" style="background:var(--yellow)">Rand</button>
+    </div>
+    <div class="seq" id="seq"></div>
+    <p class="demo-hint">É uma prévia com os samples de fábrica de verdade, direto no navegador. Clique nos steps pra editar o groove, mexa no BPM, aperte RAND. O plugin completo faz muito mais — baixa lá em cima.</p>
+  </div>
+</section>
+
+<script>
+(() => {
+  const INSTS = ['KICK','SNARE','CLAP','CHAT','OHAT','TOM'];
+  const FILES = ['kick','snare','clap','chat','ohat','tom'];
+  // groove inicial: tech house básico
+  const grid = [
+    [1,0,0,0, 1,0,0,0, 1,0,0,0, 1,0,0,0],
+    [0,0,0,0, 0,0,0,0, 0,0,0,0, 0,0,1,0],
+    [0,0,0,0, 1,0,0,0, 0,0,0,0, 1,0,0,0],
+    [0,0,1,0, 0,0,1,0, 0,0,1,0, 0,0,1,0],
+    [0,0,0,0, 0,0,0,0, 0,0,1,0, 0,0,0,0],
+    [0,0,0,0, 0,0,0,1, 0,0,0,0, 0,0,0,0],
+  ];
+  let bpm = 126, playing = false, step = 0, timer = null, nextTime = 0;
+  let ctx = null; const buffers = {};
+
+  const seqEl = document.getElementById('seq');
+  const cells = [];
+  for (let r = 0; r < 6; r++) {
+    const lab = document.createElement('div');
+    lab.className = 'lab'; lab.textContent = INSTS[r];
+    seqEl.appendChild(lab);
+    cells[r] = [];
+    for (let c = 0; c < 16; c++) {
+      const b = document.createElement('button');
+      b.className = 'step g' + (Math.floor(c / 4) + 1) + (grid[r][c] ? ' on' : '');
+      b.addEventListener('click', () => {
+        grid[r][c] ^= 1; b.classList.toggle('on');
+        if (grid[r][c]) { ensureAudio(); playHit(r, 0); }
+      });
+      seqEl.appendChild(b); cells[r][c] = b;
+    }
+  }
+
+  async function ensureAudio() {
+    if (!ctx) {
+      ctx = new (window.AudioContext || window.webkitAudioContext)();
+      await Promise.all(FILES.map(async (f, i) => {
+        const res = await fetch('audio/' + f + '.m4a');
+        buffers[i] = await ctx.decodeAudioData(await res.arrayBuffer());
+      }));
+    }
+    if (ctx.state === 'suspended') await ctx.resume();
+  }
+
+  function playHit(inst, when) {
+    if (!buffers[inst]) return;
+    const src = ctx.createBufferSource();
+    src.buffer = buffers[inst];
+    const g = ctx.createGain(); g.gain.value = inst === 0 ? 1 : .75;
+    src.connect(g).connect(ctx.destination);
+    src.start(when || ctx.currentTime);
+  }
+
+  function tick() {
+    const spb = 60 / bpm / 4; // semicolcheia
+    while (nextTime < ctx.currentTime + .12) {
+      const s = step;
+      for (let r = 0; r < 6; r++) if (grid[r][s]) playHit(r, nextTime);
+      const dt = Math.max(0, nextTime - ctx.currentTime) * 1000;
+      setTimeout(() => paintPlayhead(s), dt);
+      nextTime += spb; step = (step + 1) % 16;
+    }
+  }
+
+  function paintPlayhead(s) {
+    if (!playing) return;
+    for (let r = 0; r < 6; r++)
+      for (let c = 0; c < 16; c++)
+        cells[r][c].classList.toggle('ph', c === s);
+  }
+
+  const playBtn = document.getElementById('play');
+  playBtn.addEventListener('click', async () => {
+    await ensureAudio();
+    playing = !playing;
+    playBtn.classList.toggle('playing', playing);
+    playBtn.innerHTML = playing ? '&#9632; Stop' : '&#9654; Play';
+    if (playing) { step = 0; nextTime = ctx.currentTime + .05; timer = setInterval(tick, 40); }
+    else { clearInterval(timer); cells.forEach(row => row.forEach(c => c.classList.remove('ph'))); }
+  });
+
+  const bpmEl = document.getElementById('bpm');
+  const setBpm = d => { bpm = Math.min(160, Math.max(90, bpm + d)); bpmEl.textContent = bpm; };
+  document.getElementById('bpm-down').addEventListener('click', () => setBpm(-2));
+  document.getElementById('bpm-up').addEventListener('click', () => setBpm(2));
+
+  document.getElementById('rand').addEventListener('click', () => {
+    for (let c = 0; c < 16; c++) {
+      grid[0][c] = c % 4 === 0 ? 1 : (Math.random() < .08 ? 1 : 0);       // kick: 4x4 + surpresa
+      grid[1][c] = (c === 14 && Math.random() < .8) || Math.random() < .06 ? 1 : 0; // snare: virada
+      grid[2][c] = c % 8 === 4 ? 1 : 0;                                    // clap no 2 e 4
+      grid[3][c] = c % 2 === 0 && Math.random() < .75 ? 1 : 0;             // chat
+      grid[4][c] = c % 4 === 2 && Math.random() < .5 ? 1 : 0;              // ohat offbeat
+      grid[5][c] = Math.random() < .1 ? 1 : 0;                             // tom
+    }
+    for (let r = 0; r < 6; r++)
+      for (let c = 0; c < 16; c++)
+        cells[r][c].classList.toggle('on', !!grid[r][c]);
+  });
+})();
+</script>
+
+<section class="wrap">
+  <h2><span class="chip">Compatível com tudo</span></h2>
+  <div class="card compat">
+    Funciona em <b>Mac</b> (Intel e Apple Silicon) e <b>Windows</b> (10/11), dentro de qualquer DAW:
+    <ul>
+      <li>Ableton Live</li><li>FL Studio</li><li>Logic Pro</li><li>GarageBand</li>
+      <li>Bitwig</li><li>Studio One</li><li>Cubase</li><li>Reaper</li><li>Pro Tools*</li>
+    </ul>
+    <p>Formato <b>VST3</b> (Ableton, FL Studio, Bitwig, Studio One, Cubase, Reaper…) e <b>AU</b> (Logic e GarageBand no Mac).
+    Também roda <b>sozinho, sem DAW nenhum</b> — instala junto um app standalone.
+    <br><small>*Pro Tools só aceita AAX; use a versão standalone junto dele.</small></p>
+  </div>
+</section>
+
+<section class="wrap">
+  <h2><span class="chip">O que ele faz</span></h2>
+  <div class="grid">
+    <div class="card feat"><b><span class="dot red"></span>Sequencer 16 steps</b>
+      6 instrumentos (kick, snare, clap, hats, tom), accent por step, groove straight/swing e botão RAND que sorteia padrões prontos pra usar.</div>
+    <div class="card feat"><b><span class="dot orange"></span>Sampler de verdade</b>
+      Cada batida usa samples reais. Vem com 232 sons de fábrica e o botão SAMPLER abre uma pasta pra você jogar os seus — entram no sorteio na hora.</div>
+    <div class="card feat"><b><span class="dot yellow"></span>MIDI GEN: bass e lead</b>
+      Gera linhas de bass e lead que seguem seu kick, na escala que você escolher. Arrasta o clipe direto pro DAW (referência: tech house BR / minimal).</div>
+    <div class="card feat"><b><span class="dot graphite"></span>Fill, FX e stems</b>
+      Viradas automáticas por instrumento, reverb e delay por canal, e EXPORT que grava os stems separados + master em wav no seu projeto.</div>
+  </div>
+</section>
+
+<section class="wrap">
+  <h2><span class="chip">Como instalar</span></h2>
+  <div class="steps">
+    <div class="card os">
+      <h3>&#63743; Mac</h3>
+      <ol>
+        <li>Baixe o <b>DrumDealer-macOS.pkg</b> no botão lá em cima.</li>
+        <li>Dê dois cliques e siga o instalador (avançar, avançar, instalar).</li>
+        <li>Abra seu DAW e mande escanear os plugins de novo.</li>
+        <li>Procure <b>Drum Dealer</b> nos instrumentos (VST3 ou AU) e arraste pra uma track MIDI.</li>
+      </ol>
+      <div class="warn">O macOS pode avisar "desenvolvedor não identificado". É só abrir o .pkg com <b>botão direito&nbsp;→&nbsp;Abrir</b> (uma vez só), ou liberar em Ajustes → Privacidade e Segurança → "Abrir mesmo assim".</div>
+    </div>
+    <div class="card os">
+      <h3>&#10052; Windows</h3>
+      <ol>
+        <li>Baixe o <b>DrumDealer-Windows-Setup.exe</b> no botão lá em cima.</li>
+        <li>Execute e siga o instalador. Se o Windows SmartScreen avisar, clique em <b>Mais informações → Executar assim mesmo</b>.</li>
+        <li>Abra seu DAW e mande escanear os plugins (o VST3 vai pra pasta padrão <code>C:\Program Files\Common Files\VST3</code>).</li>
+        <li>Procure <b>Drum Dealer</b> nos instrumentos e arraste pra uma track MIDI.</li>
+      </ol>
+      <div class="warn">No FL Studio: Options → Manage plugins → Find more plugins. No Ableton: Preferences → Plug-Ins → Rescan.</div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap">
+  <h2><span class="chip">Seus próprios samples</span></h2>
+  <div class="card samples">
+    O instalador já deixa a biblioteca de fábrica pronta — não precisa configurar nada.
+    <p>Quer usar os seus sons? Clique em <b>SAMPLER</b> dentro do plugin: abre uma pasta <b>Vst Dealer</b> na sua área de trabalho com subpastas <code>Kick</code>, <code>Snare</code>, <code>Clap</code>, <code>Hat</code> e <code>Tom</code>. Jogue seus wavs lá e eles entram no sorteio <b>junto</b> com os de fábrica. O mesmo vale pros MIDIs do gerador, nas pastas <code>Bass</code> e <code>Lead</code>.</p>
+  </div>
+</section>
+
+<footer class="wrap">
+  Drum Dealer — feito por Diogo Soares. Rhythm Composer DD 001.
+</footer>
+
+</body>
+</html>
