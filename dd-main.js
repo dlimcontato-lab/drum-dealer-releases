@@ -134,8 +134,7 @@ for (let r = 0; r < 6; r++) {
 // linha de accent
 {
   const lab = document.createElement('div');
-  lab.className = 'lab'; lab.textContent = 'ACCENT';
-  lab.style.gridColumn = '1 / 9';
+  lab.className = 'lab acc-lab'; lab.textContent = 'ACCENT';
   seqEl.appendChild(lab);
   for (let c = 0; c < 16; c++) {
     const b = document.createElement('button');
@@ -147,7 +146,7 @@ for (let r = 0; r < 6; r++) {
     });
     seqEl.appendChild(b);
   }
-  const fill1 = document.createElement('div'); fill1.style.gridColumn = 'span 2';
+  const fill1 = document.createElement('div'); fill1.className = 'acc-fill';
   seqEl.appendChild(fill1);
 }
 

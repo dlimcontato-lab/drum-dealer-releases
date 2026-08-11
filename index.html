@@ -16,111 +16,164 @@
     --border:2.5px solid var(--ink);
   }
   *{margin:0;padding:0;box-sizing:border-box}
-  body{background:var(--bg);color:var(--ink);font-family:'Archivo',system-ui,sans-serif;line-height:1.55}
-  .wrap{max-width:1060px;margin:0 auto;padding:0 20px}
+  body{background:var(--bg);color:var(--ink);font-family:'Archivo',system-ui,sans-serif;
+       line-height:1.55;font-size:1rem}
+  .wrap{max-width:1020px;margin:0 auto;padding:0 20px}
+  .wrap-demo{max-width:1240px;margin:0 auto;padding:0 20px}
+  .mono{font-family:'IBM Plex Mono',monospace}
 
   .chip{display:inline-block;background:var(--orange);border:var(--border);border-radius:6px;
-        padding:4px 14px;font-family:'Archivo Black',sans-serif;font-size:.85rem;letter-spacing:.06em;
+        padding:5px 16px;font-family:'Archivo Black',sans-serif;font-size:.9rem;letter-spacing:.06em;
         box-shadow:3px 3px 0 var(--ink);text-transform:uppercase}
+  /* as seções seguem o código de cores dos 4 grupos do sequencer */
+  .chip.c1{background:var(--red);color:var(--card)}
+  .chip.c2{background:var(--orange)}
+  .chip.c3{background:var(--yellow)}
+  .chip.c4{background:var(--card)}
   .card{background:var(--card);border:var(--border);border-radius:6px;box-shadow:4px 4px 0 var(--ink)}
 
-  header{padding:56px 0 24px}
-  h1{font-family:'Archivo Black',sans-serif;font-size:clamp(2.6rem,7vw,4.6rem);letter-spacing:.01em;line-height:1.05}
-  .tag{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:1.15rem;margin-top:6px}
+  header{padding:52px 0 20px}
+  h1{font-family:'Archivo Black',sans-serif;font-size:clamp(2.4rem,6.5vw,4.4rem);letter-spacing:.01em;line-height:1.02}
+  .tag{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:clamp(1rem,2.5vw,1.15rem);margin-top:8px}
   .stripe{height:10px;border:var(--border);border-radius:4px;margin:18px 0 0;max-width:420px;
           background:linear-gradient(90deg,var(--red) 0 25%,var(--orange) 0 50%,var(--yellow) 0 75%,var(--graphite) 0 100%)}
 
-  .hero{padding:26px 0 8px}
-  .hero img{width:100%;display:block;border:var(--border);border-radius:6px;box-shadow:6px 6px 0 var(--ink)}
+  .hero{padding:26px 0 4px}
 
-  .downloads{display:flex;gap:18px;flex-wrap:wrap;padding:30px 0 6px}
+  .downloads{display:flex;gap:18px;flex-wrap:wrap;padding:26px 0 4px}
   .btn{flex:1 1 260px;display:block;text-align:center;text-decoration:none;color:var(--ink);
-       font-family:'Archivo Black',sans-serif;font-size:1.15rem;text-transform:uppercase;letter-spacing:.04em;
+       font-family:'Archivo Black',sans-serif;font-size:1.1rem;text-transform:uppercase;letter-spacing:.04em;
        background:var(--orange);border:var(--border);border-radius:6px;box-shadow:4px 4px 0 var(--ink);
-       padding:18px 22px;transition:transform .05s, box-shadow .05s}
-  .btn small{display:block;font-family:'Archivo',sans-serif;font-weight:500;font-size:.8rem;text-transform:none;letter-spacing:0;margin-top:4px}
+       padding:16px 20px;transition:transform .05s, box-shadow .05s}
+  .btn small{display:block;font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:.78rem;
+       text-transform:none;letter-spacing:0;margin-top:5px}
   .btn:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink)}
   .btn.alt{background:var(--yellow)}
-  .note{font-size:.85rem;padding:8px 2px 0;opacity:.85}
+  .note{font-family:'IBM Plex Mono',monospace;font-size:.8rem;padding:10px 2px 0;opacity:.85}
 
-  section{padding:34px 0}
+  section{padding:30px 0}
+  h2{margin:0 0 18px}
 
-  /* ---- demo tocável (motor WASM real) ---- */
-  .demo{padding:20px;overflow-x:auto}
-  .demo-controls{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:18px}
-  .knob{width:30px;height:30px;border:var(--border);border-radius:50%;background:var(--graphite);
-        position:relative;cursor:ns-resize;touch-action:none;margin:0 auto}
-  .knob::after{content:'';position:absolute;left:50%;top:2px;width:3px;height:10px;background:var(--card);
-        border-radius:2px;transform-origin:50% 12px;transform:translateX(-50%) rotate(var(--rot,0deg))}
-  .knob.orange{background:var(--orange)}
-  .knob.orange::after{background:var(--ink)}
-  .kcell{display:flex;flex-direction:column;align-items:center;gap:2px}
-  .kcell small{font-size:.5rem;font-weight:700;letter-spacing:.04em}
-  .ms{font-family:'Archivo Black',sans-serif;font-size:.55rem;border:var(--border);border-radius:5px;
-      background:var(--card);cursor:pointer;padding:4px 0;width:100%;letter-spacing:.03em}
-  .ms.on-mute{background:var(--red);color:var(--card)}
-  .ms.on-solo{background:var(--yellow)}
-  .acc{aspect-ratio:1.1;border:var(--border);border-radius:5px;cursor:pointer;padding:0;
-       background:linear-gradient(180deg,var(--graphite) 0 55%,var(--bg) 55% 100%)}
-  .acc.on{background:linear-gradient(180deg,var(--graphite) 0 55%,var(--orange) 55% 100%)}
-  .panel-row{display:flex;gap:16px;flex-wrap:wrap;align-items:stretch;margin-top:18px}
-  .mini-panel{border:var(--border);border-radius:6px;background:var(--bg);box-shadow:3px 3px 0 var(--ink);
-       padding:12px 16px;display:flex;align-items:center;gap:14px}
-  .mini-panel .ptitle{font-family:'Archivo Black',sans-serif;font-size:.7rem;background:var(--orange);
-       border:var(--border);border-radius:5px;padding:2px 10px;text-transform:uppercase}
-  .mini-panel select{font-family:'Archivo',sans-serif;font-weight:700;border:var(--border);border-radius:5px;
-       background:var(--card);padding:6px 8px}
-  .loading{font-family:'Archivo Black',sans-serif;padding:10px 0}
+  /* ---------- a máquina (demo com o motor WASM real) ---------- */
+  .demo{padding:20px}
+  .demo-controls{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px}
   .dd-btn{font-family:'Archivo Black',sans-serif;text-transform:uppercase;font-size:1rem;letter-spacing:.03em;
           color:var(--ink);background:var(--orange);border:var(--border);border-radius:6px;
-          box-shadow:3px 3px 0 var(--ink);padding:10px 22px;cursor:pointer}
+          box-shadow:3px 3px 0 var(--ink);padding:11px 22px;cursor:pointer}
   .dd-btn:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink)}
-  .dd-btn.playing{background:var(--red)}
-  .bpm-box{display:flex;align-items:center;gap:0;border:var(--border);border-radius:6px;box-shadow:3px 3px 0 var(--ink);overflow:hidden;background:var(--bg)}
-  .bpm-box button{font-family:'Archivo Black',sans-serif;font-size:1.1rem;border:none;background:var(--yellow);
+  .dd-btn.playing{background:var(--red);color:var(--card)}
+  .bpm-box{display:flex;align-items:stretch;border:var(--border);border-radius:6px;
+           box-shadow:3px 3px 0 var(--ink);overflow:hidden;background:var(--bg)}
+  .bpm-box button{font-family:'Archivo Black',sans-serif;font-size:1.15rem;border:none;background:var(--yellow);
                   border-right:var(--border);padding:10px 16px;cursor:pointer;color:var(--ink)}
   .bpm-box button:last-child{border-right:none;border-left:var(--border)}
-  .bpm-box .bpm-val{font-family:'Archivo Black',sans-serif;font-size:1.1rem;padding:10px 14px;min-width:104px;text-align:center}
-  .bpm-box .bpm-val small{font-family:'Archivo',sans-serif;font-weight:700;font-size:.7rem}
-  /* seção da demo pode ser mais larga que o texto do site */
-  .wrap-demo{max-width:1300px;margin:0 auto;padding:0 20px}
-  .seq{display:grid;grid-template-columns:40px 40px repeat(5,38px) 64px repeat(16,minmax(22px,1fr)) 38px 38px;
-       gap:5px;min-width:940px;align-items:stretch}
-  .lab{font-family:'Archivo Black',sans-serif;font-size:.72rem;letter-spacing:.04em;color:var(--card);
-       background:var(--graphite);border:var(--border);border-radius:6px;display:flex;align-items:center;justify-content:center;
-       cursor:pointer;padding:0}
-  .step{aspect-ratio:.82;border:var(--border);border-radius:5px;cursor:pointer;position:relative;padding:0;background:var(--card)}
+  .bpm-val{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:1.1rem;
+           padding:10px 14px;min-width:106px;text-align:center;align-self:center}
+  .bpm-val small{font-size:.68rem;font-weight:500}
+  .hw-brand{margin-left:auto;text-align:right;line-height:1.25}
+  .hw-brand b{font-family:'Archivo Black',sans-serif;font-size:1rem;letter-spacing:.02em;display:block}
+  .hw-brand i{font-family:Georgia,serif;font-style:italic;font-size:.75rem}
+
+  /* grade: rolagem própria, sem esparramar o cartão */
+  .seq-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px}
+  .seq{display:grid;
+       grid-template-columns:46px 46px repeat(5,42px) 68px repeat(16,minmax(24px,1fr)) 42px 42px;
+       gap:5px;min-width:1020px;align-items:stretch}
+  .lab{font-family:'Archivo Black',sans-serif;font-size:.7rem;letter-spacing:.04em;color:var(--card);
+       background:var(--graphite);border:var(--border);border-radius:6px;display:flex;align-items:center;
+       justify-content:center;cursor:pointer;padding:0}
+  .acc-lab{cursor:default;grid-column:1/9}
+  .acc-fill{grid-column:span 2}
+  .step{aspect-ratio:.82;min-height:34px;border:var(--border);border-radius:5px;cursor:pointer;
+        position:relative;padding:0;background:var(--card)}
   .step::after{content:'';position:absolute;top:5px;left:50%;transform:translateX(-50%);
                width:9px;height:9px;border:2px solid var(--ink);border-radius:50%;background:transparent}
   .step.on::after{background:var(--ink)}
   .g1{background:var(--red)} .g2{background:var(--orange)} .g3{background:var(--yellow)} .g4{background:var(--card)}
   .step.ph{filter:brightness(.55)}
-  .demo-hint{font-size:.85rem;margin-top:14px;opacity:.85}
-  h2{margin:0 0 18px}
+  .acc{aspect-ratio:1.1;min-height:26px;border:var(--border);border-radius:5px;cursor:pointer;padding:0;
+       background:linear-gradient(180deg,var(--graphite) 0 55%,var(--bg) 55% 100%)}
+  .acc.on{background:linear-gradient(180deg,var(--graphite) 0 55%,var(--orange) 55% 100%)}
 
+  .knob{width:32px;height:32px;border:var(--border);border-radius:50%;background:var(--graphite);
+        position:relative;cursor:ns-resize;touch-action:none;margin:0 auto;flex:none}
+  .knob::after{content:'';position:absolute;left:50%;top:2px;width:3px;height:11px;background:var(--card);
+        border-radius:2px;transform-origin:50% 13px;transform:translateX(-50%) rotate(var(--rot,0deg))}
+  .knob.orange{background:var(--orange)}
+  .knob.orange::after{background:var(--ink)}
+  .kcell{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
+  .kcell small{font-size:.6rem;font-weight:700;letter-spacing:.05em}
+  .ms{font-family:'Archivo Black',sans-serif;font-size:.6rem;border:var(--border);border-radius:5px;
+      background:var(--card);cursor:pointer;padding:0;width:100%;letter-spacing:.02em}
+  .ms.on-mute{background:var(--red);color:var(--card)}
+  .ms.on-solo{background:var(--yellow)}
+
+  .panel-row{display:flex;gap:14px;flex-wrap:wrap;align-items:stretch;margin-top:16px}
+  .mini-panel{border:var(--border);border-radius:6px;background:var(--bg);box-shadow:3px 3px 0 var(--ink);
+       padding:12px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+  .mini-panel .ptitle{font-family:'Archivo Black',sans-serif;font-size:.72rem;background:var(--orange);
+       border:var(--border);border-radius:5px;padding:3px 10px;text-transform:uppercase}
+  .mini-panel select{font-family:'Archivo',sans-serif;font-weight:700;font-size:.85rem;border:var(--border);
+       border-radius:5px;background:var(--card);padding:7px 8px;max-width:170px}
+  .demo-hint{font-size:.88rem;margin-top:16px;opacity:.85;max-width:75ch}
+
+  /* ---------- conteúdo ---------- */
   .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
-  .feat{padding:18px}
-  .feat b{font-family:'Archivo Black',sans-serif;display:block;margin-bottom:6px;font-size:1rem;text-transform:uppercase;letter-spacing:.03em}
-  .feat .dot{display:inline-block;width:14px;height:14px;border:var(--border);border-radius:50%;margin-right:8px;vertical-align:-1px}
+  .feat{padding:18px;font-size:.95rem}
+  .feat b{font-family:'Archivo Black',sans-serif;display:block;margin-bottom:6px;font-size:.95rem;
+       text-transform:uppercase;letter-spacing:.03em}
+  .feat .dot{display:inline-block;width:13px;height:13px;border:var(--border);border-radius:50%;
+       margin-right:8px;vertical-align:-1px}
   .dot.red{background:var(--red)} .dot.orange{background:var(--orange)}
   .dot.yellow{background:var(--yellow)} .dot.graphite{background:var(--graphite)}
 
-  .compat{padding:20px}
+  .compat{padding:20px;font-size:.95rem}
   .compat ul{list-style:none;display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
-  .compat li{background:var(--bg);border:var(--border);border-radius:6px;padding:6px 14px;font-weight:700;font-size:.9rem;box-shadow:3px 3px 0 var(--ink)}
-  .compat p{margin-top:12px;font-size:.9rem}
+  .compat li{background:var(--bg);border:var(--border);border-radius:6px;padding:6px 14px;
+       font-weight:700;font-size:.88rem;box-shadow:3px 3px 0 var(--ink)}
+  .compat p{margin-top:14px;font-size:.9rem}
 
-  .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+  .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:18px}
   .os{padding:20px}
   .os h3{font-family:'Archivo Black',sans-serif;text-transform:uppercase;margin-bottom:12px}
-  .os ol{padding-left:22px;display:grid;gap:8px;font-size:.95rem}
-  .os .warn{margin-top:14px;background:var(--yellow);border:var(--border);border-radius:6px;padding:10px 12px;font-size:.85rem;box-shadow:3px 3px 0 var(--ink)}
-  code{background:var(--graphite);color:var(--card);border-radius:4px;padding:1px 7px;font-size:.85em;white-space:nowrap}
+  .os ol{padding-left:22px;display:grid;gap:8px;font-size:.93rem}
+  .os .warn{margin-top:14px;background:var(--yellow);border:var(--border);border-radius:6px;
+       padding:10px 12px;font-size:.85rem;box-shadow:3px 3px 0 var(--ink)}
+  code{font-family:'IBM Plex Mono',monospace;background:var(--graphite);color:var(--card);
+       border-radius:4px;padding:1px 7px;font-size:.82em;white-space:nowrap}
 
-  .samples{padding:20px}
-  .samples p{margin-top:8px;font-size:.95rem}
+  .samples{padding:20px;font-size:.95rem}
+  .samples p{margin-top:10px;font-size:.93rem}
 
-  footer{padding:36px 0 46px;font-size:.85rem;opacity:.8}
+  footer{padding:36px 0 46px}
+  footer .mono{font-size:.78rem;opacity:.75}
+
+  :is(button,a,select):focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+
+  /* ---------- celular ---------- */
+  @media (max-width:760px){
+    header{padding:34px 0 14px}
+    .hero{padding:18px 0 0}
+    .wrap,.wrap-demo{padding:0 14px}
+    .demo{padding:14px}
+    .demo-controls{gap:10px}
+    .dd-btn{padding:10px 16px;font-size:.9rem}
+    .bpm-box button{padding:9px 13px}
+    .bpm-val{min-width:88px;font-size:1rem;padding:9px 8px}
+    .hw-brand{display:none}
+    /* na grade, o celular mostra label + steps; knobs e mute/solo ficam pro desktop */
+    .seq{grid-template-columns:52px repeat(16,minmax(24px,1fr));min-width:560px;gap:4px}
+    .seq .ms,.seq .kcell{display:none}
+    .acc-lab{grid-column:1}
+    .acc-fill{display:none}
+    .mini-panel{width:100%;justify-content:flex-start}
+    .demo-hint{font-size:.83rem}
+    .downloads{gap:12px;padding-top:20px}
+    section{padding:24px 0}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;animation:none !important}
+  }
 </style>
 </head>
 <body>
@@ -142,8 +195,9 @@
         <button id="bpm-up" aria-label="Aumentar BPM">+</button>
       </div>
       <button class="dd-btn" id="rand" style="background:var(--yellow)">Rand</button>
+      <div class="hw-brand"><b>DRUM DEALER</b><i>Rhythm Composer&nbsp;—&nbsp;DD&nbsp;001</i></div>
     </div>
-    <div class="seq" id="seq"></div>
+    <div class="seq-scroll"><div class="seq" id="seq"></div></div>
     <div class="panel-row">
       <div class="mini-panel"><span class="ptitle">Groove</span>
         <select id="groove-type"></select>
@@ -159,7 +213,7 @@
         <span class="kcell"><span class="knob orange" id="master-gain"></span><small>MASTER</small></span>
       </div>
     </div>
-    <p class="demo-hint"><b>Isto não é uma imitação:</b> é o motor C++ do plugin compilado pra WebAssembly, rodando no seu navegador — o mesmo sequencer, sampler, mute/solo, groove e reverb/delay do VST, com os samples de fábrica. Knobs: arrasta pra cima/baixo (duplo clique volta ao padrão). RAND sorteia padrão e samples, igual no plugin. Clique no nome do instrumento pra trocar só o sample dele.</p>
+    <p class="demo-hint"><b>Não é imitação:</b> é o motor C++ do plugin rodando no navegador via WebAssembly, com os samples de fábrica. Arraste os knobs pra cima/baixo (duplo clique reseta). RAND sorteia padrão e samples. Clicar no nome do instrumento troca o sample dele.</p>
   </div>
 </div>
 
@@ -178,7 +232,7 @@
 <script type="module" src="dd-main.js"></script>
 
 <section class="wrap">
-  <h2><span class="chip">Compatível com tudo</span></h2>
+  <h2><span class="chip c1">Compatível com tudo</span></h2>
   <div class="card compat">
     Funciona em <b>Mac</b> (Intel e Apple Silicon) e <b>Windows</b> (10/11), dentro de qualquer DAW:
     <ul>
@@ -192,7 +246,7 @@
 </section>
 
 <section class="wrap">
-  <h2><span class="chip">O que ele faz</span></h2>
+  <h2><span class="chip c2">O que ele faz</span></h2>
   <div class="grid">
     <div class="card feat"><b><span class="dot red"></span>Sequencer 16 steps</b>
       6 instrumentos (kick, snare, clap, hats, tom), accent por step, groove straight/swing e botão RAND que sorteia padrões prontos pra usar.</div>
@@ -206,7 +260,7 @@
 </section>
 
 <section class="wrap">
-  <h2><span class="chip">Como instalar</span></h2>
+  <h2><span class="chip c3">Como instalar</span></h2>
   <div class="steps">
     <div class="card os">
       <h3>&#63743; Mac</h3>
@@ -232,7 +286,7 @@
 </section>
 
 <section class="wrap">
-  <h2><span class="chip">Seus próprios samples</span></h2>
+  <h2><span class="chip c4">Seus próprios samples</span></h2>
   <div class="card samples">
     O instalador já deixa a biblioteca de fábrica pronta — não precisa configurar nada.
     <p>Quer usar os seus sons? Clique em <b>SAMPLER</b> dentro do plugin: abre uma pasta <b>Vst Dealer</b> na sua área de trabalho com subpastas <code>Kick</code>, <code>Snare</code>, <code>Clap</code>, <code>Hat</code> e <code>Tom</code>. Jogue seus wavs lá e eles entram no sorteio <b>junto</b> com os de fábrica. O mesmo vale pros MIDIs do gerador, nas pastas <code>Bass</code> e <code>Lead</code>.</p>
@@ -240,7 +294,7 @@
 </section>
 
 <footer class="wrap">
-  Drum Dealer — feito por Diogo Soares. Rhythm Composer DD 001.
+  <span class="mono">DRUM DEALER · RHYTHM COMPOSER DD 001 · feito por Diogo Soares</span>
 </footer>
 
 </body>
