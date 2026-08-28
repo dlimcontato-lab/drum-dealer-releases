@@ -77,7 +77,7 @@
            letter-spacing:-.02em;line-height:1.02;text-wrap:balance}
 
   /* ---------- peças do sistema ---------- */
-  .chip{display:inline-block;background:var(--orange);border:var(--border);
+  .chip{display:inline-block;background:var(--orange);border:var(--border);border-radius:6px;
         padding:6px 16px;font-family:'Archivo Black',sans-serif;font-size:.82rem;
         letter-spacing:.05em;box-shadow:var(--shadow-sm);text-transform:uppercase;
         line-height:1.25}
@@ -87,10 +87,10 @@
   .chip.c4{background:var(--card)}
   .chip.on-rack{box-shadow:3px 3px 0 #000}
 
-  .card{background:var(--card);border:var(--border);box-shadow:var(--shadow)}
+  .card{background:var(--card);border:var(--border);border-radius:6px;box-shadow:var(--shadow)}
   .ico{width:1em;height:1em;fill:currentColor;vertical-align:-.09em;margin-right:.45em;flex:none}
 
-  .stripe{height:11px;border:var(--border);max-width:460px;margin-inline:auto;
+  .stripe{height:11px;border:var(--border);border-radius:4px;max-width:460px;margin-inline:auto;
           background:linear-gradient(90deg,var(--red) 0 25%,var(--orange) 0 50%,
                      var(--yellow) 0 75%,var(--graphite) 0 100%)}
 
@@ -117,7 +117,7 @@
   .rack-rail .mono{color:#a99f8d}
 
   /* ---------- a máquina ---------- */
-  .unit{background:var(--card);border:var(--border);box-shadow:var(--shadow-lg);
+  .unit{background:var(--card);border:var(--border);border-radius:8px;box-shadow:var(--shadow-lg);
         color:var(--ink);position:relative}
   .unit-top{display:flex;align-items:center;gap:var(--s2);flex-wrap:wrap;
             padding:var(--s3);border-bottom:var(--border-thin)}
@@ -128,7 +128,7 @@
 
   .dd-btn{font-family:'Archivo Black',sans-serif;text-transform:uppercase;
           font-size:.9rem;letter-spacing:.04em;color:var(--ink);background:var(--orange);
-          border:var(--border);box-shadow:var(--shadow-sm);padding:11px 20px;cursor:pointer;
+          border:var(--border);box-shadow:var(--shadow-sm);border-radius:6px;padding:11px 20px;cursor:pointer;
           transition:transform .06s,box-shadow .06s}
   .dd-btn:hover:not([disabled]){transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
   .dd-btn:active:not([disabled]){transform:translate(3px,3px);box-shadow:0 0 0 var(--ink)}
@@ -144,8 +144,8 @@
   .plugin-only .tagline{font-family:'Martian Mono',monospace;font-size:.58rem;
        font-weight:600;letter-spacing:-.03em;color:#5f5849;text-transform:uppercase}
 
-  .bpm-box{display:flex;align-items:stretch;border:var(--border);
-           box-shadow:var(--shadow-sm);background:var(--bg)}
+  .bpm-box{display:flex;align-items:stretch;border:var(--border);border-radius:6px;
+           box-shadow:var(--shadow-sm);background:var(--bg);overflow:hidden}
   .bpm-box button{font-family:'Archivo Black',sans-serif;font-size:1.1rem;border:none;
                   background:var(--yellow);border-right:var(--border-thin);padding:9px 15px;
                   cursor:pointer;color:var(--ink)}
@@ -171,11 +171,87 @@
      que amassava a peça e desalinhava as duas grades */
   .seq-ruler .grp{color:var(--ink);font-weight:700}
   .seq{display:grid;
-       grid-template-columns:50px repeat(5,48px) 74px repeat(16,minmax(24px,1fr)) 48px 48px;
-       gap:7px;min-width:1020px;align-items:stretch}
+       grid-template-columns:54px repeat(5,42px) 68px repeat(4,minmax(24px,1fr)) 12px repeat(4,minmax(24px,1fr)) 12px repeat(4,minmax(24px,1fr)) 12px repeat(4,minmax(24px,1fr)) 46px 46px;
+       gap:5px;min-width:1000px;align-items:stretch}
   .ms-stack{display:grid;grid-template-rows:1fr 1fr;gap:3px}
+  /* linhas separadoras entre instrumentos, como no painel. Vao no fim de cada
+     linha da grade; a classe dupla ganha do seletor de posicao por especificidade,
+     senao a regra de :nth-child(n+151) jogaria todas para a linha do accent. */
+  .sep{grid-column:1/-1;align-self:end;height:1px;background:rgba(20,18,15,.16);
+       pointer-events:none;margin-bottom:-3px}
+  #seq > .sep.r1{grid-row:1} #seq > .sep.r2{grid-row:2} #seq > .sep.r3{grid-row:3}
+  #seq > .sep.r4{grid-row:4} #seq > .sep.r5{grid-row:5}
+  /* Colocacao explicita nas duas grades: com colunas de vao no meio, deixar o
+     fluxo automatico decidir faria a regua e a grade divergirem. */
+  #seq > :nth-child(-n+150):nth-child(25n+1){grid-column:1}
+  #seq > :nth-child(-n+150):nth-child(25n+2){grid-column:2}
+  #seq > :nth-child(-n+150):nth-child(25n+3){grid-column:3}
+  #seq > :nth-child(-n+150):nth-child(25n+4){grid-column:4}
+  #seq > :nth-child(-n+150):nth-child(25n+5){grid-column:5}
+  #seq > :nth-child(-n+150):nth-child(25n+6){grid-column:6}
+  #seq > :nth-child(-n+150):nth-child(25n+7){grid-column:7}
+  #seq > :nth-child(-n+150):nth-child(25n+8){grid-column:8}
+  #seq > :nth-child(-n+150):nth-child(25n+9){grid-column:9}
+  #seq > :nth-child(-n+150):nth-child(25n+10){grid-column:10}
+  #seq > :nth-child(-n+150):nth-child(25n+11){grid-column:11}
+  #seq > :nth-child(-n+150):nth-child(25n+12){grid-column:13}
+  #seq > :nth-child(-n+150):nth-child(25n+13){grid-column:14}
+  #seq > :nth-child(-n+150):nth-child(25n+14){grid-column:15}
+  #seq > :nth-child(-n+150):nth-child(25n+15){grid-column:16}
+  #seq > :nth-child(-n+150):nth-child(25n+16){grid-column:18}
+  #seq > :nth-child(-n+150):nth-child(25n+17){grid-column:19}
+  #seq > :nth-child(-n+150):nth-child(25n+18){grid-column:20}
+  #seq > :nth-child(-n+150):nth-child(25n+19){grid-column:21}
+  #seq > :nth-child(-n+150):nth-child(25n+20){grid-column:23}
+  #seq > :nth-child(-n+150):nth-child(25n+21){grid-column:24}
+  #seq > :nth-child(-n+150):nth-child(25n+22){grid-column:25}
+  #seq > :nth-child(-n+150):nth-child(25n+23){grid-column:26}
+  #seq > :nth-child(-n+150):nth-child(25n+24){grid-column:27}
+  #seq > :nth-child(-n+150):nth-child(25n+25){grid-column:28}
+  #seq-ruler .sp{grid-column:1/8}
+  #seq-ruler > :nth-child(2){grid-column:8}
+  #seq-ruler > :nth-child(3){grid-column:9}
+  #seq-ruler > :nth-child(4){grid-column:10}
+  #seq-ruler > :nth-child(5){grid-column:11}
+  #seq-ruler > :nth-child(6){grid-column:13}
+  #seq-ruler > :nth-child(7){grid-column:14}
+  #seq-ruler > :nth-child(8){grid-column:15}
+  #seq-ruler > :nth-child(9){grid-column:16}
+  #seq-ruler > :nth-child(10){grid-column:18}
+  #seq-ruler > :nth-child(11){grid-column:19}
+  #seq-ruler > :nth-child(12){grid-column:20}
+  #seq-ruler > :nth-child(13){grid-column:21}
+  #seq-ruler > :nth-child(14){grid-column:23}
+  #seq-ruler > :nth-child(15){grid-column:24}
+  #seq-ruler > :nth-child(16){grid-column:25}
+  #seq-ruler > :nth-child(17){grid-column:26}
+  .acc-lab{grid-column:1/8}
+  #seq > :nth-child(152){grid-column:8}
+  #seq > :nth-child(153){grid-column:9}
+  #seq > :nth-child(154){grid-column:10}
+  #seq > :nth-child(155){grid-column:11}
+  #seq > :nth-child(156){grid-column:13}
+  #seq > :nth-child(157){grid-column:14}
+  #seq > :nth-child(158){grid-column:15}
+  #seq > :nth-child(159){grid-column:16}
+  #seq > :nth-child(160){grid-column:18}
+  #seq > :nth-child(161){grid-column:19}
+  #seq > :nth-child(162){grid-column:20}
+  #seq > :nth-child(163){grid-column:21}
+  #seq > :nth-child(164){grid-column:23}
+  #seq > :nth-child(165){grid-column:24}
+  #seq > :nth-child(166){grid-column:25}
+  #seq > :nth-child(167){grid-column:26}
+  #seq > :nth-child(-n+150):nth-child(n+1):nth-child(-n+25){grid-row:1}
+  #seq > :nth-child(n+26):nth-child(-n+50){grid-row:2}
+  #seq > :nth-child(n+51):nth-child(-n+75){grid-row:3}
+  #seq > :nth-child(n+76):nth-child(-n+100){grid-row:4}
+  #seq > :nth-child(n+101):nth-child(-n+125){grid-row:5}
+  #seq > :nth-child(n+126):nth-child(-n+150){grid-row:6}
+  #seq > :nth-child(n+151){grid-row:7}
+
   .lab{font-family:'Archivo Black',sans-serif;font-size:.68rem;letter-spacing:.03em;
-       color:var(--card);background:var(--graphite);border:var(--border-thin);
+       color:var(--card);background:var(--graphite);border:var(--border-thin);border-radius:6px;
        display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
   .lab:hover{background:var(--ink)}
   .acc-lab{cursor:default;grid-column:1/8;background:none;border:none;color:var(--ink);
@@ -186,7 +262,7 @@
      resolvida a partir da altura, a tecla transbordava a trilha e engolia o gap
      — teclas de início de tempo largas, as seguintes amassadas e o LED cortado
      pela borda. min-width:0 deixa a tecla caber na coluna que ela ocupa. */
-  .step{height:60px;min-width:0;border:var(--border-thin);cursor:pointer;
+  .step{height:46px;min-width:0;border:var(--border-thin);border-radius:4px;cursor:pointer;
         position:relative;padding:0;background:var(--card)}
   .step::after{content:'';position:absolute;top:5px;left:50%;transform:translateX(-50%);
                width:9px;height:9px;border:2px solid var(--ink);border-radius:50%;
@@ -205,18 +281,18 @@
   .seq-ruler span.ph{color:var(--ink);font-weight:700}
   .tally b{transition:transform .1s cubic-bezier(.2,.9,.3,1)}
   .tally.beat b{transform:scale(1.6)}
-  .acc{height:42px;min-width:0;border:var(--border-thin);padding:0;
+  .acc{height:46px;min-width:0;border:var(--border-thin);border-radius:4px;padding:0;
        cursor:ns-resize;touch-action:none;
        background:linear-gradient(0deg,var(--orange) 0 calc(var(--v,.5) * 100%),
                   var(--graphite) calc(var(--v,.5) * 100%) 100%)}
 
     /* laranja = controle de painel/FX, grafite = controle de canal. É a regra de
      cor do plugin; sem ela os dois viram a mesma coisa. */
-  .knob{width:40px;height:40px;border:var(--border-thin);border-radius:50%;
+  .knob{width:36px;height:36px;border:var(--border-thin);border-radius:50%;
         background:var(--graphite);position:relative;cursor:ns-resize;touch-action:none;
         margin:0 auto;flex:none}
-  .knob::after{content:'';position:absolute;left:50%;top:2px;width:3px;height:14px;
-        background:var(--card);border-radius:2px;transform-origin:50% 16px;
+  .knob::after{content:'';position:absolute;left:50%;top:2px;width:3px;height:12px;
+        background:var(--card);border-radius:2px;transform-origin:50% 14px;
         transform:translateX(-50%) rotate(var(--rot,0deg))}
   .knob.orange{background:var(--orange)}
   .knob.orange::after{background:var(--ink)}
@@ -227,23 +303,23 @@
   .panel .knob{width:52px;height:52px}
   .panel .knob::after{height:17px;transform-origin:50% 21px}
   .panel .kcell small{font-size:.58rem}
-  .ms{font-family:'Archivo Black',sans-serif;font-size:.6rem;border:var(--border-thin);
+  .ms{font-family:'Archivo Black',sans-serif;font-size:.6rem;border:var(--border-thin);border-radius:4px;
       background:var(--card);cursor:pointer;padding:0;width:100%;letter-spacing:.02em}
   .ms.on-mute{background:var(--red);color:var(--card)}
   .ms.on-solo{background:var(--yellow)}
 
   /* painéis da coluna direita, na ordem do plugin */
-  .panel{border:var(--border-thin);background:var(--card);box-shadow:var(--shadow-sm);
+  .panel{border:var(--border-thin);border-radius:8px;background:var(--card);box-shadow:var(--shadow-sm);
          padding:var(--s2);position:relative}
   .panel .ptitle{position:absolute;top:-11px;left:10px;font-family:'Archivo Black',sans-serif;
-       font-size:.62rem;background:var(--orange);border:var(--border-thin);padding:2px 9px;
+       font-size:.62rem;background:var(--orange);border:var(--border-thin);border-radius:5px;padding:2px 9px;
        text-transform:uppercase;letter-spacing:.05em}
   .panel select{font-family:'Archivo',sans-serif;font-weight:700;font-size:.8rem;
-       border:var(--border-thin);background:var(--bg);padding:6px 7px;width:100%;color:var(--ink)}
+       border:var(--border-thin);border-radius:5px;background:var(--bg);padding:6px 7px;width:100%;color:var(--ink)}
   .panel-row{display:flex;align-items:center;gap:var(--s2);flex-wrap:wrap;margin-top:var(--s1)}
   .panel-row.tight{gap:var(--s1)}
 
-  .brandplate{background:var(--graphite);color:var(--card);border:var(--border-thin);
+  .brandplate{background:var(--graphite);color:var(--card);border:var(--border-thin);border-radius:6px;
               padding:var(--s2);text-align:right}
   .brandplate b{font-family:'Archivo Black',sans-serif;font-size:1.02rem;display:block;
                 letter-spacing:-.01em}
@@ -252,7 +328,7 @@
 
   .gain-row{display:flex;align-items:flex-end;gap:var(--s2);justify-content:space-between}
   .meters{display:flex;gap:5px;height:118px;align-items:flex-end;width:34px;flex:none}
-  .meter{flex:1;height:100%;border:var(--border-thin);background:var(--bg);
+  .meter{flex:1;height:100%;border:var(--border-thin);border-radius:4px;background:var(--bg);
          position:relative;overflow:hidden}
   .meter i{position:absolute;left:0;right:0;bottom:0;height:0%;display:block;
            background:linear-gradient(0deg,var(--yellow) 0 62%,var(--orange) 62% 86%,var(--red) 86% 100%)}
@@ -267,8 +343,8 @@
             align-items:stretch;flex:1 1 0;min-height:0;max-height:150px}
   .lane-tag{font-family:'Archivo Black',sans-serif;font-size:.62rem;letter-spacing:.05em;
             text-transform:uppercase;background:var(--graphite);color:var(--card);
-            border:var(--border-thin);display:flex;align-items:center;justify-content:center}
-  .roll{width:100%;height:100%;border:var(--border-thin);background:var(--graphite);display:block}
+            border:var(--border-thin);border-radius:6px;display:flex;align-items:center;justify-content:center}
+  .roll{width:100%;height:100%;border:var(--border-thin);border-radius:6px;background:var(--graphite);display:block}
 
   .gen-grid{display:grid;grid-template-columns:52px minmax(0,1fr) 44px;gap:5px;margin-top:var(--s1)}
   .gen-grid select{padding:6px 4px;font-size:.75rem}
@@ -277,7 +353,7 @@
   .gen-line .dd-btn{padding:8px 0;font-size:.72rem;width:100%;box-shadow:2px 2px 0 var(--ink)}
   .gen-dl{font-family:'Martian Mono',monospace;font-size:.56rem;font-weight:700;
           letter-spacing:-.04em;text-transform:uppercase;background:var(--yellow);
-          border:var(--border-thin);padding:8px 7px;cursor:pointer;color:var(--ink);
+          border:var(--border-thin);border-radius:5px;padding:8px 7px;cursor:pointer;color:var(--ink);
           text-decoration:none;display:flex;align-items:center;justify-content:center}
   .gen-dl[aria-disabled="true"]{background:var(--bg);color:#5f5849;cursor:not-allowed}
 
@@ -296,7 +372,7 @@
 
   /* ---------- download ---------- */
   .downloads{display:grid;grid-template-columns:1fr 1fr;gap:var(--s4)}
-  .btn{display:block;text-decoration:none;color:var(--ink);text-align:center;
+  .btn{display:block;text-decoration:none;color:var(--ink);text-align:center;border-radius:6px;
        font-family:'Archivo Black',sans-serif;font-size:clamp(1.05rem,2vw,1.4rem);
        text-transform:uppercase;letter-spacing:.02em;background:var(--orange);
        border:var(--border);box-shadow:var(--shadow);padding:var(--s3) var(--s2);
@@ -320,7 +396,7 @@
   .rack-field .sec-head .mono{color:#8f8676}
 
   .compat ul{list-style:none;display:flex;flex-wrap:wrap;gap:var(--s2);margin:var(--s4) 0}
-  .compat li{background:var(--card);border:var(--border-thin);padding:7px 14px;
+  .compat li{background:var(--card);border:var(--border-thin);border-radius:5px;padding:7px 14px;
              font-weight:700;font-size:.9rem;box-shadow:var(--shadow-sm)}
   .compat p{max-width:72ch}
   .compat p + p{margin-top:var(--s3)}
@@ -332,7 +408,7 @@
   .feat:nth-child(2){grid-column:span 2}
   .feat:nth-child(3){grid-column:span 2}
   .feat:nth-child(4){grid-column:span 4}
-  .feat{border:var(--border);box-shadow:var(--shadow);padding:var(--s4);
+  .feat{border:var(--border);border-radius:8px;box-shadow:var(--shadow);padding:var(--s4);
         display:flex;flex-direction:column;gap:var(--s3);min-height:230px}
   .feat h3{font-size:var(--t-h3);text-transform:uppercase;letter-spacing:.01em}
   .feat p{font-size:var(--t-small);line-height:1.5}
@@ -346,16 +422,16 @@
   /* instalação: campo amarelo de ponta a ponta */
   .install-field{background:var(--yellow);border-top:var(--border);border-bottom:var(--border)}
   .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:var(--s4)}
-  .os{background:var(--card);border:var(--border);box-shadow:var(--shadow);padding:var(--s4)}
+  .os{background:var(--card);border:var(--border);border-radius:8px;box-shadow:var(--shadow);padding:var(--s4)}
   .os h3{font-size:var(--t-h3);text-transform:uppercase;margin-bottom:var(--s2)}
   .os ol{padding-left:22px;display:grid;gap:var(--s3);font-size:var(--t-small)}
   .os li::marker{font-family:'Martian Mono',monospace;font-size:.7rem;font-weight:700}
-  .warn{margin-top:var(--s4);background:var(--bg);border:var(--border-thin);
+  .warn{margin-top:var(--s4);background:var(--bg);border:var(--border-thin);border-radius:6px;
         padding:var(--s2);font-size:.8rem;box-shadow:var(--shadow-sm)}
   code{font-family:'Martian Mono',monospace;background:var(--graphite);color:var(--card);
-       padding:2px 6px;font-size:.72em;letter-spacing:-.05em;white-space:nowrap}
+       border-radius:3px;padding:2px 6px;font-size:.72em;letter-spacing:-.05em;white-space:nowrap}
 
-  .samples{background:var(--card);border:var(--border);box-shadow:var(--shadow);
+  .samples{background:var(--card);border:var(--border);border-radius:8px;box-shadow:var(--shadow);
            padding:var(--s5)}
   .samples p{max-width:74ch}
   .samples p + p{margin-top:var(--s3)}
@@ -383,29 +459,70 @@
     /* No celular a grade abria num banco de knobs e os 16 steps — a única coisa
        que diz "drum machine" — ficavam atrás de rolagem sem afordância nenhuma.
        Aqui o nome e os steps vêm primeiro; os knobs seguem depois. */
-    .seq{grid-template-columns:58px repeat(16,24px) 46px repeat(5,40px) 40px 40px}
+    .seq{grid-template-columns:58px repeat(4,24px) 14px repeat(4,24px) 14px repeat(4,24px) 14px repeat(4,24px) 46px repeat(5,40px) 40px 40px}
     /* `#seq >`, nunca `.seq >`: a régua também é um .seq e entrava na conta do
        25n, deslocando os numerais. E a linha vai explícita junto da coluna,
        senão a auto-colocação abre uma linha nova quando o cursor de coluna anda
        para trás, e cada instrumento passa a ocupar duas linhas de grade. */
-    #seq > :nth-child(-n+150):nth-child(25n+1){grid-column:18}
-    #seq > :nth-child(-n+150):nth-child(25n+2){grid-column:19}
-    #seq > :nth-child(-n+150):nth-child(25n+3){grid-column:20}
-    #seq > :nth-child(-n+150):nth-child(25n+4){grid-column:21}
-    #seq > :nth-child(-n+150):nth-child(25n+5){grid-column:22}
-    #seq > :nth-child(-n+150):nth-child(25n+6){grid-column:23}
+    #seq > :nth-child(-n+150):nth-child(25n+1){grid-column:22}
+    #seq > :nth-child(-n+150):nth-child(25n+2){grid-column:23}
+    #seq > :nth-child(-n+150):nth-child(25n+3){grid-column:24}
+    #seq > :nth-child(-n+150):nth-child(25n+4){grid-column:25}
+    #seq > :nth-child(-n+150):nth-child(25n+5){grid-column:26}
+    #seq > :nth-child(-n+150):nth-child(25n+6){grid-column:27}
     #seq > :nth-child(-n+150):nth-child(25n+7){grid-column:1}
-    #seq > :nth-child(-n+150):nth-child(25n+24){grid-column:24}
-    #seq > :nth-child(-n+150):nth-child(25n+25){grid-column:25}
-    #seq > :nth-child(n+1):nth-child(-n+25){grid-row:1}
-    #seq > :nth-child(n+26):nth-child(-n+50){grid-row:2}
-    #seq > :nth-child(n+51):nth-child(-n+75){grid-row:3}
-    #seq > :nth-child(n+76):nth-child(-n+100){grid-row:4}
-    #seq > :nth-child(n+101):nth-child(-n+125){grid-row:5}
-    #seq > :nth-child(n+126):nth-child(-n+150){grid-row:6}
-    #seq > :nth-child(n+151){grid-row:7}
-    .seq-ruler .sp{grid-column:1/2}
+    #seq > :nth-child(-n+150):nth-child(25n+8){grid-column:2}
+    #seq > :nth-child(-n+150):nth-child(25n+9){grid-column:3}
+    #seq > :nth-child(-n+150):nth-child(25n+10){grid-column:4}
+    #seq > :nth-child(-n+150):nth-child(25n+11){grid-column:5}
+    #seq > :nth-child(-n+150):nth-child(25n+12){grid-column:7}
+    #seq > :nth-child(-n+150):nth-child(25n+13){grid-column:8}
+    #seq > :nth-child(-n+150):nth-child(25n+14){grid-column:9}
+    #seq > :nth-child(-n+150):nth-child(25n+15){grid-column:10}
+    #seq > :nth-child(-n+150):nth-child(25n+16){grid-column:12}
+    #seq > :nth-child(-n+150):nth-child(25n+17){grid-column:13}
+    #seq > :nth-child(-n+150):nth-child(25n+18){grid-column:14}
+    #seq > :nth-child(-n+150):nth-child(25n+19){grid-column:15}
+    #seq > :nth-child(-n+150):nth-child(25n+20){grid-column:17}
+    #seq > :nth-child(-n+150):nth-child(25n+21){grid-column:18}
+    #seq > :nth-child(-n+150):nth-child(25n+22){grid-column:19}
+    #seq > :nth-child(-n+150):nth-child(25n+23){grid-column:20}
+    #seq > :nth-child(-n+150):nth-child(25n+24){grid-column:28}
+    #seq > :nth-child(-n+150):nth-child(25n+25){grid-column:29}
+    #seq-ruler .sp{grid-column:1/2}
+    #seq-ruler > :nth-child(2){grid-column:2}
+    #seq-ruler > :nth-child(3){grid-column:3}
+    #seq-ruler > :nth-child(4){grid-column:4}
+    #seq-ruler > :nth-child(5){grid-column:5}
+    #seq-ruler > :nth-child(6){grid-column:7}
+    #seq-ruler > :nth-child(7){grid-column:8}
+    #seq-ruler > :nth-child(8){grid-column:9}
+    #seq-ruler > :nth-child(9){grid-column:10}
+    #seq-ruler > :nth-child(10){grid-column:12}
+    #seq-ruler > :nth-child(11){grid-column:13}
+    #seq-ruler > :nth-child(12){grid-column:14}
+    #seq-ruler > :nth-child(13){grid-column:15}
+    #seq-ruler > :nth-child(14){grid-column:17}
+    #seq-ruler > :nth-child(15){grid-column:18}
+    #seq-ruler > :nth-child(16){grid-column:19}
+    #seq-ruler > :nth-child(17){grid-column:20}
     .acc-lab{grid-column:1}
+    #seq > :nth-child(152){grid-column:2}
+    #seq > :nth-child(153){grid-column:3}
+    #seq > :nth-child(154){grid-column:4}
+    #seq > :nth-child(155){grid-column:5}
+    #seq > :nth-child(156){grid-column:7}
+    #seq > :nth-child(157){grid-column:8}
+    #seq > :nth-child(158){grid-column:9}
+    #seq > :nth-child(159){grid-column:10}
+    #seq > :nth-child(160){grid-column:12}
+    #seq > :nth-child(161){grid-column:13}
+    #seq > :nth-child(162){grid-column:14}
+    #seq > :nth-child(163){grid-column:15}
+    #seq > :nth-child(164){grid-column:17}
+    #seq > :nth-child(165){grid-column:18}
+    #seq > :nth-child(166){grid-column:19}
+    #seq > :nth-child(167){grid-column:20}
     .acc-fill{display:none}
     .feats{grid-template-columns:minmax(0,1fr)}
     .feat{grid-column:auto!important}

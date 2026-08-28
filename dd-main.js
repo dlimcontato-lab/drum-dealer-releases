@@ -222,6 +222,14 @@ for (let r = 0; r < 6; r++) {
   seqEl.appendChild(fill1);
 }
 
+// linhas separadoras entre instrumentos, como no painel do plugin
+for (let r = 1; r <= 5; r++) {
+  const sep = document.createElement('div');
+  sep.className = 'sep r' + r;
+  sep.setAttribute('aria-hidden', 'true');
+  seqEl.appendChild(sep);
+}
+
 // régua de compassos, alinhada à grade pelo mesmo template de colunas
 {
   const ruler = document.getElementById('seq-ruler');
