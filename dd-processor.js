@@ -2,7 +2,7 @@
 // Sem SharedArrayBuffer: o módulo emcc é single-file e importado como ES module
 // dentro do AudioWorkletGlobalScope; a UI conversa por port.postMessage.
 import './url-shim.js'; // precisa vir antes: o glue referencia URL no top-level
-import createEngine from './engine.mjs';
+import createEngine from './engine.mjs?v=2'; // casa com ENGINE_V em dd-main.js
 
 const BLOCK = 128;
 
@@ -12,11 +12,12 @@ class DrumDealerProcessor extends AudioWorkletProcessor {
     this.M = null;
     this.pending = [];
     this.lastStep = -1;
+    this.meterTick = 0;
     this.port.onmessage = (e) => {
       // O worklet não consegue buscar o .wasm sozinho (sem fetch/atob no escopo):
       // o main thread manda os bytes e só então o módulo é instanciado.
       if (e.data.type === 'wasm') { this.boot(e.data.data); return; }
-      if (this.M) this.handle(e.data);
+      if (this.M) this.safeHandle(e.data);
       else this.pending.push(e.data);
     };
   }
@@ -28,11 +29,24 @@ class DrumDealerProcessor extends AudioWorkletProcessor {
       this.outL = M._malloc(BLOCK * 4);
       this.outR = M._malloc(BLOCK * 4);
       const p = this.pending; this.pending = [];
-      p.forEach((m) => this.handle(m));
+      p.forEach((m) => this.safeHandle(m));
       this.port.postMessage({ type: 'ready' });
     }).catch((err) => {
       this.port.postMessage({ type: 'error', message: String(err && err.message || err) });
     });
+  }
+
+  // Sem isto, uma exceção aqui dentro morre em silêncio no worklet e a UI fica
+  // esperando uma resposta que nunca vem.
+  safeHandle(m) {
+    try {
+      this.handle(m);
+    } catch (err) {
+      this.port.postMessage({
+        type: 'error',
+        message: `falha ao tratar "${m && m.type}": ${String(err && err.message || err)}`,
+      });
+    }
   }
 
   handle(m) {
@@ -62,6 +76,20 @@ class DrumDealerProcessor extends AudioWorkletProcessor {
         this.port.postMessage({ type: 'grid', grid });
         break;
       }
+      // MIDI GEN: mesma rota do plugin (pack embutido -> assembleFromClip). Roda
+      // aqui porque o motor vive no worklet; a UI só recebe as notas prontas.
+      case 'generate': {
+        const MAX = 4096;
+        M._web_generate(m.kind, m.root, m.scale, m.bars, m.seed >>> 0);
+        const bars = M._web_gen_bars(m.kind);
+        const ptr = M._malloc(MAX * 4 * 4);
+        const n = M._web_gen_notes(m.kind, ptr, MAX);
+        const notes = new Float32Array(M.HEAPF32.subarray(ptr / 4, ptr / 4 + n * 4));
+        M._free(ptr);
+        this.port.postMessage({ type: 'gen', kind: m.kind, bars, count: n, notes },
+                              [notes.buffer]);
+        break;
+      }
     }
   }
 
@@ -79,6 +107,12 @@ class DrumDealerProcessor extends AudioWorkletProcessor {
     if (s !== this.lastStep) {
       this.lastStep = s;
       this.port.postMessage({ type: 'step', step: s });
+    }
+
+    // Medidores L/R: ~45 quadros por segundo, não um por bloco de áudio.
+    if (++this.meterTick >= 8) {
+      this.meterTick = 0;
+      this.port.postMessage({ type: 'peak', l: M._web_read_peak(0), r: M._web_read_peak(1) });
     }
     return true;
   }

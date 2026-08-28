@@ -4,298 +4,704 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Drum Dealer — Rhythm Composer DD 001</title>
-<meta name="description" content="Drum machine + gerador de MIDI para Mac e Windows. Ableton, FL Studio, Logic e qualquer DAW com VST3 ou AU.">
+<meta name="description" content="Drum machine + gerador de MIDI para Mac e Windows. Toque o plugin aqui no navegador antes de baixar. Ableton, FL Studio, Logic e qualquer DAW com VST3 ou AU.">
+<meta name="theme-color" content="#1b1916">
+
+<meta property="og:type" content="website">
+<meta property="og:title" content="Drum Dealer — Rhythm Composer DD 001">
+<meta property="og:description" content="Drum machine + gerador de MIDI, grátis, para Mac e Windows. A demo desta página é o motor C++ do plugin rodando no navegador.">
+<meta property="og:image" content="https://dlimcontato-lab.github.io/drum-dealer-releases/drum-dealer-ui.png">
+<meta property="og:image:alt" content="A interface do Drum Dealer: sequencer de 16 steps, seis instrumentos e os painéis de groove, fill e MIDI GEN.">
+<meta property="og:locale" content="pt_BR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Drum Dealer — Rhythm Composer DD 001">
+<meta name="twitter:description" content="Drum machine + gerador de MIDI, grátis, para Mac e Windows. Toque antes de baixar.">
+<meta name="twitter:image" content="https://dlimcontato-lab.github.io/drum-dealer-releases/drum-dealer-ui.png">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@500;600;700&family=Martian+Mono:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='6' y='6' width='88' height='88' rx='12' fill='%23e8762c' stroke='%2314120f' stroke-width='7'/><circle cx='50' cy='50' r='16' fill='%23f2ead9' stroke='%2314120f' stroke-width='7'/></svg>">
+
 <style>
   :root{
+    /* paleta do plugin — o site herda o painel, não o contrário */
     --bg:#e8e0cf; --card:#f2ead9; --ink:#14120f;
     --orange:#e8762c; --red:#d92b26; --yellow:#e8c53a; --graphite:#2b2925;
-    --border:2.5px solid var(--ink);
-  }
-  *{margin:0;padding:0;box-sizing:border-box}
-  body{background:var(--bg);color:var(--ink);font-family:'Archivo',system-ui,sans-serif;
-       line-height:1.55;font-size:1rem}
-  .wrap{max-width:1020px;margin:0 auto;padding:0 20px}
-  .wrap-demo{max-width:1240px;margin:0 auto;padding:0 20px}
-  .mono{font-family:'IBM Plex Mono',monospace}
+    --rack:#1b1916;          /* o escuro em que a máquina é parafusada */
+    --rack-line:#3a352e;
 
-  .chip{display:inline-block;background:var(--orange);border:var(--border);border-radius:6px;
-        padding:5px 16px;font-family:'Archivo Black',sans-serif;font-size:.9rem;letter-spacing:.06em;
-        box-shadow:3px 3px 0 var(--ink);text-transform:uppercase}
-  /* as seções seguem o código de cores dos 4 grupos do sequencer */
+    --border:2.5px solid var(--ink);
+    --border-thin:2px solid var(--ink);
+    --shadow:5px 5px 0 var(--ink);
+    --shadow-sm:3px 3px 0 var(--ink);
+    --shadow-lg:8px 8px 0 var(--ink);
+
+    /* escala tipográfica — passos de verdade, não um H1 e o resto igual */
+    --t-mega:clamp(3.2rem, 11vw, 8.5rem);
+    --t-h2:clamp(1.9rem, 4.4vw, 3.1rem);
+    --t-h3:clamp(1.15rem, 2vw, 1.45rem);
+    --t-lead:clamp(1.05rem, 1.6vw, 1.28rem);
+    --t-body:1rem;
+    --t-small:.875rem;
+    --t-legend:.68rem;
+
+    /* um ritmo de espaçamento só, da página inteira */
+    --s1:.5rem; --s2:.875rem; --s3:1.25rem; --s4:2rem; --s5:3.25rem; --s6:5rem; --s7:7rem;
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{background:var(--bg);color:var(--ink);
+       font-family:'Archivo',system-ui,-apple-system,sans-serif;
+       font-weight:500;line-height:1.55;font-size:var(--t-body);
+       overflow-x:hidden}
+
+  /* superfícies do navegador que também são o design */
+  ::selection{background:var(--orange);color:var(--ink)}
+  :is(button,a,select,input,summary):focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+  .rack-field :is(button,a,select):focus-visible{outline-color:var(--yellow)}
+  html{scrollbar-color:var(--graphite) var(--bg)}
+  ::-webkit-scrollbar{height:12px;width:12px}
+  ::-webkit-scrollbar-track{background:var(--bg)}
+  ::-webkit-scrollbar-thumb{background:var(--graphite);border:2px solid var(--bg);border-radius:0}
+  .rack-field ::-webkit-scrollbar-track{background:var(--rack-line)}
+  .rack-field ::-webkit-scrollbar-thumb{background:var(--orange);border-color:var(--rack-line)}
+
+  .wrap{max-width:1080px;margin:0 auto;padding-inline:clamp(16px,4vw,28px)}
+  .wrap-wide{max-width:1480px;margin:0 auto;padding-inline:clamp(16px,3vw,28px)}
+  .mono{font-family:'Martian Mono','SFMono-Regular',ui-monospace,monospace;
+        font-size:.78rem;letter-spacing:-.04em}
+
+  h1,h2,h3{font-family:'Archivo Black',Archivo,sans-serif;font-weight:400;
+           letter-spacing:-.02em;line-height:1.02;text-wrap:balance}
+
+  /* ---------- peças do sistema ---------- */
+  .chip{display:inline-block;background:var(--orange);border:var(--border);
+        padding:6px 16px;font-family:'Archivo Black',sans-serif;font-size:.82rem;
+        letter-spacing:.05em;box-shadow:var(--shadow-sm);text-transform:uppercase;
+        line-height:1.25}
   .chip.c1{background:var(--red);color:var(--card)}
   .chip.c2{background:var(--orange)}
   .chip.c3{background:var(--yellow)}
   .chip.c4{background:var(--card)}
-  .card{background:var(--card);border:var(--border);border-radius:6px;box-shadow:4px 4px 0 var(--ink)}
+  .chip.on-rack{box-shadow:3px 3px 0 #000}
 
-  header{padding:52px 0 20px}
-  h1{font-family:'Archivo Black',sans-serif;font-size:clamp(2.4rem,6.5vw,4.4rem);letter-spacing:.01em;line-height:1.02}
-  .tag{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-size:clamp(1rem,2.5vw,1.15rem);margin-top:8px}
-  .stripe{height:10px;border:var(--border);border-radius:4px;margin:18px 0 0;max-width:420px;
-          background:linear-gradient(90deg,var(--red) 0 25%,var(--orange) 0 50%,var(--yellow) 0 75%,var(--graphite) 0 100%)}
+  .card{background:var(--card);border:var(--border);box-shadow:var(--shadow)}
+  .ico{width:1em;height:1em;fill:currentColor;vertical-align:-.09em;margin-right:.45em;flex:none}
 
-  .hero{padding:26px 0 4px}
+  .stripe{height:11px;border:var(--border);max-width:460px;margin-inline:auto;
+          background:linear-gradient(90deg,var(--red) 0 25%,var(--orange) 0 50%,
+                     var(--yellow) 0 75%,var(--graphite) 0 100%)}
 
-  .downloads{display:flex;gap:18px;flex-wrap:wrap;padding:26px 0 4px}
-  .btn{flex:1 1 260px;display:block;text-align:center;text-decoration:none;color:var(--ink);
-       font-family:'Archivo Black',sans-serif;font-size:1.1rem;text-transform:uppercase;letter-spacing:.04em;
-       background:var(--orange);border:var(--border);border-radius:6px;box-shadow:4px 4px 0 var(--ink);
-       padding:16px 20px;transition:transform .05s, box-shadow .05s}
-  .btn small{display:block;font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:.78rem;
-       text-transform:none;letter-spacing:0;margin-top:5px}
-  .btn:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink)}
-  .btn.alt{background:var(--yellow)}
-  .note{font-family:'IBM Plex Mono',monospace;font-size:.8rem;padding:10px 2px 0;opacity:.85}
+  /* ---------- topo ---------- */
+  header{padding:clamp(38px,7vw,72px) 0 var(--s4);text-align:center}
+  h1{font-size:var(--t-mega);letter-spacing:-.035em;margin:var(--s3) 0 0;
+     overflow-wrap:break-word}
+  .tag{font-family:Georgia,'Times New Roman',serif;font-style:italic;
+       font-size:var(--t-lead);margin-top:var(--s1)}
+  header .stripe{margin-top:var(--s3)}
+  .header-note{margin-top:var(--s3);max-width:46ch;margin-inline:auto;
+               font-size:var(--t-lead);line-height:1.45}
 
-  section{padding:30px 0}
-  h2{margin:0 0 18px}
+  /* ---------- o campo escuro onde a máquina mora ---------- */
+  .rack-field{background:var(--rack);color:var(--card);
+              border-top:var(--border);border-bottom:var(--border);
+              padding:var(--s5) 0 var(--s5);position:relative}
+  .rack-field::before{content:'';position:absolute;inset:0;pointer-events:none;
+       background:repeating-linear-gradient(180deg,rgba(255,255,255,.035) 0 1px,transparent 1px 4px)}
+  .rack-rail{display:flex;align-items:baseline;justify-content:space-between;gap:var(--s3);
+             flex-wrap:wrap;margin-bottom:var(--s4);position:relative}
+  .rack-rail b{font-family:'Archivo Black',sans-serif;font-size:.9rem;letter-spacing:.1em;
+               text-transform:uppercase;color:var(--card)}
+  .rack-rail .mono{color:#a99f8d}
 
-  /* ---------- a máquina (demo com o motor WASM real) ---------- */
-  .demo{padding:20px}
-  .demo-controls{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:16px}
-  .dd-btn{font-family:'Archivo Black',sans-serif;text-transform:uppercase;font-size:1rem;letter-spacing:.03em;
-          color:var(--ink);background:var(--orange);border:var(--border);border-radius:6px;
-          box-shadow:3px 3px 0 var(--ink);padding:11px 22px;cursor:pointer}
-  .dd-btn:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink)}
+  /* ---------- a máquina ---------- */
+  .unit{background:var(--card);border:var(--border);box-shadow:var(--shadow-lg);
+        color:var(--ink);position:relative}
+  .unit-top{display:flex;align-items:center;gap:var(--s2);flex-wrap:wrap;
+            padding:var(--s3);border-bottom:var(--border-thin)}
+  .unit-body{display:grid;grid-template-columns:minmax(0,1fr) 288px;align-items:stretch}
+  .unit-main{padding:var(--s3);min-width:0;display:flex;flex-direction:column;overflow:hidden}
+  .unit-side{border-left:var(--border-thin);padding:var(--s3);min-width:0;
+             display:flex;flex-direction:column;gap:var(--s2);background:var(--bg)}
+
+  .dd-btn{font-family:'Archivo Black',sans-serif;text-transform:uppercase;
+          font-size:.9rem;letter-spacing:.04em;color:var(--ink);background:var(--orange);
+          border:var(--border);box-shadow:var(--shadow-sm);padding:11px 20px;cursor:pointer;
+          transition:transform .06s,box-shadow .06s}
+  .dd-btn:hover:not([disabled]){transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink)}
+  .dd-btn:active:not([disabled]){transform:translate(3px,3px);box-shadow:0 0 0 var(--ink)}
   .dd-btn.playing{background:var(--red);color:var(--card)}
-  .bpm-box{display:flex;align-items:stretch;border:var(--border);border-radius:6px;
-           box-shadow:3px 3px 0 var(--ink);overflow:hidden;background:var(--bg)}
-  .bpm-box button{font-family:'Archivo Black',sans-serif;font-size:1.15rem;border:none;background:var(--yellow);
-                  border-right:var(--border);padding:10px 16px;cursor:pointer;color:var(--ink)}
-  .bpm-box button:last-child{border-right:none;border-left:var(--border)}
-  .bpm-val{font-family:'IBM Plex Mono',monospace;font-weight:700;font-size:1.1rem;
-           padding:10px 14px;min-width:106px;text-align:center;align-self:center}
-  .bpm-val small{font-size:.68rem;font-weight:500}
-  .hw-brand{margin-left:auto;text-align:right;line-height:1.25}
-  .hw-brand b{font-family:'Archivo Black',sans-serif;font-size:1rem;letter-spacing:.02em;display:block}
-  .hw-brand i{font-family:Georgia,serif;font-style:italic;font-size:.75rem}
+  .dd-btn.ghost{background:var(--card)}
+  .dd-btn.yellow{background:var(--yellow)}
+  .dd-btn[disabled]{cursor:not-allowed;background:var(--bg);color:#5f5849;
+                    box-shadow:none;transform:translate(3px,3px)}
 
-  /* grade: rolagem própria, sem esparramar o cartão */
-  .seq-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px}
+  /* o selo fica em fluxo, não absoluto: colidia com a caixa de BPM quando a
+     barra quebrava de linha, e 8px a 3,1:1 era a coisa menos legível da página */
+  .plugin-only{display:flex;flex-direction:column;align-items:center;gap:4px}
+  .plugin-only .tagline{font-family:'Martian Mono',monospace;font-size:.58rem;
+       font-weight:600;letter-spacing:-.03em;color:#5f5849;text-transform:uppercase}
+
+  .bpm-box{display:flex;align-items:stretch;border:var(--border);
+           box-shadow:var(--shadow-sm);background:var(--bg)}
+  .bpm-box button{font-family:'Archivo Black',sans-serif;font-size:1.1rem;border:none;
+                  background:var(--yellow);border-right:var(--border-thin);padding:9px 15px;
+                  cursor:pointer;color:var(--ink)}
+  .bpm-box button:last-child{border-right:none;border-left:var(--border-thin)}
+  .bpm-val{font-family:'Martian Mono',monospace;font-weight:700;font-size:1rem;
+           letter-spacing:-.05em;padding:9px 12px;min-width:104px;text-align:center;
+           align-self:center}
+  .bpm-val small{font-size:.6rem;font-weight:400}
+
+  .unit-brand{margin-left:auto;text-align:right;line-height:1.2}
+  .unit-brand b{font-family:'Archivo Black',sans-serif;font-size:1rem;letter-spacing:-.01em;display:block}
+  .unit-brand i{font-family:Georgia,serif;font-style:italic;font-size:.76rem}
+
+  /* grade do sequencer — mesma ordem de colunas que dd-main.js monta */
+  .seq-scroll{overflow-x:auto;overflow-y:hidden;padding-bottom:var(--s1)}
+  /* régua de compassos: o painel numera os 16 steps, e sem isso a leitura de
+     compasso depende só da cor */
+  .seq-ruler{margin-bottom:4px}
+  .seq-ruler span{font-family:'Martian Mono',monospace;font-size:.56rem;font-weight:600;
+       letter-spacing:-.06em;color:#5f5849;text-align:center;align-self:end}
+  .seq-ruler .sp{grid-column:span 7}
+  /* o tempo forte se marca na régua, em tinta cheia — não por margem na tecla,
+     que amassava a peça e desalinhava as duas grades */
+  .seq-ruler .grp{color:var(--ink);font-weight:700}
   .seq{display:grid;
-       grid-template-columns:46px 46px repeat(5,42px) 68px repeat(16,minmax(24px,1fr)) 42px 42px;
-       gap:5px;min-width:1020px;align-items:stretch}
-  .lab{font-family:'Archivo Black',sans-serif;font-size:.7rem;letter-spacing:.04em;color:var(--card);
-       background:var(--graphite);border:var(--border);border-radius:6px;display:flex;align-items:center;
-       justify-content:center;cursor:pointer;padding:0}
-  .acc-lab{cursor:default;grid-column:1/9}
+       grid-template-columns:50px repeat(5,48px) 74px repeat(16,minmax(24px,1fr)) 48px 48px;
+       gap:7px;min-width:1020px;align-items:stretch}
+  .ms-stack{display:grid;grid-template-rows:1fr 1fr;gap:3px}
+  .lab{font-family:'Archivo Black',sans-serif;font-size:.68rem;letter-spacing:.03em;
+       color:var(--card);background:var(--graphite);border:var(--border-thin);
+       display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
+  .lab:hover{background:var(--ink)}
+  .acc-lab{cursor:default;grid-column:1/8;background:none;border:none;color:var(--ink);
+           justify-content:flex-end;padding-right:var(--s2);font-size:.68rem;
+           letter-spacing:.08em}
   .acc-fill{grid-column:span 2}
-  .step{aspect-ratio:.82;min-height:34px;border:var(--border);border-radius:5px;cursor:pointer;
+  /* Altura explícita, nunca aspect-ratio: com razão de aspecto a largura era
+     resolvida a partir da altura, a tecla transbordava a trilha e engolia o gap
+     — teclas de início de tempo largas, as seguintes amassadas e o LED cortado
+     pela borda. min-width:0 deixa a tecla caber na coluna que ela ocupa. */
+  .step{height:60px;min-width:0;border:var(--border-thin);cursor:pointer;
         position:relative;padding:0;background:var(--card)}
   .step::after{content:'';position:absolute;top:5px;left:50%;transform:translateX(-50%);
-               width:9px;height:9px;border:2px solid var(--ink);border-radius:50%;background:transparent}
+               width:9px;height:9px;border:2px solid var(--ink);border-radius:50%;
+               background:transparent}
   .step.on::after{background:var(--ink)}
-  .g1{background:var(--red)} .g2{background:var(--orange)} .g3{background:var(--yellow)} .g4{background:var(--card)}
-  .step.ph{filter:brightness(.55)}
-  .acc{aspect-ratio:1.1;min-height:26px;border:var(--border);border-radius:5px;cursor:pointer;padding:0;
-       background:linear-gradient(180deg,var(--graphite) 0 55%,var(--bg) 55% 100%)}
-  .acc.on{background:linear-gradient(180deg,var(--graphite) 0 55%,var(--orange) 55% 100%)}
+  .g1{background:var(--red)} .g2{background:var(--orange)}
+  .g3{background:var(--yellow)} .g4{background:var(--card)}
+  /* Um momento de movimento, orquestrado: o playhead acende a coluna em vez de
+     escurecê-la, o numeral correspondente na régua marca onde estamos, e a
+     lâmpada tally bate no tempo forte. É a página reconhecendo a batida uma vez,
+     não efeitos espalhados. */
+  .step{transition:box-shadow .07s ease-out,transform .07s ease-out}
+  .step.ph{box-shadow:inset 0 0 0 3px var(--ink),0 3px 0 rgba(20,18,15,.35);
+           transform:translateY(-2px)}
+  .seq-ruler span{transition:color .07s ease-out}
+  .seq-ruler span.ph{color:var(--ink);font-weight:700}
+  .tally b{transition:transform .1s cubic-bezier(.2,.9,.3,1)}
+  .tally.beat b{transform:scale(1.6)}
+  .acc{height:42px;min-width:0;border:var(--border-thin);padding:0;
+       cursor:ns-resize;touch-action:none;
+       background:linear-gradient(0deg,var(--orange) 0 calc(var(--v,.5) * 100%),
+                  var(--graphite) calc(var(--v,.5) * 100%) 100%)}
 
-  .knob{width:32px;height:32px;border:var(--border);border-radius:50%;background:var(--graphite);
-        position:relative;cursor:ns-resize;touch-action:none;margin:0 auto;flex:none}
-  .knob::after{content:'';position:absolute;left:50%;top:2px;width:3px;height:11px;background:var(--card);
-        border-radius:2px;transform-origin:50% 13px;transform:translateX(-50%) rotate(var(--rot,0deg))}
+    /* laranja = controle de painel/FX, grafite = controle de canal. É a regra de
+     cor do plugin; sem ela os dois viram a mesma coisa. */
+  .knob{width:40px;height:40px;border:var(--border-thin);border-radius:50%;
+        background:var(--graphite);position:relative;cursor:ns-resize;touch-action:none;
+        margin:0 auto;flex:none}
+  .knob::after{content:'';position:absolute;left:50%;top:2px;width:3px;height:14px;
+        background:var(--card);border-radius:2px;transform-origin:50% 16px;
+        transform:translateX(-50%) rotate(var(--rot,0deg))}
   .knob.orange{background:var(--orange)}
   .knob.orange::after{background:var(--ink)}
-  .kcell{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px}
-  .kcell small{font-size:.6rem;font-weight:700;letter-spacing:.05em}
-  .ms{font-family:'Archivo Black',sans-serif;font-size:.6rem;border:var(--border);border-radius:5px;
+  .kcell{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+  .kcell small{font-family:'Martian Mono',monospace;font-size:.53rem;font-weight:600;
+               letter-spacing:-.03em}
+  /* knobs de painel: maiores que os de canal, como no aparelho */
+  .panel .knob{width:52px;height:52px}
+  .panel .knob::after{height:17px;transform-origin:50% 21px}
+  .panel .kcell small{font-size:.58rem}
+  .ms{font-family:'Archivo Black',sans-serif;font-size:.6rem;border:var(--border-thin);
       background:var(--card);cursor:pointer;padding:0;width:100%;letter-spacing:.02em}
   .ms.on-mute{background:var(--red);color:var(--card)}
   .ms.on-solo{background:var(--yellow)}
 
-  .panel-row{display:flex;gap:14px;flex-wrap:wrap;align-items:stretch;margin-top:16px}
-  .mini-panel{border:var(--border);border-radius:6px;background:var(--bg);box-shadow:3px 3px 0 var(--ink);
-       padding:12px 16px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-  .mini-panel .ptitle{font-family:'Archivo Black',sans-serif;font-size:.72rem;background:var(--orange);
-       border:var(--border);border-radius:5px;padding:3px 10px;text-transform:uppercase}
-  .mini-panel select{font-family:'Archivo',sans-serif;font-weight:700;font-size:.85rem;border:var(--border);
-       border-radius:5px;background:var(--card);padding:7px 8px;max-width:170px}
-  .demo-hint{font-size:.88rem;margin-top:16px;opacity:.85;max-width:75ch}
+  /* painéis da coluna direita, na ordem do plugin */
+  .panel{border:var(--border-thin);background:var(--card);box-shadow:var(--shadow-sm);
+         padding:var(--s2);position:relative}
+  .panel .ptitle{position:absolute;top:-11px;left:10px;font-family:'Archivo Black',sans-serif;
+       font-size:.62rem;background:var(--orange);border:var(--border-thin);padding:2px 9px;
+       text-transform:uppercase;letter-spacing:.05em}
+  .panel select{font-family:'Archivo',sans-serif;font-weight:700;font-size:.8rem;
+       border:var(--border-thin);background:var(--bg);padding:6px 7px;width:100%;color:var(--ink)}
+  .panel-row{display:flex;align-items:center;gap:var(--s2);flex-wrap:wrap;margin-top:var(--s1)}
+  .panel-row.tight{gap:var(--s1)}
 
-  /* ---------- conteúdo ---------- */
-  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:18px}
-  .feat{padding:18px;font-size:.95rem}
-  .feat b{font-family:'Archivo Black',sans-serif;display:block;margin-bottom:6px;font-size:.95rem;
-       text-transform:uppercase;letter-spacing:.03em}
-  .feat .dot{display:inline-block;width:13px;height:13px;border:var(--border);border-radius:50%;
-       margin-right:8px;vertical-align:-1px}
-  .dot.red{background:var(--red)} .dot.orange{background:var(--orange)}
-  .dot.yellow{background:var(--yellow)} .dot.graphite{background:var(--graphite)}
+  .brandplate{background:var(--graphite);color:var(--card);border:var(--border-thin);
+              padding:var(--s2);text-align:right}
+  .brandplate b{font-family:'Archivo Black',sans-serif;font-size:1.02rem;display:block;
+                letter-spacing:-.01em}
+  .brandplate i{font-family:Georgia,serif;font-style:italic;font-size:.72rem;opacity:.85}
+  .brandplate .stripe{height:7px;margin-top:7px;max-width:none;border-width:2px}
 
-  .compat{padding:20px;font-size:.95rem}
-  .compat ul{list-style:none;display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
-  .compat li{background:var(--bg);border:var(--border);border-radius:6px;padding:6px 14px;
-       font-weight:700;font-size:.88rem;box-shadow:3px 3px 0 var(--ink)}
-  .compat p{margin-top:14px;font-size:.9rem}
+  .gain-row{display:flex;align-items:flex-end;gap:var(--s2);justify-content:space-between}
+  .meters{display:flex;gap:5px;height:118px;align-items:flex-end;width:34px;flex:none}
+  .meter{flex:1;height:100%;border:var(--border-thin);background:var(--bg);
+         position:relative;overflow:hidden}
+  .meter i{position:absolute;left:0;right:0;bottom:0;height:0%;display:block;
+           background:linear-gradient(0deg,var(--yellow) 0 62%,var(--orange) 62% 86%,var(--red) 86% 100%)}
+  .meter-caps{display:flex;flex-direction:column;justify-content:space-between;height:118px;
+              font-family:'Martian Mono',monospace;font-size:.55rem;letter-spacing:-.04em;
+              line-height:1;color:#5f5849;font-weight:600}
 
-  .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:18px}
-  .os{padding:20px}
-  .os h3{font-family:'Archivo Black',sans-serif;text-transform:uppercase;margin-bottom:12px}
-  .os ol{padding-left:22px;display:grid;gap:8px;font-size:.93rem}
-  .os .warn{margin-top:14px;background:var(--yellow);border:var(--border);border-radius:6px;
-       padding:10px 12px;font-size:.85rem;box-shadow:3px 3px 0 var(--ink)}
-  code{font-family:'IBM Plex Mono',monospace;background:var(--graphite);color:var(--card);
-       border-radius:4px;padding:1px 7px;font-size:.82em;white-space:nowrap}
+  /* prévia larga, na coluna da esquerda, onde há espaço de verdade */
+  .gen-lanes{display:flex;flex-direction:column;gap:var(--s2);margin-top:var(--s3);
+             flex:1;min-height:0;overflow:hidden}
+  .gen-lane{display:grid;grid-template-columns:58px minmax(0,1fr);gap:var(--s1);
+            align-items:stretch;flex:1 1 0;min-height:0;max-height:150px}
+  .lane-tag{font-family:'Archivo Black',sans-serif;font-size:.62rem;letter-spacing:.05em;
+            text-transform:uppercase;background:var(--graphite);color:var(--card);
+            border:var(--border-thin);display:flex;align-items:center;justify-content:center}
+  .roll{width:100%;height:100%;border:var(--border-thin);background:var(--graphite);display:block}
 
-  .samples{padding:20px;font-size:.95rem}
-  .samples p{margin-top:10px;font-size:.93rem}
+  .gen-grid{display:grid;grid-template-columns:52px minmax(0,1fr) 44px;gap:5px;margin-top:var(--s1)}
+  .gen-grid select{padding:6px 4px;font-size:.75rem}
+  .gen-line{display:grid;grid-template-columns:64px minmax(0,1fr);gap:5px;align-items:stretch;
+            margin-top:5px}
+  .gen-line .dd-btn{padding:8px 0;font-size:.72rem;width:100%;box-shadow:2px 2px 0 var(--ink)}
+  .gen-dl{font-family:'Martian Mono',monospace;font-size:.56rem;font-weight:700;
+          letter-spacing:-.04em;text-transform:uppercase;background:var(--yellow);
+          border:var(--border-thin);padding:8px 7px;cursor:pointer;color:var(--ink);
+          text-decoration:none;display:flex;align-items:center;justify-content:center}
+  .gen-dl[aria-disabled="true"]{background:var(--bg);color:#5f5849;cursor:not-allowed}
 
-  footer{padding:36px 0 46px}
-  footer .mono{font-size:.78rem;opacity:.75}
+  .unit-foot{border-top:var(--border-thin);padding:var(--s2) var(--s3);
+             display:flex;gap:var(--s3);align-items:baseline;flex-wrap:wrap;background:var(--bg)}
+  .tally{display:inline-flex;align-items:center;gap:7px;font-family:'Martian Mono',monospace;
+         font-size:.58rem;letter-spacing:-.03em;text-transform:uppercase}
+  .tally b{width:11px;height:11px;border:var(--border-thin);border-radius:50%;
+           background:#7a6b58;display:block}
+  .tally.live b{background:var(--red)}
+  .falha{color:var(--red);font-weight:700}
 
-  :is(button,a,select):focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+  .machine-note{margin-top:var(--s4);max-width:70ch;font-size:var(--t-small);
+                color:#cbc2b2;line-height:1.5;position:relative}
+  .machine-note b{color:var(--card)}
 
-  /* ---------- celular ---------- */
+  /* ---------- download ---------- */
+  .downloads{display:grid;grid-template-columns:1fr 1fr;gap:var(--s4)}
+  .btn{display:block;text-decoration:none;color:var(--ink);text-align:center;
+       font-family:'Archivo Black',sans-serif;font-size:clamp(1.05rem,2vw,1.4rem);
+       text-transform:uppercase;letter-spacing:.02em;background:var(--orange);
+       border:var(--border);box-shadow:var(--shadow);padding:var(--s3) var(--s2);
+       transition:transform .06s,box-shadow .06s}
+  .btn small{display:block;font-family:'Martian Mono',monospace;font-weight:400;
+       font-size:.66rem;letter-spacing:-.04em;text-transform:none;margin-top:7px}
+  .btn:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink)}
+  .btn:active{transform:translate(4px,4px);box-shadow:0 0 0 var(--ink)}
+  .btn.alt{background:var(--yellow)}
+  .btn.on-rack{box-shadow:5px 5px 0 #000}
+  .btn.on-rack:hover{box-shadow:7px 7px 0 #000}
+  .note{font-family:'Martian Mono',monospace;font-size:.76rem;letter-spacing:-.04em;
+        margin-top:var(--s4);max-width:64ch;line-height:1.7}
+
+  /* ---------- seções ---------- */
+  section{padding:var(--s6) 0}
+  .sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:var(--s3);
+            flex-wrap:wrap;margin-bottom:var(--s5)}
+  .sec-head h2{font-size:var(--t-h2);max-width:22ch}
+  .sec-head .mono{color:#6b6355;white-space:nowrap}
+  .rack-field .sec-head .mono{color:#8f8676}
+
+  .compat ul{list-style:none;display:flex;flex-wrap:wrap;gap:var(--s2);margin:var(--s4) 0}
+  .compat li{background:var(--card);border:var(--border-thin);padding:7px 14px;
+             font-weight:700;font-size:.9rem;box-shadow:var(--shadow-sm)}
+  .compat p{max-width:72ch}
+  .compat p + p{margin-top:var(--s3)}
+  .compat .fine{font-size:var(--t-small);margin-top:var(--s2)}
+
+  /* as quatro features herdam as quatro cores dos grupos do sequencer */
+  .feats{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:var(--s4)}
+  .feat:nth-child(1){grid-column:span 4}
+  .feat:nth-child(2){grid-column:span 2}
+  .feat:nth-child(3){grid-column:span 2}
+  .feat:nth-child(4){grid-column:span 4}
+  .feat{border:var(--border);box-shadow:var(--shadow);padding:var(--s4);
+        display:flex;flex-direction:column;gap:var(--s3);min-height:230px}
+  .feat h3{font-size:var(--t-h3);text-transform:uppercase;letter-spacing:.01em}
+  .feat p{font-size:var(--t-small);line-height:1.5}
+  .feat .n{font-family:'Martian Mono',monospace;font-size:.62rem;letter-spacing:-.04em;
+           margin-top:auto;font-weight:600}
+  .f1{background:var(--red);color:#fff}
+  .f2{background:var(--orange)}
+  .f3{background:var(--yellow)}
+  .f4{background:var(--graphite);color:#fff}
+
+  /* instalação: campo amarelo de ponta a ponta */
+  .install-field{background:var(--yellow);border-top:var(--border);border-bottom:var(--border)}
+  .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:var(--s4)}
+  .os{background:var(--card);border:var(--border);box-shadow:var(--shadow);padding:var(--s4)}
+  .os h3{font-size:var(--t-h3);text-transform:uppercase;margin-bottom:var(--s2)}
+  .os ol{padding-left:22px;display:grid;gap:var(--s3);font-size:var(--t-small)}
+  .os li::marker{font-family:'Martian Mono',monospace;font-size:.7rem;font-weight:700}
+  .warn{margin-top:var(--s4);background:var(--bg);border:var(--border-thin);
+        padding:var(--s2);font-size:.8rem;box-shadow:var(--shadow-sm)}
+  code{font-family:'Martian Mono',monospace;background:var(--graphite);color:var(--card);
+       padding:2px 6px;font-size:.72em;letter-spacing:-.05em;white-space:nowrap}
+
+  .samples{background:var(--card);border:var(--border);box-shadow:var(--shadow);
+           padding:var(--s5)}
+  .samples p{max-width:74ch}
+  .samples p + p{margin-top:var(--s3)}
+
+  /* fecho: o rack outra vez, fechando o que ele abriu */
+  .close-field{background:var(--rack);color:var(--card);border-top:var(--border);
+               padding:var(--s6) 0 var(--s5)}
+  .close-field h2{font-size:var(--t-h2);max-width:20ch;margin-bottom:var(--s5)}
+  footer{padding:var(--s4) 0 0;margin-top:var(--s5);border-top:2px solid var(--rack-line)}
+  footer .mono{color:#8f8676;font-size:.66rem}
+
+  /* ---------- telas menores ---------- */
+  @media (max-width:1080px){
+    /* em coluna única não há coluna irmã para equilibrar: altura elástica aqui
+       só faz a faixa pedir espaço que não existe e ser cortada */
+    .gen-lanes{flex:none}
+    .gen-lane{flex:none;height:118px;max-height:none}
+    .unit-body{grid-template-columns:minmax(0,1fr)}
+    .unit-side{border-left:none;border-top:var(--border-thin);
+               display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));
+               gap:var(--s3) var(--s2);padding-top:calc(var(--s3) + 6px)}
+    .brandplate{grid-column:1/-1;text-align:left}
+  }
   @media (max-width:760px){
-    header{padding:34px 0 14px}
-    .hero{padding:18px 0 0}
-    .wrap,.wrap-demo{padding:0 14px}
-    .demo{padding:14px}
-    .demo-controls{gap:10px}
-    .dd-btn{padding:10px 16px;font-size:.9rem}
-    .bpm-box button{padding:9px 13px}
-    .bpm-val{min-width:88px;font-size:1rem;padding:9px 8px}
-    .hw-brand{display:none}
-    /* na grade, o celular mostra label + steps; knobs e mute/solo ficam pro desktop */
-    .seq{grid-template-columns:52px repeat(16,minmax(24px,1fr));min-width:560px;gap:4px}
-    .seq .ms,.seq .kcell{display:none}
+    /* No celular a grade abria num banco de knobs e os 16 steps — a única coisa
+       que diz "drum machine" — ficavam atrás de rolagem sem afordância nenhuma.
+       Aqui o nome e os steps vêm primeiro; os knobs seguem depois. */
+    .seq{grid-template-columns:58px repeat(16,24px) 46px repeat(5,40px) 40px 40px}
+    /* `#seq >`, nunca `.seq >`: a régua também é um .seq e entrava na conta do
+       25n, deslocando os numerais. E a linha vai explícita junto da coluna,
+       senão a auto-colocação abre uma linha nova quando o cursor de coluna anda
+       para trás, e cada instrumento passa a ocupar duas linhas de grade. */
+    #seq > :nth-child(-n+150):nth-child(25n+1){grid-column:18}
+    #seq > :nth-child(-n+150):nth-child(25n+2){grid-column:19}
+    #seq > :nth-child(-n+150):nth-child(25n+3){grid-column:20}
+    #seq > :nth-child(-n+150):nth-child(25n+4){grid-column:21}
+    #seq > :nth-child(-n+150):nth-child(25n+5){grid-column:22}
+    #seq > :nth-child(-n+150):nth-child(25n+6){grid-column:23}
+    #seq > :nth-child(-n+150):nth-child(25n+7){grid-column:1}
+    #seq > :nth-child(-n+150):nth-child(25n+24){grid-column:24}
+    #seq > :nth-child(-n+150):nth-child(25n+25){grid-column:25}
+    #seq > :nth-child(n+1):nth-child(-n+25){grid-row:1}
+    #seq > :nth-child(n+26):nth-child(-n+50){grid-row:2}
+    #seq > :nth-child(n+51):nth-child(-n+75){grid-row:3}
+    #seq > :nth-child(n+76):nth-child(-n+100){grid-row:4}
+    #seq > :nth-child(n+101):nth-child(-n+125){grid-row:5}
+    #seq > :nth-child(n+126):nth-child(-n+150){grid-row:6}
+    #seq > :nth-child(n+151){grid-row:7}
+    .seq-ruler .sp{grid-column:1/2}
     .acc-lab{grid-column:1}
     .acc-fill{display:none}
-    .mini-panel{width:100%;justify-content:flex-start}
-    .demo-hint{font-size:.83rem}
-    .downloads{gap:12px;padding-top:20px}
-    section{padding:24px 0}
+    .feats{grid-template-columns:minmax(0,1fr)}
+    .feat{grid-column:auto!important}
+    .gen-lane{grid-template-columns:46px minmax(0,1fr)}
+    section{padding:var(--s5) 0}
+    .rack-field{padding:var(--s4) 0}
+    .downloads{grid-template-columns:1fr;gap:var(--s2)}
+    .unit-top{padding:var(--s2);gap:var(--s1)}
+    .unit-main,.unit-side{padding:var(--s2)}
+    .unit-brand{display:none}
+    .dd-btn{padding:10px 14px;font-size:.8rem}
+    .bpm-val{min-width:88px;font-size:.9rem}
+    /* a máquina não perde controle no celular: ela rola inteira, como um aparelho */
+    .seq{min-width:880px;gap:5px}
+    .sec-head{margin-bottom:var(--s3)}
+    .feat{min-height:0}
+    .samples{padding:var(--s3)}
   }
-  @media (prefers-reduced-motion: reduce){
-    *{transition:none !important;animation:none !important}
+
+  @media (prefers-reduced-motion:reduce){
+    *{transition:none!important;animation:none!important}
+    .step.ph{transform:none;box-shadow:inset 0 0 0 3px var(--ink)}
+    .tally.beat b{transform:none}
   }
 </style>
 </head>
 <body>
 
 <header class="wrap">
-  <span class="chip">VST3 · AU · Standalone</span>
   <h1>DRUM DEALER</h1>
   <p class="tag">Rhythm Composer&nbsp;&nbsp;—&nbsp;&nbsp;DD 001</p>
   <div class="stripe"></div>
+  <p class="header-note">Drum machine e gerador de MIDI para Mac e Windows.
+     A máquina abaixo não é um vídeo: é o plugin, tocando aqui.</p>
 </header>
 
-<div class="wrap-demo hero">
-  <div class="card demo">
-    <div class="demo-controls">
-      <button class="dd-btn" id="play">&#9654; Play</button>
-      <div class="bpm-box">
-        <button id="bpm-down" aria-label="Diminuir BPM">&#8722;</button>
-        <span class="bpm-val"><span id="bpm">126</span> <small>BPM</small></span>
-        <button id="bpm-up" aria-label="Aumentar BPM">+</button>
-      </div>
-      <button class="dd-btn" id="rand" style="background:var(--yellow)">Rand</button>
-      <div class="hw-brand"><b>DRUM DEALER</b><i>Rhythm Composer&nbsp;—&nbsp;DD&nbsp;001</i></div>
+<!-- a máquina, montada no rack -->
+<div class="rack-field">
+  <div class="wrap-wide">
+    <div class="rack-rail">
+      <b>Unidade 01 — a máquina</b>
+      <span class="mono">MOTOR C++ · WEBASSEMBLY · SAMPLES DE FÁBRICA</span>
     </div>
-    <div class="seq-scroll"><div class="seq" id="seq"></div></div>
-    <div class="panel-row">
-      <div class="mini-panel"><span class="ptitle">Groove</span>
-        <select id="groove-type"></select>
-        <span class="kcell"><span class="knob" id="groove-amt"></span><small>AMOUNT</small></span>
+
+    <div class="unit">
+      <div class="unit-top">
+        <div class="plugin-only">
+          <button class="dd-btn ghost" id="sampler" disabled>Sampler</button>
+          <span class="tagline">só no plugin</span>
+        </div>
+        <button class="dd-btn" id="play">&#9654; Play</button>
+        <div class="bpm-box">
+          <button id="bpm-down" aria-label="Diminuir BPM">&#8722;</button>
+          <span class="bpm-val"><span id="bpm">126</span> <small>BPM</small></span>
+          <button id="bpm-up" aria-label="Aumentar BPM">+</button>
+        </div>
+        <button class="dd-btn yellow" id="rand">Rand</button>
+        <div class="plugin-only">
+          <button class="dd-btn ghost" id="export" disabled>Export</button>
+          <span class="tagline">só no plugin</span>
+        </div>
       </div>
-      <div class="mini-panel"><span class="ptitle">Fill</span>
-        <select id="fill-target"></select>
-        <span class="kcell"><span class="knob" id="fill-rate"></span><small>RATE</small></span>
-        <select id="fill-phase"><option value="0">GRID</option><option value="1">CONTRA</option></select>
-        <span class="kcell"><span class="knob" id="fill-vol"></span><small>VOLUME</small></span>
+
+      <div class="unit-body">
+        <div class="unit-main">
+          <div class="seq-scroll">
+            <div class="seq seq-ruler" id="seq-ruler" aria-hidden="true"></div>
+            <div class="seq" id="seq"></div>
+          </div>
+
+          <!-- prévia do que o MIDI GEN acabou de escrever; os controles ficam
+               na coluna da direita, como no painel do plugin -->
+          <div class="gen-lanes">
+            <div class="gen-lane">
+              <span class="lane-tag">Bass</span>
+              <canvas class="roll" id="roll-bass" width="900" height="120"
+                      aria-label="Prévia da linha de bass gerada"></canvas>
+            </div>
+            <div class="gen-lane">
+              <span class="lane-tag">Lead</span>
+              <canvas class="roll" id="roll-lead" width="900" height="120"
+                      aria-label="Prévia da linha de lead gerada"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <aside class="unit-side">
+          <div class="brandplate">
+            <b>DRUM DEALER</b>
+            <i>Rhythm Composer&nbsp;—&nbsp;DD&nbsp;001</i>
+            <div class="stripe"></div>
+          </div>
+
+          <div class="panel">
+            <span class="ptitle">Gain</span>
+            <div class="gain-row">
+              <span class="kcell"><span class="knob orange" id="master-gain"></span><small>MASTER</small></span>
+              <div class="meters">
+                <div class="meter"><i id="meter-l"></i></div>
+                <div class="meter"><i id="meter-r"></i></div>
+              </div>
+              <div class="meter-caps"><span>+6</span><span>0</span><span>-12</span><span>-24</span><span>-48</span></div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <span class="ptitle">Groove</span>
+            <select id="groove-type" aria-label="Tipo de groove"></select>
+            <div class="panel-row">
+              <span class="kcell"><span class="knob orange" id="groove-amt"></span><small>AMOUNT</small></span>
+            </div>
+          </div>
+
+          <div class="panel">
+            <span class="ptitle">Fill</span>
+            <select id="fill-target" aria-label="Instrumento da virada"></select>
+            <div class="panel-row tight">
+              <span class="kcell"><span class="knob orange" id="fill-rate"></span><small>RATE</small></span>
+              <select id="fill-phase" aria-label="Fase da virada" style="width:auto;flex:1">
+                <option value="0">GRID</option><option value="1">CONTRA</option>
+              </select>
+              <span class="kcell"><span class="knob orange" id="fill-vol"></span><small>VOLUME</small></span>
+            </div>
+          </div>
+
+          <div class="panel">
+            <span class="ptitle">MIDI Gen</span>
+            <div class="gen-grid">
+              <select id="gen-root" aria-label="Tom"></select>
+              <select id="gen-scale" aria-label="Escala"></select>
+              <select id="gen-bars" aria-label="Compassos">
+                <option value="8">8</option><option value="16">16</option>
+              </select>
+            </div>
+            <div class="gen-line">
+              <button class="dd-btn" id="gen-bass">Bass</button>
+              <a class="gen-dl" id="dl-bass" aria-disabled="true" download="drum-dealer-bass.mid">baixar .mid</a>
+            </div>
+            <div class="gen-line">
+              <button class="dd-btn" id="gen-lead">Lead</button>
+              <a class="gen-dl" id="dl-lead" aria-disabled="true" download="drum-dealer-lead.mid">baixar .mid</a>
+            </div>
+          </div>
+        </aside>
       </div>
-      <div class="mini-panel"><span class="ptitle">Gain</span>
-        <span class="kcell"><span class="knob orange" id="master-gain"></span><small>MASTER</small></span>
+
+      <div class="unit-foot">
+        <span class="tally" id="tally"><b></b> <span id="tally-label">Parado</span></span>
+        <span class="mono" id="gen-status">MIDI GEN pronto</span>
+        <span class="mono falha" id="falha" hidden></span>
       </div>
     </div>
-    <p class="demo-hint"><b>Não é imitação:</b> é o motor C++ do plugin rodando no navegador via WebAssembly, com os samples de fábrica. Arraste os knobs pra cima/baixo (duplo clique reseta). RAND sorteia padrão e samples. Clicar no nome do instrumento troca o sample dele.</p>
+
+    <p class="machine-note"><b>Não é imitação:</b> é o motor C++ do plugin compilado para
+      WebAssembly, com os samples de fábrica. Arraste os knobs pra cima e pra baixo (duplo
+      clique reseta). RAND sorteia padrão e samples. Clicar no nome do instrumento troca o
+      sample dele. BASS e LEAD rodam o mesmo gerador do plugin e devolvem o arquivo .mid.
+      SAMPLER e EXPORT precisam do seu disco, então só funcionam no plugin instalado.</p>
   </div>
 </div>
 
-<div class="wrap downloads">
-  <a class="btn" href="https://github.com/dlimcontato-lab/drum-dealer-releases/releases/latest/download/DrumDealer-macOS.pkg">
-    &#63743; Baixar para Mac
-    <small>.pkg — Intel e Apple Silicon</small>
-  </a>
-  <a class="btn alt" href="https://github.com/dlimcontato-lab/drum-dealer-releases/releases/latest/download/DrumDealer-Windows-Setup.exe">
-    &#10052; Baixar para Windows
-    <small>.exe — Windows 10/11, 64 bits</small>
-  </a>
-</div>
-<p class="wrap note">Grátis. Já vem com a biblioteca de samples de fábrica — instalou, apertou play, tem som.</p>
+<section class="wrap">
+  <div class="downloads">
+    <a class="btn" href="https://github.com/dlimcontato-lab/drum-dealer-releases/releases/latest/download/DrumDealer-macOS.pkg">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M16.4 12.8c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9s-1.8-.9-3-.8c-1.5 0-2.9.9-3.7 2.3-1.6 2.7-.4 6.8 1.1 9 .8 1.1 1.7 2.3 2.9 2.3 1.2 0 1.6-.7 3-.7s1.8.7 3 .7c1.3 0 2.1-1.1 2.8-2.2.9-1.2 1.3-2.5 1.3-2.5s-2.5-1-2.5-3.7zM14.2 5.7c.6-.8 1.1-1.9 1-3-.9 0-2.1.6-2.8 1.4-.6.7-1.2 1.8-1 2.9 1 .1 2.1-.5 2.8-1.3z"/></svg>Baixar para Mac
+      <small>.pkg · Intel e Apple Silicon</small>
+    </a>
+    <a class="btn alt" href="https://github.com/dlimcontato-lab/drum-dealer-releases/releases/latest/download/DrumDealer-Windows-Setup.exe">
+      <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.9l7.6-1v7.2H3V5.9zm0 12.2l7.6 1v-7.1H3v6.1zm8.7 1.2L21 20.6v-8.6h-9.3v7.3zM11.7 4.2L21 3v8.2h-9.3V4.2z"/></svg>Baixar para Windows
+      <small>.exe · Windows 10/11, 64 bits</small>
+    </a>
+  </div>
+  <p class="note">Grátis, em <b>VST3</b>, <b>AU</b> e standalone. Já vem com a biblioteca de
+     samples de fábrica: instalou, apertou play, tem som.</p>
+</section>
 
 <script type="module" src="dd-main.js"></script>
 
-<section class="wrap">
-  <h2><span class="chip c1">Compatível com tudo</span></h2>
-  <div class="card compat">
-    Funciona em <b>Mac</b> (Intel e Apple Silicon) e <b>Windows</b> (10/11), dentro de qualquer DAW:
-    <ul>
-      <li>Ableton Live</li><li>FL Studio</li><li>Logic Pro</li><li>GarageBand</li>
-      <li>Bitwig</li><li>Studio One</li><li>Cubase</li><li>Reaper</li><li>Pro Tools*</li>
-    </ul>
-    <p>Formato <b>VST3</b> (Ableton, FL Studio, Bitwig, Studio One, Cubase, Reaper…) e <b>AU</b> (Logic e GarageBand no Mac).
-    Também roda <b>sozinho, sem DAW nenhum</b> — instala junto um app standalone.
-    <br><small>*Pro Tools só aceita AAX; use a versão standalone junto dele.</small></p>
+<section class="wrap compat">
+  <div class="sec-head">
+    <h2>Compatível com todas as DAWs</h2>
+    <span class="mono">MAC · WINDOWS</span>
   </div>
+  <p>Funciona em <b>Mac</b> (Intel e Apple Silicon) e <b>Windows</b> (10/11), dentro de qualquer DAW:</p>
+  <ul>
+    <li>Ableton Live</li><li>FL Studio</li><li>Logic Pro</li><li>GarageBand</li>
+    <li>Bitwig</li><li>Studio One</li><li>Cubase</li><li>Reaper</li><li>Pro Tools*</li>
+  </ul>
+  <p>Formato <b>VST3</b> (Ableton, FL Studio, Bitwig, Studio One, Cubase, Reaper…) e
+     <b>AU</b> (Logic e GarageBand no Mac). Também roda <b>sozinho, sem DAW nenhum</b>:
+     instala junto um app standalone.</p>
+  <p class="fine">*Pro Tools só aceita AAX; use a versão standalone junto dele.</p>
 </section>
 
 <section class="wrap">
-  <h2><span class="chip c2">O que ele faz</span></h2>
-  <div class="grid">
-    <div class="card feat"><b><span class="dot red"></span>Sequencer 16 steps</b>
-      6 instrumentos (kick, snare, clap, hats, tom), accent por step, groove straight/swing e botão RAND que sorteia padrões prontos pra usar.</div>
-    <div class="card feat"><b><span class="dot orange"></span>Sampler de verdade</b>
-      Cada batida usa samples reais. Vem com 232 sons de fábrica e o botão SAMPLER abre uma pasta pra você jogar os seus — entram no sorteio na hora.</div>
-    <div class="card feat"><b><span class="dot yellow"></span>MIDI GEN: bass e lead</b>
-      Gera linhas de bass e lead que seguem seu kick, na escala que você escolher. Arrasta o clipe direto pro DAW (referência: tech house BR / minimal).</div>
-    <div class="card feat"><b><span class="dot graphite"></span>Fill, FX e stems</b>
-      Viradas automáticas por instrumento, reverb e delay por canal, e EXPORT que grava os stems separados + master em wav no seu projeto.</div>
+  <div class="sec-head">
+    <h2>O que tem dentro</h2>
+    <span class="mono">232 SAMPLES DE FÁBRICA</span>
+  </div>
+  <div class="feats">
+    <article class="feat f1">
+      <h3>Sequencer 16 steps</h3>
+      <p>6 instrumentos (kick, snare, clap, hats, tom), accent por step, groove
+         straight/swing e botão RAND que sorteia padrões prontos pra usar.</p>
+      <span class="n">6 instrumentos · accent por step</span>
+    </article>
+    <article class="feat f2">
+      <h3>Sampler de verdade</h3>
+      <p>Cada batida usa samples reais. Vem com 232 sons de fábrica e o botão SAMPLER
+         abre uma pasta pra você jogar os seus, e eles entram no sorteio na hora.</p>
+      <span class="n">232 samples de fábrica</span>
+    </article>
+    <article class="feat f3">
+      <h3>MIDI GEN: bass e lead</h3>
+      <p>Gera linhas de bass e lead que seguem seu kick, na escala que você escolher.
+         Arrasta o clipe direto pro DAW (referência: tech house BR / minimal).</p>
+      <span class="n">clipe .mid arrastável</span>
+    </article>
+    <article class="feat f4">
+      <h3>Fill, FX e stems</h3>
+      <p>Viradas automáticas por instrumento, reverb e delay por canal, e EXPORT que
+         grava os stems separados + master em wav no seu projeto.</p>
+      <span class="n">stems separados em wav</span>
+    </article>
   </div>
 </section>
 
-<section class="wrap">
-  <h2><span class="chip c3">Como instalar</span></h2>
-  <div class="steps">
-    <div class="card os">
-      <h3>&#63743; Mac</h3>
-      <ol>
-        <li>Baixe o <b>DrumDealer-macOS.pkg</b> no botão lá em cima.</li>
-        <li>Dê dois cliques e siga o instalador (avançar, avançar, instalar).</li>
-        <li>Abra seu DAW e mande escanear os plugins de novo.</li>
-        <li>Procure <b>Drum Dealer</b> nos instrumentos (VST3 ou AU) e arraste pra uma track MIDI.</li>
-      </ol>
-      <div class="warn">O macOS pode avisar "desenvolvedor não identificado". É só abrir o .pkg com <b>botão direito&nbsp;→&nbsp;Abrir</b> (uma vez só), ou liberar em Ajustes → Privacidade e Segurança → "Abrir mesmo assim".</div>
+<div class="install-field">
+  <section class="wrap">
+    <div class="sec-head">
+      <h2>Do download ao primeiro som</h2>
+      <span class="mono">QUATRO PASSOS</span>
     </div>
-    <div class="card os">
-      <h3>&#10052; Windows</h3>
-      <ol>
-        <li>Baixe o <b>DrumDealer-Windows-Setup.exe</b> no botão lá em cima.</li>
-        <li>Execute e siga o instalador. Se o Windows SmartScreen avisar, clique em <b>Mais informações → Executar assim mesmo</b>.</li>
-        <li>Abra seu DAW e mande escanear os plugins (o VST3 vai pra pasta padrão <code>C:\Program Files\Common Files\VST3</code>).</li>
-        <li>Procure <b>Drum Dealer</b> nos instrumentos e arraste pra uma track MIDI.</li>
-      </ol>
-      <div class="warn">No FL Studio: Options → Manage plugins → Find more plugins. No Ableton: Preferences → Plug-Ins → Rescan.</div>
+    <div class="steps">
+      <div class="os">
+        <h3><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M16.4 12.8c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9s-1.8-.9-3-.8c-1.5 0-2.9.9-3.7 2.3-1.6 2.7-.4 6.8 1.1 9 .8 1.1 1.7 2.3 2.9 2.3 1.2 0 1.6-.7 3-.7s1.8.7 3 .7c1.3 0 2.1-1.1 2.8-2.2.9-1.2 1.3-2.5 1.3-2.5s-2.5-1-2.5-3.7zM14.2 5.7c.6-.8 1.1-1.9 1-3-.9 0-2.1.6-2.8 1.4-.6.7-1.2 1.8-1 2.9 1 .1 2.1-.5 2.8-1.3z"/></svg>Mac</h3>
+        <ol>
+          <li>Baixe o <b>DrumDealer-macOS.pkg</b> no botão lá em cima.</li>
+          <li>Dê dois cliques e siga o instalador (avançar, avançar, instalar).</li>
+          <li>Abra seu DAW e mande escanear os plugins de novo.</li>
+          <li>Procure <b>Drum Dealer</b> nos instrumentos (VST3 ou AU) e arraste pra uma track MIDI.</li>
+        </ol>
+        <div class="warn">O macOS pode avisar "desenvolvedor não identificado". É só abrir o .pkg com
+          <b>botão direito&nbsp;→&nbsp;Abrir</b> (uma vez só), ou liberar em Ajustes → Privacidade e
+          Segurança → "Abrir mesmo assim".</div>
+      </div>
+      <div class="os">
+        <h3><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.9l7.6-1v7.2H3V5.9zm0 12.2l7.6 1v-7.1H3v6.1zm8.7 1.2L21 20.6v-8.6h-9.3v7.3zM11.7 4.2L21 3v8.2h-9.3V4.2z"/></svg>Windows</h3>
+        <ol>
+          <li>Baixe o <b>DrumDealer-Windows-Setup.exe</b> no botão lá em cima.</li>
+          <li>Execute e siga o instalador. Se o Windows SmartScreen avisar, clique em
+              <b>Mais informações → Executar assim mesmo</b>.</li>
+          <li>Abra seu DAW e mande escanear os plugins (o VST3 vai pra pasta padrão
+              <code>C:\Program Files\Common Files\VST3</code>).</li>
+          <li>Procure <b>Drum Dealer</b> nos instrumentos e arraste pra uma track MIDI.</li>
+        </ol>
+        <div class="warn">No FL Studio: Options → Manage plugins → Find more plugins.
+          No Ableton: Preferences → Plug-Ins → Rescan.</div>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
+</div>
 
 <section class="wrap">
-  <h2><span class="chip c4">Seus próprios samples</span></h2>
-  <div class="card samples">
-    O instalador já deixa a biblioteca de fábrica pronta — não precisa configurar nada.
-    <p>Quer usar os seus sons? Clique em <b>SAMPLER</b> dentro do plugin: abre uma pasta <b>Vst Dealer</b> na sua área de trabalho com subpastas <code>Kick</code>, <code>Snare</code>, <code>Clap</code>, <code>Hat</code> e <code>Tom</code>. Jogue seus wavs lá e eles entram no sorteio <b>junto</b> com os de fábrica. O mesmo vale pros MIDIs do gerador, nas pastas <code>Bass</code> e <code>Lead</code>.</p>
+  <div class="sec-head">
+    <h2>Seus próprios samples entram junto</h2>
+    <span class="mono">SOMA, NÃO SUBSTITUI</span>
+  </div>
+  <div class="samples">
+    <p>O instalador já deixa a biblioteca de fábrica pronta. Não precisa configurar nada.</p>
+    <p>Quer usar os seus sons? Clique em <b>SAMPLER</b> dentro do plugin: abre uma pasta
+      <b>Vst Dealer</b> na sua área de trabalho com subpastas <code>Kick</code>,
+      <code>Snare</code>, <code>Clap</code>, <code>Hat</code> e <code>Tom</code>. Jogue seus
+      wavs lá e eles entram no sorteio <b>junto</b> com os de fábrica. O mesmo vale pros MIDIs
+      do gerador, nas pastas <code>Bass</code> e <code>Lead</code>.</p>
   </div>
 </section>
 
-<footer class="wrap">
-  <span class="mono">DRUM DEALER · RHYTHM COMPOSER DD 001 · feito por Diogo Soares</span>
-</footer>
+<div class="close-field">
+  <div class="wrap">
+    <h2>Você já ouviu. Agora leva pro seu DAW.</h2>
+    <div class="downloads">
+      <a class="btn on-rack" href="https://github.com/dlimcontato-lab/drum-dealer-releases/releases/latest/download/DrumDealer-macOS.pkg">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M16.4 12.8c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9s-1.8-.9-3-.8c-1.5 0-2.9.9-3.7 2.3-1.6 2.7-.4 6.8 1.1 9 .8 1.1 1.7 2.3 2.9 2.3 1.2 0 1.6-.7 3-.7s1.8.7 3 .7c1.3 0 2.1-1.1 2.8-2.2.9-1.2 1.3-2.5 1.3-2.5s-2.5-1-2.5-3.7zM14.2 5.7c.6-.8 1.1-1.9 1-3-.9 0-2.1.6-2.8 1.4-.6.7-1.2 1.8-1 2.9 1 .1 2.1-.5 2.8-1.3z"/></svg>Baixar para Mac
+        <small>.pkg · Intel e Apple Silicon</small>
+      </a>
+      <a class="btn alt on-rack" href="https://github.com/dlimcontato-lab/drum-dealer-releases/releases/latest/download/DrumDealer-Windows-Setup.exe">
+        <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.9l7.6-1v7.2H3V5.9zm0 12.2l7.6 1v-7.1H3v6.1zm8.7 1.2L21 20.6v-8.6h-9.3v7.3zM11.7 4.2L21 3v8.2h-9.3V4.2z"/></svg>Baixar para Windows
+        <small>.exe · Windows 10/11, 64 bits</small>
+      </a>
+    </div>
+    <footer>
+      <span class="mono">DRUM DEALER · RHYTHM COMPOSER DD 001 · por Drop Dealer</span>
+    </footer>
+  </div>
+</div>
 
 </body>
 </html>

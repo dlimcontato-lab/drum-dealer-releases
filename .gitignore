@@ -1,0 +1,8 @@
+# Material interno do processo de design. Este repositório é público:
+# o registro escrito fica versionado (DESIGN.md, design.json, DESCARTADO.md),
+# as imagens de trabalho não — inclusive as comps de uma direção descartada.
+.impeccable/mocks/*.webp
+.impeccable/mocks/*.webp.json
+.impeccable/mocks/decision/
+.impeccable/review/
+.impeccable/questions/
