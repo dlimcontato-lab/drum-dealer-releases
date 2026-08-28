@@ -147,8 +147,7 @@ for (let r = 0; r < 6; r++) {
 
   for (let c = 0; c < 16; c++) {
     const b = document.createElement('button');
-    b.className = 'step g' + (Math.floor(c / 4) + 1) + (c % 4 === 0 && c > 0 ? ' grp' : '')
-                + (grid[r][c] ? ' on' : '');
+    b.className = 'step g' + (Math.floor(c / 4) + 1) + (grid[r][c] ? ' on' : '');
     b.setAttribute('aria-label', INSTS[r] + ', step ' + (c + 1));
     b.addEventListener('click', async () => {
       grid[r][c] ^= 1; b.classList.toggle('on');
@@ -482,9 +481,6 @@ function receiveGenerated(m) {
     });
   }
   generated[m.kind] = { notes, bars: m.bars };
-  // a faixa só ocupa altura depois de ter o que mostrar
-  document.getElementById(m.kind === 0 ? 'roll-bass' : 'roll-lead')
-          .closest('.gen-lane').classList.add('cheia');
   requestAnimationFrame(() => drawRoll(m.kind));
 
   const link = document.getElementById(m.kind === 0 ? 'dl-bass' : 'dl-lead');
