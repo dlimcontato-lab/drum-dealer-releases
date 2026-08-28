@@ -171,8 +171,8 @@
      que amassava a peça e desalinhava as duas grades */
   .seq-ruler .grp{color:var(--ink);font-weight:700}
   .seq{display:grid;
-       grid-template-columns:54px repeat(5,42px) 68px repeat(4,minmax(24px,1fr)) 12px repeat(4,minmax(24px,1fr)) 12px repeat(4,minmax(24px,1fr)) 12px repeat(4,minmax(24px,1fr)) 46px 46px;
-       gap:5px;min-width:1000px;align-items:stretch}
+       grid-template-columns:54px repeat(5,42px) 68px repeat(4,minmax(22px,1fr)) 10px repeat(4,minmax(22px,1fr)) 10px repeat(4,minmax(22px,1fr)) 10px repeat(4,minmax(22px,1fr)) 46px 46px;
+       gap:7px;min-width:1000px;align-items:stretch}
   .ms-stack{display:grid;grid-template-rows:1fr 1fr;gap:3px}
   /* linhas separadoras entre instrumentos, como no painel. Vao no fim de cada
      linha da grade; a classe dupla ganha do seletor de posicao por especificidade,
@@ -252,7 +252,9 @@
 
   .lab{font-family:'Archivo Black',sans-serif;font-size:.68rem;letter-spacing:.03em;
        color:var(--card);background:var(--graphite);border:var(--border-thin);border-radius:6px;
-       display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
+       display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;
+       box-shadow:3px 3px 0 var(--ink)}
+  .lab:active{transform:translate(3px,3px);box-shadow:none}
   .lab:hover{background:var(--ink)}
   .acc-lab{cursor:default;grid-column:1/8;background:none;border:none;color:var(--ink);
            justify-content:flex-end;padding-right:var(--s2);font-size:.68rem;
@@ -263,7 +265,9 @@
      — teclas de início de tempo largas, as seguintes amassadas e o LED cortado
      pela borda. min-width:0 deixa a tecla caber na coluna que ela ocupa. */
   .step{height:46px;min-width:0;border:var(--border-thin);border-radius:4px;cursor:pointer;
-        position:relative;padding:0;background:var(--card)}
+        position:relative;padding:0;background:var(--card);
+        box-shadow:3px 3px 0 var(--ink)}
+  .step:active{transform:translate(3px,3px);box-shadow:none}
   .step::after{content:'';position:absolute;top:5px;left:50%;transform:translateX(-50%);
                width:9px;height:9px;border:2px solid var(--ink);border-radius:50%;
                background:transparent}
@@ -282,7 +286,7 @@
   .tally b{transition:transform .1s cubic-bezier(.2,.9,.3,1)}
   .tally.beat b{transform:scale(1.6)}
   .acc{height:46px;min-width:0;border:var(--border-thin);border-radius:4px;padding:0;
-       cursor:ns-resize;touch-action:none;
+       cursor:ns-resize;touch-action:none;box-shadow:3px 3px 0 var(--ink);
        background:linear-gradient(0deg,var(--orange) 0 calc(var(--v,.5) * 100%),
                   var(--graphite) calc(var(--v,.5) * 100%) 100%)}
 
@@ -290,7 +294,7 @@
      cor do plugin; sem ela os dois viram a mesma coisa. */
   .knob{width:36px;height:36px;border:var(--border-thin);border-radius:50%;
         background:var(--graphite);position:relative;cursor:ns-resize;touch-action:none;
-        margin:0 auto;flex:none}
+        margin:0 auto;flex:none;box-shadow:2.5px 2.5px 0 var(--ink)}
   .knob::after{content:'';position:absolute;left:50%;top:2px;width:3px;height:12px;
         background:var(--card);border-radius:2px;transform-origin:50% 14px;
         transform:translateX(-50%) rotate(var(--rot,0deg))}
@@ -304,7 +308,9 @@
   .panel .knob::after{height:17px;transform-origin:50% 21px}
   .panel .kcell small{font-size:.58rem}
   .ms{font-family:'Archivo Black',sans-serif;font-size:.6rem;border:var(--border-thin);border-radius:4px;
-      background:var(--card);cursor:pointer;padding:0;width:100%;letter-spacing:.02em}
+      background:var(--card);cursor:pointer;padding:0;width:100%;letter-spacing:.02em;
+      box-shadow:2px 2px 0 var(--ink)}
+  .ms:active{transform:translate(2px,2px);box-shadow:none}
   .ms.on-mute{background:var(--red);color:var(--card)}
   .ms.on-solo{background:var(--yellow)}
 
@@ -315,7 +321,8 @@
        font-size:.62rem;background:var(--orange);border:var(--border-thin);border-radius:5px;padding:2px 9px;
        text-transform:uppercase;letter-spacing:.05em}
   .panel select{font-family:'Archivo',sans-serif;font-weight:700;font-size:.8rem;
-       border:var(--border-thin);border-radius:5px;background:var(--bg);padding:6px 7px;width:100%;color:var(--ink)}
+       border:var(--border-thin);border-radius:5px;background:var(--bg);padding:6px 7px;width:100%;
+       color:var(--ink);box-shadow:2px 2px 0 var(--ink)}
   .panel-row{display:flex;align-items:center;gap:var(--s2);flex-wrap:wrap;margin-top:var(--s1)}
   .panel-row.tight{gap:var(--s1)}
 
