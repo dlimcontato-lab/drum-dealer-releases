@@ -46,9 +46,10 @@ A demo da própria página é o motor C++ do plugin compilado para WebAssembly, 
 
 ## Brand Commitments
 
-- Nome do produto: **Drum Dealer**. Designação de hardware: **Rhythm Composer DD 001**.
+- Nome do produto: **Drumsfull** (decisão do Diogo em 2026-09-09; no painel e no site). No DAW, no instalador e nos nomes de arquivo ainda aparece como "Drum Dealer" até o plugin ser renomeado; o site avisa isso no passo de instalação. Designação de hardware: **Rhythm Composer DD 001**.
 - No DAW do cliente, o fabricante é "Drum Dealer" e o bundle id `com.drumdealer.plugin` — o nome pessoal do autor não aparece dentro do plugin. No site, a assinatura do rodapé é "por Drop Dealer" — o nome pessoal do autor não aparece nem no plugin nem na página.
-- Voz: português do Brasil, direta, frases curtas, sem jargão de marketing e sem promessa que o produto não cumpre.
+- Voz: português do Brasil, direta, frases curtas, sem jargão de marketing e sem promessa que o produto não cumpre. **Sem jargão técnico na primeira dobra e nos blocos de features** (Diogo, 2026-09-09: "tenho medo do cliente não entender"): bumbo/caixa/chimbal em vez de kick/snare/hat, "programa de música" junto de DAW, benefício antes do termo.
+- Frase de abertura escolhida por ele: "Sua bateria e baixo em 1 clique!" + "Milhares de possibilidades com seus samples e MIDIs, além dos pacotes". O produto NÃO se apresenta como referência à 808 (o slogan "A 808 de verdade" foi retirado).
 - Referência musical do produto: tech house brasileiro e minimal (Beltran, Ragie Ban, DJ Glen, Michael Bibi, PAWSA).
 
 ## Evidence on Hand
