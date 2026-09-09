@@ -48,7 +48,7 @@ async function comprar(planId) {
     const { init_point } = await call('checkout', { plan_id: planId });
     location.href = init_point;
   } catch (e) {
-    if (e.code === 'mp_not_configured') msg('msg-buy', 'O pagamento ainda não está ligado. Tente de novo em alguns minutos.', 'err');
+    if (e.code === 'mp_not_configured') msg('msg-buy', 'O pagamento online ainda não está ligado. Sua conta já existe: fale com a gente informando este e-mail e a licença é liberada nela.', '');
     else msg('msg-buy', e.message, 'err');
   }
 }
