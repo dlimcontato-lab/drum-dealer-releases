@@ -8,7 +8,7 @@ web
 
 ## Stack
 
-Site estático de arquivo único (`index.html` com CSS e markup inline), mais `dd-main.js`, `dd-processor.js` (AudioWorklet), `url-shim.js` e o motor `engine.mjs` + `engine.wasm`. Sem framework, sem build step, sem backend. Publicado por GitHub Pages no repo público `dlimcontato-lab/drum-dealer-releases`; a fonte vive em `~/Sistema AI/drum-dealer-site`.
+Site estático de duas páginas (`index.html` e `conta.html`) com uma folha de estilo compartilhada (`dd.css`), mais `dd-main.js`, `dd-processor.js` (AudioWorklet), `url-shim.js` e o motor `engine.mjs` + `engine.wasm`. `dd-api.js` é o cliente mínimo (sem SDK) do backend de licenças; `dd-precos.js` lê os preços da tabela `plans`; `conta.js` é a página da conta. Sem framework, sem build step. Backend: projeto Supabase `bwzngjvjxrqbalvoadpu` (auth por e-mail e senha, tabelas de licença e Edge Functions) e checkout pelo Mercado Pago; contrato em `~/Sistema AI/drum-dealer-backend/API.md`. Publicado por GitHub Pages no repo público `dlimcontato-lab/drum-dealer-releases`; a fonte vive em `~/Sistema AI/drum-dealer-site`.
 
 ## Users
 
@@ -16,7 +16,7 @@ Produtores de música eletrônica brasileiros trabalhando em casa, no Mac ou no 
 
 ## Product Purpose
 
-Distribuir gratuitamente o Drum Dealer: uma drum machine com sequencer de 16 steps e gerador de MIDI, em VST3, AU e standalone, para Mac e Windows. Sucesso é o visitante sair com o instalador certo baixado e o plugin tocando dentro do DAW dele — não é tempo de permanência nem inscrição.
+Vender o Drum Dealer: uma drum machine com sequencer de 16 steps e gerador de MIDI, em VST3, AU e standalone, para Mac e Windows. Licença por conta, pagamento único, em três planos por número de computadores ativos (1, 3 ou 5 acessos; o de 3 é o que a página empurra). Sucesso é o visitante comprar, baixar o instalador certo e destravar o plugin dentro do DAW entrando com a conta — não é tempo de permanência.
 
 ## Positioning
 
@@ -24,7 +24,9 @@ A demo da própria página é o motor C++ do plugin compilado para WebAssembly, 
 
 ## Operating Context
 
-- O visitante baixa `.pkg` (macOS) ou `.exe` (Windows) a partir da Release `latest`, com nomes de asset fixos e sem versão.
+- O visitante compra na página da conta (`conta.html`): cria conta com e-mail e senha, escolhe o plano, paga no Mercado Pago (Pix, cartão, boleto) e volta; a licença cai na conta quando o webhook confirma.
+- O download é público: baixa `.pkg` (macOS) ou `.exe` (Windows) a partir da Release `latest`, com nomes de asset fixos e sem versão. Sem licença o plugin abre trancado (silêncio + painel de ativação).
+- Dentro do plugin ele entra com a mesma conta; cada computador ocupa um acesso. Licença cheia = o plugin lista as máquinas e deixa desativar uma. A página da conta também lista e desativa.
 - Instala, manda o DAW reescanear os plugins, procura "Drum Dealer" nos instrumentos e arrasta para uma track MIDI.
 - O instalador já deixa a biblioteca de fábrica pronta; nada a configurar para ter som.
 - Para usar sons próprios, o botão SAMPLER dentro do plugin cria a pasta `Vst Dealer` na área de trabalho, com subpastas por instrumento. Os arquivos do usuário entram no sorteio **junto** com os de fábrica, nunca no lugar deles.
@@ -39,7 +41,8 @@ A demo da própria página é o motor C++ do plugin compilado para WebAssembly, 
 - Formatos VST3 e AU. Pro Tools só aceita AAX, então lá o caminho é o app standalone.
 - Requisitos: macOS 10.15 ou mais novo (Intel e Apple Silicon, binário universal) e Windows 10/11 64 bits.
 - Site sem backend: qualquer captura de dado exige serviço externo.
-- **Indefinido:** o produto é gratuito hoje, com a intenção declarada de, em algum momento, pedir e-mail em troca do download. O site não deve prometer "grátis para sempre" nem anunciar cadastro antes de ele existir.
+- O produto é pago desde 2026-09-09. Preços são placeholder (R$ 97 / 147 / 247) até o Diogo fixar; vivem na tabela `plans` e o site lê de lá, nunca hardcoded como verdade.
+- O site não promete reembolso, suporte por e-mail nem prazo: nada disso foi definido.
 
 ## Brand Commitments
 
@@ -58,7 +61,7 @@ A demo da própria página é o motor C++ do plugin compilado para WebAssembly, 
 
 1. **O som prova, o texto só confirma.** A primeira coisa que o visitante pode fazer na página é ouvir o produto de verdade. Toda outra afirmação vem depois disso.
 2. **Ninguém sai preso na instalação.** Os dois avisos de segurança (Gatekeeper e SmartScreen) são tratados de frente, sem eufemismo, porque são o ponto onde o iniciante desiste.
-3. **Zero fricção antes do download.** Sem cadastro, sem e-mail, sem escolha de versão: dois botões, o certo para cada sistema.
+3. **Fricção só onde o dinheiro entra.** Download sem cadastro, dois botões, o certo para cada sistema. Conta e senha aparecem uma vez, na compra, e são as mesmas que destravam o plugin.
 4. **Nada de prova inventada.** Sem números, sem depoimentos, sem selos. A página só afirma o que o binário entrega.
 5. **Soma, não substitui.** É a regra do produto (samples do usuário entram junto com os de fábrica) e vale para a página: ela acrescenta contexto sem esconder o instrumento.
 

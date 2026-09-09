@@ -50,10 +50,21 @@ function makeKnob(el, range, cb, label) {
   if (label) el.setAttribute('aria-label', label);
   el.setAttribute('aria-valuemin', String(range.min));
   el.setAttribute('aria-valuemax', String(range.max));
+  // anel de LEDs do knob: 11 pontos (15 nos de painel) de -135° a +135°, acesos do
+  // mínimo até o ponteiro. É o valor: o painel não mostra número.
+  const nDots = (el.classList.contains('big') || el.classList.contains('fx')) ? 15 : 11;
+  const dots = [];
+  for (let i = 0; i < nDots; i++) {
+    const d = document.createElement('i');
+    d.style.setProperty('--a', (-135 + 270 * i / (nDots - 1)).toFixed(1) + 'deg');
+    el.appendChild(d); dots.push(d);
+  }
   const paint = () => {
     const t = (val - range.min) / (range.max - range.min);
     el.style.setProperty('--rot', (-135 + t * 270).toFixed(1) + 'deg');
     el.setAttribute('aria-valuenow', val.toFixed(2));
+    const lit = Math.round(t * (nDots - 1));
+    dots.forEach((d, i) => d.classList.toggle('lit', i <= lit));
   };
   const apply = () => { paint(); cb(val); };
   let startY = 0, startVal = 0;
@@ -394,7 +405,7 @@ playBtn.addEventListener('click', async () => {
   if (!(await comCarregando(playBtn, 'Carregando…', ensureAudio))) return;
   playing = !playing;
   playBtn.classList.toggle('playing', playing);
-  playBtn.innerHTML = playing ? '&#9632; Stop' : '&#9654; Play';
+  playBtn.lastChild.textContent = playing ? 'Stop' : 'Play';
   document.getElementById('tally').classList.toggle('live', playing);
   document.getElementById('tally-label').textContent = playing ? 'Tocando' : 'Parado';
   send({ type: 'playing', on: playing });
@@ -511,20 +522,20 @@ function drawRoll(kind) {
   }
   ctx2.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx2.clearRect(0, 0, W, H);
-  ctx2.fillStyle = '#2b2925';
+  ctx2.fillStyle = '#161618';
   ctx2.fillRect(0, 0, W, H);
 
   // Estado vazio: uma grade de compassos e o convite. Sem isto o painel parece
   // um retângulo preto quebrado antes do primeiro clique.
   if (!g || g.notes.length === 0) {
-    ctx2.fillStyle = '#3f3a33';
+    ctx2.fillStyle = 'rgba(233,230,222,.16)';
     for (let b = 1; b < 8; b++) ctx2.fillRect(Math.round((b / 8) * W), 0, 1, H);
     for (let y = 1; y < 4; y++) ctx2.fillRect(0, Math.round((y / 4) * H), W, 1);
-    ctx2.fillStyle = '#8d8271';
-    ctx2.font = '600 13px "Martian Mono", ui-monospace, monospace';
+    ctx2.fillStyle = '#a39e93';
+    ctx2.font = '600 11px Barlow, "Arial Narrow", sans-serif';
     ctx2.textAlign = 'center';
     ctx2.textBaseline = 'middle';
-    ctx2.fillText(kind === 0 ? 'clique BASS para gerar' : 'clique LEAD para gerar', W / 2, H / 2);
+    ctx2.fillText(kind === 0 ? 'APERTE BASS PARA GERAR' : 'APERTE LEAD PARA GERAR', W / 2, H / 2);
     return;
   }
 
@@ -534,10 +545,11 @@ function drawRoll(kind) {
   const span = Math.max(12, hi - lo + 1);
 
   // linhas de compasso
-  ctx2.fillStyle = '#3f3a33';
+  ctx2.fillStyle = 'rgba(233,230,222,.16)';
   for (let b = 1; b < g.bars; b++) ctx2.fillRect(Math.round((b * 4 / totalBeats) * W), 0, 1, H);
 
-  ctx2.fillStyle = '#e8762c';
+  ctx2.fillStyle = '#e0702a';
+  ctx2.shadowColor = 'rgba(224,112,42,.6)'; ctx2.shadowBlur = 4;
   for (const n of g.notes) {
     const x = (n.start / totalBeats) * W;
     const w = Math.max(1.5, (n.len / totalBeats) * W);

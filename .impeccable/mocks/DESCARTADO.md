@@ -22,3 +22,16 @@ O que valeu a partir daí:
 
 Estas imagens ficam só como registro do caminho percorrido. Nenhuma delas foi
 aprovada para construção.
+
+---
+
+# Direção descartada — neobrutalismo creme do site (seed 4268164a anterior)
+
+**Veredito: substituído em 2026-09-09.** O neobrutalismo do site (creme de painel
+`#e8e0cf`, contorno preto de 2,5px, sombra dura de blur zero, Archivo Black + Martian
+Mono) foi substituído pelo **skeuomorfismo do painel do plugin** ("A 808 de Verdade",
+`~/Sistema AI/MaschinDealer/DESIGN.md`). Isso reverte a linha acima que dizia "siga o
+neobrutalismo mesmo": naquela data o neobrutalismo era o painel; hoje o painel é aço
+pintado com teclas de plástico, e o site segue o painel. A ordem de autoridade é
+painel → DESIGN.md do plugin → site. Ver `DESIGN.md` do site, reescrito a partir de
+`dd.css` na mesma data. As imagens desta pasta continuam só como registro.

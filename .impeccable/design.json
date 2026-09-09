@@ -1,640 +1,773 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-28T14:34:35Z",
-  "title": "Design System: Drum Dealer — Rhythm Composer DD 001",
+  "generatedAt": "2026-09-09T15:11:44+00:00",
+  "title": "Design System: Drum Dealer — o painel DRUMSFULL virou página",
   "extensions": {
     "colorMeta": {
-      "bg": {
+      "steel": {
         "role": "neutral",
-        "displayName": "Creme de Painel",
-        "canonical": "#e8e0cf",
-        "note": "Lido do plugin: o creme dominante de drum-dealer-ui.png é #e7e0d1.",
+        "displayName": "Aço",
+        "canonical": "oklch(28.6% 0.004 286)",
         "tonalRamp": [
-          "oklch(15% 0.025 87)",
-          "oklch(26% 0.025 87)",
-          "oklch(37% 0.025 87)",
-          "oklch(48% 0.025 87)",
-          "oklch(59% 0.025 87)",
-          "oklch(70% 0.025 87)",
-          "oklch(81% 0.025 87)",
-          "oklch(92% 0.025 87)"
+          "oklch(15% 0.004 286)",
+          "oklch(26% 0.004 286)",
+          "oklch(38% 0.004 286)",
+          "oklch(49% 0.004 286)",
+          "oklch(61% 0.004 286)",
+          "oklch(72% 0.004 286)",
+          "oklch(84% 0.004 286)",
+          "oklch(95% 0.004 286)"
         ]
       },
-      "card": {
+      "steel-light": {
         "role": "neutral",
-        "displayName": "Creme de Superfície",
-        "canonical": "#f2ead9",
-        "note": "Superfície de painel do plugin: #f1eadb.",
+        "displayName": "Aço à Luz",
+        "canonical": "oklch(33.0% 0.003 286)",
         "tonalRamp": [
-          "oklch(15% 0.025 88)",
-          "oklch(26% 0.025 88)",
-          "oklch(37% 0.025 88)",
-          "oklch(48% 0.025 88)",
-          "oklch(59% 0.025 88)",
-          "oklch(70% 0.025 88)",
-          "oklch(81% 0.025 88)",
-          "oklch(92% 0.025 88)"
+          "oklch(15% 0.003 286)",
+          "oklch(26% 0.003 286)",
+          "oklch(38% 0.003 286)",
+          "oklch(49% 0.003 286)",
+          "oklch(61% 0.003 286)",
+          "oklch(72% 0.003 286)",
+          "oklch(84% 0.003 286)",
+          "oklch(95% 0.003 286)"
+        ]
+      },
+      "steel-dark": {
+        "role": "neutral",
+        "displayName": "Aço na Sombra",
+        "canonical": "oklch(23.6% 0.004 286)",
+        "tonalRamp": [
+          "oklch(15% 0.004 286)",
+          "oklch(26% 0.004 286)",
+          "oklch(38% 0.004 286)",
+          "oklch(49% 0.004 286)",
+          "oklch(61% 0.004 286)",
+          "oklch(72% 0.004 286)",
+          "oklch(84% 0.004 286)",
+          "oklch(95% 0.004 286)"
+        ]
+      },
+      "recess": {
+        "role": "neutral",
+        "displayName": "Rebaixo",
+        "canonical": "oklch(20.1% 0.004 286)",
+        "tonalRamp": [
+          "oklch(15% 0.004 286)",
+          "oklch(26% 0.004 286)",
+          "oklch(38% 0.004 286)",
+          "oklch(49% 0.004 286)",
+          "oklch(61% 0.004 286)",
+          "oklch(72% 0.004 286)",
+          "oklch(84% 0.004 286)",
+          "oklch(95% 0.004 286)"
         ]
       },
       "ink": {
         "role": "neutral",
         "displayName": "Tinta",
-        "canonical": "#14120f",
-        "note": "Idêntico ao preto do plugin. Texto, todas as bordas e todas as sombras.",
+        "canonical": "oklch(16.5% 0.004 286)",
         "tonalRamp": [
-          "oklch(15% 0.008 75)",
-          "oklch(26% 0.008 75)",
-          "oklch(37% 0.008 75)",
-          "oklch(48% 0.008 75)",
-          "oklch(59% 0.008 75)",
-          "oklch(70% 0.008 75)",
-          "oklch(81% 0.008 75)",
-          "oklch(92% 0.008 75)"
+          "oklch(15% 0.004 286)",
+          "oklch(26% 0.004 286)",
+          "oklch(38% 0.004 286)",
+          "oklch(49% 0.004 286)",
+          "oklch(61% 0.004 286)",
+          "oklch(72% 0.004 286)",
+          "oklch(84% 0.004 286)",
+          "oklch(95% 0.004 286)"
         ]
       },
-      "graphite": {
+      "silk": {
         "role": "neutral",
-        "displayName": "Grafite",
-        "canonical": "#2b2925",
-        "note": "Idêntico ao grafite do plugin. Marca controle de canal.",
+        "displayName": "Serigrafia",
+        "canonical": "oklch(92.5% 0.011 90)",
         "tonalRamp": [
-          "oklch(15% 0.008 80)",
-          "oklch(26% 0.008 80)",
-          "oklch(37% 0.008 80)",
-          "oklch(48% 0.008 80)",
-          "oklch(59% 0.008 80)",
-          "oklch(70% 0.008 80)",
-          "oklch(81% 0.008 80)",
-          "oklch(92% 0.008 80)"
+          "oklch(15% 0.011 90)",
+          "oklch(26% 0.011 90)",
+          "oklch(38% 0.011 90)",
+          "oklch(49% 0.011 90)",
+          "oklch(61% 0.011 90)",
+          "oklch(72% 0.011 90)",
+          "oklch(84% 0.011 90)",
+          "oklch(95% 0.011 90)"
+        ]
+      },
+      "silk-dim": {
+        "role": "neutral",
+        "displayName": "Serigrafia Apagada",
+        "canonical": "oklch(70.0% 0.017 86)",
+        "tonalRamp": [
+          "oklch(15% 0.017 86)",
+          "oklch(26% 0.017 86)",
+          "oklch(38% 0.017 86)",
+          "oklch(49% 0.017 86)",
+          "oklch(61% 0.017 86)",
+          "oklch(72% 0.017 86)",
+          "oklch(84% 0.017 86)",
+          "oklch(95% 0.017 86)"
+        ]
+      },
+      "white": {
+        "role": "neutral",
+        "displayName": "Branco",
+        "canonical": "oklch(100.0% 0.000 90)",
+        "tonalRamp": [
+          "oklch(15% 0.000 90)",
+          "oklch(26% 0.000 90)",
+          "oklch(38% 0.000 90)",
+          "oklch(49% 0.000 90)",
+          "oklch(61% 0.000 90)",
+          "oklch(72% 0.000 90)",
+          "oklch(84% 0.000 90)",
+          "oklch(95% 0.000 90)"
+        ]
+      },
+      "red": {
+        "role": "secondary",
+        "displayName": "Vermelho 808",
+        "canonical": "oklch(54.9% 0.190 28)",
+        "tonalRamp": [
+          "oklch(15% 0.190 28)",
+          "oklch(26% 0.190 28)",
+          "oklch(38% 0.190 28)",
+          "oklch(49% 0.190 28)",
+          "oklch(61% 0.190 28)",
+          "oklch(72% 0.190 28)",
+          "oklch(84% 0.190 28)",
+          "oklch(95% 0.190 28)"
         ]
       },
       "orange": {
         "role": "primary",
         "displayName": "Laranja de Painel",
-        "canonical": "#e8762c",
-        "note": "Saturado a partir do laranja do plugin (#d97c3f). Marca controle de painel/FX.",
+        "canonical": "oklch(66.6% 0.160 48)",
         "tonalRamp": [
-          "oklch(15% 0.16 47)",
-          "oklch(26% 0.16 47)",
-          "oklch(37% 0.16 47)",
-          "oklch(48% 0.16 47)",
-          "oklch(59% 0.16 47)",
-          "oklch(70% 0.16 47)",
-          "oklch(81% 0.16 47)",
-          "oklch(92% 0.16 47)"
+          "oklch(15% 0.160 48)",
+          "oklch(26% 0.160 48)",
+          "oklch(38% 0.160 48)",
+          "oklch(49% 0.160 48)",
+          "oklch(61% 0.160 48)",
+          "oklch(72% 0.160 48)",
+          "oklch(84% 0.160 48)",
+          "oklch(95% 0.160 48)"
         ]
       },
       "yellow": {
         "role": "secondary",
-        "displayName": "Amarelo de Serigrafia",
-        "canonical": "#e8c53a",
-        "note": "Saturado a partir do amarelo do plugin (#e2c656).",
+        "displayName": "Amarelo 808",
+        "canonical": "oklch(81.1% 0.148 93)",
         "tonalRamp": [
-          "oklch(15% 0.15 92)",
-          "oklch(26% 0.15 92)",
-          "oklch(37% 0.15 92)",
-          "oklch(48% 0.15 92)",
-          "oklch(59% 0.15 92)",
-          "oklch(70% 0.15 92)",
-          "oklch(81% 0.15 92)",
-          "oklch(92% 0.15 92)"
+          "oklch(15% 0.148 93)",
+          "oklch(26% 0.148 93)",
+          "oklch(38% 0.148 93)",
+          "oklch(49% 0.148 93)",
+          "oklch(61% 0.148 93)",
+          "oklch(72% 0.148 93)",
+          "oklch(84% 0.148 93)",
+          "oklch(95% 0.148 93)"
         ]
       },
-      "red": {
-        "role": "tertiary",
-        "displayName": "Vermelho de Alerta",
-        "canonical": "#d92b26",
-        "note": "Saturado a partir do vermelho do plugin (#c83d31).",
+      "cream": {
+        "role": "secondary",
+        "displayName": "Creme 808",
+        "canonical": "oklch(92.5% 0.022 90)",
         "tonalRamp": [
-          "oklch(15% 0.21 28)",
-          "oklch(26% 0.21 28)",
-          "oklch(37% 0.21 28)",
-          "oklch(48% 0.21 28)",
-          "oklch(59% 0.21 28)",
-          "oklch(70% 0.21 28)",
-          "oklch(81% 0.21 28)",
-          "oklch(92% 0.21 28)"
+          "oklch(15% 0.022 90)",
+          "oklch(26% 0.022 90)",
+          "oklch(38% 0.022 90)",
+          "oklch(49% 0.022 90)",
+          "oklch(61% 0.022 90)",
+          "oklch(72% 0.022 90)",
+          "oklch(84% 0.022 90)",
+          "oklch(95% 0.022 90)"
         ]
       },
-      "rack": {
+      "plastic": {
         "role": "neutral",
-        "displayName": "Rack",
-        "canonical": "#1b1916",
-        "note": "Não vem do plugin. Invenção do site: o escuro em que a máquina é parafusada. Também é o theme-color.",
+        "displayName": "Plástico Preto",
+        "canonical": "oklch(25.7% 0.004 286)",
         "tonalRamp": [
-          "oklch(15% 0.007 75)",
-          "oklch(26% 0.007 75)",
-          "oklch(37% 0.007 75)",
-          "oklch(48% 0.007 75)",
-          "oklch(59% 0.007 75)",
-          "oklch(70% 0.007 75)",
-          "oklch(81% 0.007 75)",
-          "oklch(92% 0.007 75)"
+          "oklch(15% 0.004 286)",
+          "oklch(26% 0.004 286)",
+          "oklch(38% 0.004 286)",
+          "oklch(49% 0.004 286)",
+          "oklch(61% 0.004 286)",
+          "oklch(72% 0.004 286)",
+          "oklch(84% 0.004 286)",
+          "oklch(95% 0.004 286)"
         ]
       },
-      "rack-line": {
+      "plastic-hi": {
         "role": "neutral",
-        "displayName": "Linha de Rack",
-        "canonical": "#3a352e",
-        "note": "Única divisória não-preta da página; existe onde tinta seria invisível.",
+        "displayName": "Plástico Claro",
+        "canonical": "oklch(37.6% 0.005 286)",
         "tonalRamp": [
-          "oklch(15% 0.012 78)",
-          "oklch(26% 0.012 78)",
-          "oklch(37% 0.012 78)",
-          "oklch(48% 0.012 78)",
-          "oklch(59% 0.012 78)",
-          "oklch(70% 0.012 78)",
-          "oklch(81% 0.012 78)",
-          "oklch(92% 0.012 78)"
+          "oklch(15% 0.005 286)",
+          "oklch(26% 0.005 286)",
+          "oklch(38% 0.005 286)",
+          "oklch(49% 0.005 286)",
+          "oklch(61% 0.005 286)",
+          "oklch(72% 0.005 286)",
+          "oklch(84% 0.005 286)",
+          "oklch(95% 0.005 286)"
         ]
       },
-      "ink-muted": {
+      "pointer": {
         "role": "neutral",
-        "displayName": "Tinta Apagada",
-        "canonical": "#5f5849",
-        "note": "Texto de apoio e estado desabilitado sobre creme. Mede 5,89:1 sobre a superfície e 5,37:1 sobre o fundo. No build vive como hex literal repetido, não como variável CSS.",
+        "displayName": "Ponteiro",
+        "canonical": "oklch(95.5% 0.008 91)",
         "tonalRamp": [
-          "oklch(15% 0.02 85)",
-          "oklch(26% 0.02 85)",
-          "oklch(37% 0.02 85)",
-          "oklch(48% 0.02 85)",
-          "oklch(59% 0.02 85)",
-          "oklch(70% 0.02 85)",
-          "oklch(81% 0.02 85)",
-          "oklch(92% 0.02 85)"
+          "oklch(15% 0.008 91)",
+          "oklch(26% 0.008 91)",
+          "oklch(38% 0.008 91)",
+          "oklch(49% 0.008 91)",
+          "oklch(61% 0.008 91)",
+          "oklch(72% 0.008 91)",
+          "oklch(84% 0.008 91)",
+          "oklch(95% 0.008 91)"
         ]
       },
-      "rack-muted": {
-        "role": "neutral",
-        "displayName": "Cinza de Rack",
-        "canonical": "#8f8676",
-        "note": "Texto secundário sobre o campo escuro. Mede 4,88:1 sobre o rack. Também literal, não variável.",
+      "led-on": {
+        "role": "secondary",
+        "displayName": "LED Vermelho",
+        "canonical": "oklch(65.4% 0.232 29)",
         "tonalRamp": [
-          "oklch(15% 0.02 85)",
-          "oklch(26% 0.02 85)",
-          "oklch(37% 0.02 85)",
-          "oklch(48% 0.02 85)",
-          "oklch(59% 0.02 85)",
-          "oklch(70% 0.02 85)",
-          "oklch(81% 0.02 85)",
-          "oklch(92% 0.02 85)"
+          "oklch(15% 0.232 29)",
+          "oklch(26% 0.232 29)",
+          "oklch(38% 0.232 29)",
+          "oklch(49% 0.232 29)",
+          "oklch(61% 0.232 29)",
+          "oklch(72% 0.232 29)",
+          "oklch(84% 0.232 29)",
+          "oklch(95% 0.232 29)"
         ]
       },
-      "contrast-white": {
-        "role": "neutral",
-        "displayName": "Branco de Contraste",
-        "canonical": "#ffffff",
-        "note": "Branco puro no texto de .f1 (vermelho) e .f4 (grafite). Sobre o vermelho o creme entrega 4,06:1 e reprova; o branco entrega 4,86:1 e passa. Sobre o grafite os dois passam (14,52:1 contra 12,13:1).",
+      "led-off": {
+        "role": "secondary",
+        "displayName": "LED Vermelho Apagado",
+        "canonical": "oklch(28.4% 0.080 27)",
         "tonalRamp": [
-          "oklch(15% 0 0)",
-          "oklch(26% 0 0)",
-          "oklch(37% 0 0)",
-          "oklch(48% 0 0)",
-          "oklch(59% 0 0)",
-          "oklch(70% 0 0)",
-          "oklch(81% 0 0)",
-          "oklch(92% 0 0)"
+          "oklch(15% 0.080 27)",
+          "oklch(26% 0.080 27)",
+          "oklch(38% 0.080 27)",
+          "oklch(49% 0.080 27)",
+          "oklch(61% 0.080 27)",
+          "oklch(72% 0.080 27)",
+          "oklch(84% 0.080 27)",
+          "oklch(95% 0.080 27)"
         ]
+      },
+      "led-green": {
+        "role": "secondary",
+        "displayName": "LED Verde",
+        "canonical": "oklch(76.9% 0.185 152)",
+        "tonalRamp": [
+          "oklch(15% 0.185 152)",
+          "oklch(26% 0.185 152)",
+          "oklch(38% 0.185 152)",
+          "oklch(49% 0.185 152)",
+          "oklch(61% 0.185 152)",
+          "oklch(72% 0.185 152)",
+          "oklch(84% 0.185 152)",
+          "oklch(95% 0.185 152)"
+        ]
+      },
+      "led-green-off": {
+        "role": "secondary",
+        "displayName": "LED Verde Apagado",
+        "canonical": "oklch(39.0% 0.088 153)",
+        "tonalRamp": [
+          "oklch(15% 0.088 153)",
+          "oklch(26% 0.088 153)",
+          "oklch(38% 0.088 153)",
+          "oklch(49% 0.088 153)",
+          "oklch(61% 0.088 153)",
+          "oklch(72% 0.088 153)",
+          "oklch(84% 0.088 153)",
+          "oklch(95% 0.088 153)"
+        ]
+      },
+      "skirt": {
+        "role": "neutral",
+        "displayName": "Saia",
+        "canonical": "oklch(35.3% 0.005 286)",
+        "tonalRamp": [
+          "oklch(15% 0.005 286)",
+          "oklch(26% 0.005 286)",
+          "oklch(38% 0.005 286)",
+          "oklch(49% 0.005 286)",
+          "oklch(61% 0.005 286)",
+          "oklch(72% 0.005 286)",
+          "oklch(84% 0.005 286)",
+          "oklch(95% 0.005 286)"
+        ]
+      },
+      "tooth": {
+        "role": "neutral",
+        "displayName": "Dente",
+        "canonical": "oklch(19.7% 0.004 286)",
+        "tonalRamp": [
+          "oklch(15% 0.004 286)",
+          "oklch(26% 0.004 286)",
+          "oklch(38% 0.004 286)",
+          "oklch(49% 0.004 286)",
+          "oklch(61% 0.004 286)",
+          "oklch(72% 0.004 286)",
+          "oklch(84% 0.004 286)",
+          "oklch(95% 0.004 286)"
+        ]
+      },
+      "panel-fill": {
+        "role": "neutral",
+        "displayName": "Preenchimento de Painel",
+        "canonical": "rgba(14,14,16,0.25)",
+        "tonalRamp": []
+      },
+      "panel-line": {
+        "role": "neutral",
+        "displayName": "Linha de Painel",
+        "canonical": "rgba(233,230,222,0.55)",
+        "tonalRamp": []
+      },
+      "lane-line": {
+        "role": "neutral",
+        "displayName": "Linha de Pista",
+        "canonical": "rgba(233,230,222,0.20)",
+        "tonalRamp": []
       }
     },
     "typographyMeta": {
       "display": {
         "displayName": "Display",
-        "purpose": "Só o h1 DRUM DEALER. Um por página."
+        "purpose": "O h1. Contido a clamp(2.3rem,5.6vw,4.6rem) e 20ch na afirmação da home."
       },
       "headline": {
         "displayName": "Headline",
-        "purpose": "Títulos de seção, limitados a 18ch (16ch no fecho)."
+        "purpose": "h2 de cabeça de seção, 24ch, ao lado de uma legenda à direita."
       },
       "title": {
         "displayName": "Title",
-        "purpose": "Títulos de bloco de feature e de card de sistema operacional, em caixa alta."
-      },
-      "plate": {
-        "displayName": "Plate",
-        "purpose": "Georgia itálico. Exclusivo da designação 'Rhythm Composer — DD 001'. Nunca troca de face."
+        "purpose": "h3 de subtítulo de painel (Mac / Windows na instalação)."
       },
       "lead": {
         "displayName": "Lead",
-        "purpose": "Parágrafo de abertura, limitado a 46ch."
+        "purpose": "Parágrafo sob o h1 e texto da licença na conta, 52ch."
       },
       "body": {
         "displayName": "Body",
-        "purpose": "Texto corrido. Larguras observadas: 64ch, 70ch, 72ch, 74ch."
+        "purpose": "Prosa, 68ch. <b> é 700 em branco."
       },
-      "label": {
-        "displayName": "Label",
-        "purpose": "Archivo Black caixa alta: botões, MUTE/SOLO, nome de instrumento, título de painel, tag de lane."
-      },
-      "mono": {
-        "displayName": "Mono",
-        "purpose": "Martian Mono. Metadados de seção, notas técnicas, <code>. Substituiu a IBM Plex Mono, que era pedida no CSS antigo e nunca era carregada."
+      "small": {
+        "displayName": "Small",
+        "purpose": "Lista de plano, notas, prosa dentro de painel, mensagens de formulário."
       },
       "legend": {
         "displayName": "Legend",
-        "purpose": "Martian Mono 600 em corpo mínimo: legenda de knob, régua de steps, escala de medidor, tally, rodapé."
+        "purpose": "A legenda do site: cabeça de seção, rótulo de campo, dt, rodapés, contagem de acessos. Serigrafia apagada, caixa alta."
+      },
+      "key": {
+        "displayName": "Key",
+        "purpose": "Texto de toda tecla de 44px, caixa alta, com sombra gravada."
+      },
+      "small-key": {
+        "displayName": "Small Key",
+        "purpose": "MUTE, SOLO, Desativar, legenda dentro da tecla de download."
+      },
+      "panel-title": {
+        "displayName": "Panel Title",
+        "purpose": "A legend de todo fieldset.panel, vazada na linha da moldura."
+      },
+      "field": {
+        "displayName": "Field",
+        "purpose": "Texto de select.recess, centrado, caixa alta."
+      },
+      "knob-legend": {
+        "displayName": "Knob Legend",
+        "purpose": "Legenda de knob e escala de dB; números da régua a 10px."
+      },
+      "nav": {
+        "displayName": "Nav",
+        "purpose": "Links da barra do topo, apagados; cheios em hover e aria-current."
+      },
+      "script": {
+        "displayName": "Script",
+        "purpose": "Só a designação 'Rhythm Composer - DD 001', nunca mais larga que o nome."
       }
     },
     "shadows": [
       {
-        "name": "shadow-sm",
-        "value": "3px 3px 0 #14120f",
-        "purpose": "Peça interna: botão da máquina, painel da coluna direita, caixa de BPM, chip de DAW, aviso."
+        "name": "sh-key",
+        "value": "0 3px 0 var(--body), 1.5px 3px 0 1.2px rgba(14,14,16,.25), 1.5px 3px 0 2.4px rgba(14,14,16,.10), 1.5px 3px 0 3.6px rgba(14,14,16,.05)",
+        "purpose": "Toda tecla em repouso: corpo de 3px mais a sombra macia em três camadas. Apertada: 0 1px 0 var(--body) só."
       },
       {
-        "name": "shadow",
-        "value": "5px 5px 0 #14120f",
-        "purpose": "Peça de página: card, botão de download, bloco de feature, card de instalação."
+        "name": "sh-knob",
+        "value": "inset 1px 1px 0 rgba(255,255,255,.20), 1.5px 3px 0 1.2px rgba(14,14,16,.325), 1.5px 3px 0 2.4px rgba(14,14,16,.13), 1.5px 3px 0 3.6px rgba(14,14,16,.065)",
+        "purpose": "Sob a saia do knob, com o arco de luz no alto-esquerda."
       },
       {
-        "name": "shadow-lg",
-        "value": "8px 8px 0 #14120f",
-        "purpose": "Usada uma vez só, na unidade inteira. É o que faz a máquina flutuar acima do rack."
+        "name": "sh-cap",
+        "value": "inset 1px 1px 0 rgba(255,255,255,.12), .75px 1.5px 2px rgba(14,14,16,.6)",
+        "purpose": "A capa do knob, separada da saia."
       },
       {
-        "name": "shadow-on-rack",
-        "value": "5px 5px 0 #000",
-        "purpose": "A mesma sombra em preto puro quando a peça está no campo escuro. Tinta sobre rack não aparece."
+        "name": "sh-soft",
+        "value": "1.5px 3px 4px rgba(14,14,16,.45)",
+        "purpose": "Aproximação em uma camada da sombra macia, para peça nova."
       },
       {
-        "name": "shadow-pressed",
-        "value": "0 0 0 #14120f",
-        "purpose": "Botão no :active e botão desativado. Some a sombra, o botão encostou no painel."
+        "name": "recess",
+        "value": "inset 0 3px 6px -1px rgba(14,14,16,.7), 0 1px 0 rgba(255,255,255,.10)",
+        "purpose": "Todo rebaixo: sombra interna no topo e fio de luz embaixo, com contorno de 1px em tinta."
       },
       {
-        "name": "playhead-lift",
-        "value": "inset 0 0 0 3px #14120f, 0 3px 0 rgba(20,18,15,.35)",
-        "purpose": "A única sombra com alpha da página, e ainda assim com blur zero. Sustenta os 2px que o step sobe enquanto toca. Não estender a outras peças."
+        "name": "recess-short",
+        "value": "inset 0 2px 3px rgba(14,14,16,.7)",
+        "purpose": "Rebaixo em linha: <code> e número de passo."
+      },
+      {
+        "name": "socket",
+        "value": "inset 0 1px 2px rgba(14,14,16,.6)",
+        "purpose": "Soquete de acesso apagado: um LED encaixado num furo."
+      },
+      {
+        "name": "fader-cap",
+        "value": "1.5px 2px 3px rgba(14,14,16,.5)",
+        "purpose": "Sob a capa de 28×13 do fader de accent."
+      },
+      {
+        "name": "screw",
+        "value": "inset 1px 1px 0 rgba(255,255,255,.25), 0 1.5px 2px rgba(14,14,16,.6)",
+        "purpose": "Parafuso: raso, arco de luz a 25%."
+      },
+      {
+        "name": "unit",
+        "value": "inset 1px 1px 0 rgba(255,255,255,.10), inset -1px -1px 0 rgba(14,14,16,.6), 4px 8px 18px rgba(14,14,16,.55)",
+        "purpose": "O aparelho apoiado na página: lábio de luz, sombra interna e a única sombra grande do site."
+      },
+      {
+        "name": "plan-hot",
+        "value": "inset 1px 1px 0 rgba(255,255,255,.06), 2px 6px 16px rgba(14,14,16,.5)",
+        "purpose": "Painel do plano recomendado, levantado meio dedo."
+      },
+      {
+        "name": "led-halo",
+        "value": "0 0 0 3px rgba(255,59,47,.28), 0 0 9px 2px rgba(255,59,47,.55)",
+        "purpose": "LED de 7px aceso. Verde: rgba(54,212,118,…); amarelo: rgba(226,190,58,…)."
+      },
+      {
+        "name": "led-halo-small",
+        "value": "0 0 0 2px rgba(255,59,47,.3), 0 0 6px 1px rgba(255,59,47,.55)",
+        "purpose": "LED de 5,5px de MUTE/SOLO aceso."
+      },
+      {
+        "name": "socket-halo",
+        "value": "0 0 0 3px rgba(255,59,47,.25), 0 0 10px 2px rgba(255,59,47,.55)",
+        "purpose": "Soquete de acesso aceso (11px)."
+      },
+      {
+        "name": "led-halo-playhead",
+        "value": "0 0 0 4px rgba(255,59,47,.3), 0 0 13px 3px rgba(255,59,47,.6)",
+        "purpose": "Step ativo sob o playhead."
+      },
+      {
+        "name": "ring-dot",
+        "value": "0 0 0 1.4px rgba(54,212,118,.45)",
+        "purpose": "Ponto aceso do anel de LEDs do knob."
+      },
+      {
+        "name": "screen-glow",
+        "value": "text-shadow: 0 0 6px rgba(224,112,42,.55)",
+        "purpose": "Luz laranja de todo display (BPM, preço); 0 0 5px a 50% no número de passo."
+      },
+      {
+        "name": "engrave-dark",
+        "value": "text-shadow: 0 1px 0 rgba(14,14,16,.6)",
+        "purpose": "Texto gravado sobre tecla preta ou laranja."
+      },
+      {
+        "name": "engrave-light",
+        "value": "text-shadow: 0 1px 0 rgba(255,255,255,.35)",
+        "purpose": "Texto gravado sobre tecla creme (e tinta sobre a tecla 'Baixar .mid')."
       }
     ],
     "motion": [
       {
-        "name": "key-travel",
-        "value": "transform .06s, box-shadow .06s",
-        "purpose": "Botões (.dd-btn, .btn). Hover levanta (-1px/-2px, sombra maior); active afunda (+3px/+4px, sombra zero)."
+        "name": "key-press",
+        "value": "transition: none; transform: translateY(2px)",
+        "purpose": "Tecla apertada: afunda e encosta sem animar (1px na tecla pequena)."
       },
       {
-        "name": "playhead",
-        "value": "box-shadow .07s ease-out, transform .07s ease-out",
-        "purpose": "O step tocando acende: anel interno de 3px em tinta, translateY(-2px) e sombra de apoio. Acende, não escurece — a versão anterior usava filter:brightness(.5), que apagava a cor do grupo na coluna que o olho procura."
-      },
-      {
-        "name": "ruler-ph",
+        "name": "ruler-color",
         "value": "color .07s ease-out",
-        "purpose": "O numeral da régua na coluna que está tocando vira tinta cheia em peso 700. A régua diz onde estamos; os steps dizem o quê."
+        "purpose": "Número da régua acendendo sob o playhead."
       },
       {
         "name": "tally-beat",
-        "value": "transform .1s cubic-bezier(.2,.9,.3,1)",
-        "purpose": "A lâmpada pulsa scale(1.6) no tempo forte, uma vez a cada quatro semicolcheias, removida por setTimeout de 100ms."
+        "value": "transform .1s cubic-bezier(.2,.9,.3,1); scale(1.6)",
+        "purpose": "LED de compasso pulsando a cada batida."
       },
       {
-        "name": "sample-nudge",
-        "value": "translate(2px,2px) → none, 120ms",
-        "purpose": "Empurrão via Element.animate() ao clicar no nome do instrumento. A mesma física de tecla dos botões, num rótulo que também é controle."
+        "name": "playhead",
+        "value": "class .ph trocada pelo JS a cada step (30 fps no motor)",
+        "purpose": "Face do step sobe e o LED de corrida acende."
+      },
+      {
+        "name": "focus-ring",
+        "value": "outline: 2px solid #36d476; outline-offset: 3px",
+        "purpose": "Foco de teclado em LED verde (offset 1px no input)."
       },
       {
         "name": "reduced-motion",
-        "value": "transition:none; animation:none; .step.ph mantém só o anel interno; .tally.beat sem scale",
-        "purpose": "Sob prefers-reduced-motion o movimento some mas o estado permanece: o step tocando continua identificável pelo anel de 3px."
+        "value": "@media (prefers-reduced-motion: reduce) { *{transition:none!important;animation:none!important} .tally.beat b{transform:none} }",
+        "purpose": "Desliga o pulso do LED de compasso."
       }
     ],
     "breakpoints": [
       {
         "name": "unit-stack",
-        "value": "1080px",
-        "purpose": "max-width. A coluna de painéis desce para baixo da máquina e vira grade auto-fit de minmax(232px,1fr)."
+        "value": "1180px",
+        "purpose": "Aparelho vira uma coluna; planos, afirmação, conta em coluna única."
       },
       {
-        "name": "handheld",
+        "name": "mobile",
         "value": "760px",
-        "purpose": "max-width. Reordenação estrutural da grade: nome do instrumento e steps primeiro, banco de knobs depois. Colunas de step FIXAS em 24px (as duas grades irmãs precisam calcular a mesma largura) e vão de grupo em 14px, não 12px — com tecla de 24px, 12px já não lia como separação. Seletor #seq > (nunca .seq >, senão a régua entra na conta do 25n), trava :nth-child(-n+150) para deixar o accent de fora, grid-row explícito por bloco de 25, e grid-column nomeado célula a célula nas duas grades."
+        "purpose": "Grade do sequencer reordenada (instrumento e steps primeiro), 940px mínimos com rolagem; SAMPLER/EXPORT somem."
       }
     ],
-    "containers": [
-      {
-        "name": "wrap",
-        "value": "1080px",
-        "purpose": "Texto. Padding lateral clamp(16px,4vw,28px)."
-      },
-      {
-        "name": "wrap-wide",
-        "value": "1480px",
-        "purpose": "A máquina. Padding lateral clamp(16px,3vw,28px). Sem ele o sequencer nasce cortado."
-      }
-    ],
-    "notCanonized": [
-      "Classes .chip (variantes .c1–.c4 e .on-rack) e .card estão declaradas na folha — agora inclusive com border-radius:6px — e não são usadas em nenhum lugar do HTML nem do JS. CSS morto, não componente.",
-      "A classe .cheia continua sendo aplicada por dd-main.js à faixa de lead, mas não tem nenhuma regra CSS: a altura das faixas vem de flex:1.",
-      "dd-main.js ainda estampa .grp na primeira tecla de cada bloco de quatro, mas nenhuma regra CSS casa com .step.grp: o agrupamento passou a ser coluna do template. A classe .grp só tem efeito na régua, onde marca o tempo forte em tinta cheia.",
-      "Variáveis --s7 (7rem) e --t-legend (.68rem) declaradas e nunca referenciadas; o valor .68rem aparece como literal em .lab.",
-      "Archivo peso 600 é carregado do Google Fonts e nunca usado: todas as declarações font-weight:600 estão em Martian Mono.",
-      "Os cinzas de apoio são calibrados por fundo (#6b6355 a 4,52:1 sobre creme, #a99f8d a 6,71:1 e #cbc2b2 a 9,94:1 sobre rack) — a lógica é do sistema, mas os valores vivem como hex literal em vez de token.",
-      "dd-main.js desenha o piano roll com hexes literais (#2b2925, #3f3a33, #8d8271, #e8762c); dois deles não existem no CSS."
-    ],
-    "radiusOrigin": [
-      {
-        "token": "pointer",
-        "value": "2px",
-        "where": "ponteiro do knob",
-        "source": "MaschinLookAndFeel.h — fillRoundedRectangle(fill.reduced(2.0f), 2.0f), preenchimento do medidor"
-      },
-      {
-        "token": "inline",
-        "value": "3px",
-        "where": "code",
-        "source": "MaschinLookAndFeel.h — fillRoundedRectangle(bounds, 3.0f), drawLinearSlider"
-      },
-      {
-        "token": "key",
-        "value": "4px",
-        "where": "step, accent, MUTE/SOLO, faixa de identidade, medidor",
-        "source": "MaschinLookAndFeel.h:115 — fillRoundedRectangle(face, 4.0f), botão de step, com traço de 2.0f"
-      },
-      {
-        "token": "field",
-        "value": "5px",
-        "where": "select, etiqueta de painel, chip de DAW, link .mid",
-        "source": "MaschinLookAndFeel.h:196 — fillRoundedRectangle(face, 5.0f), drawComboBox"
-      },
-      {
-        "token": "control",
-        "value": "6px",
-        "where": "botões, .chip, .card, nome do instrumento, plaqueta, tag de lane, .roll, caixa de BPM, aviso",
-        "source": "MaschinLookAndFeel.h:29 — kRadius = 6.0f, usado em drawButtonBackground e no hardShadow"
-      },
-      {
-        "token": "surface",
-        "value": "8px",
-        "where": "unidade, painel, bloco de feature, card de SO, bloco de samples",
-        "source": "sem contraparte no plugin: é o degrau de superfície de página"
-      },
-      {
-        "token": "full",
-        "value": "50%",
-        "where": "corpo do knob, LED do step, LED do tally",
-        "source": "MaschinLookAndFeel.h:71 — drawEllipse(body, kBorder)"
-      },
-      {
-        "token": "none",
-        "value": "0",
-        "where": "polegar da barra de rolagem (explícito, para desfazer o padrão do navegador) e campos de cor de largura total",
-        "source": "decisão do site"
-      }
-    ],
-    "grid": [
-      {
-        "name": "seq-template",
-        "value": "54px repeat(5,42px) 68px [4 blocos de repeat(4,minmax(24px,1fr)) separados por 3 colunas de 12px] 46px 46px",
-        "purpose": "28 colunas, gap 5px, min-width 1000px. O agrupamento de compasso é COLUNA no template, nunca margin no item: com margem, #seq e #seq-ruler calculavam larguras diferentes a partir do min-content, amassando as teclas de início de tempo e desalinhando a régua. Medido com a coluna: 5px entre teclas, 22px entre blocos (5+12+5), desvio zero da régua e do accent."
-      },
-      {
-        "name": "colocacao-explicita",
-        "value": "#seq > :nth-child(25n+k) / #seq-ruler > :nth-child(k) / 152–167 para o accent",
-        "purpose": "Com colunas de vão no meio, o fluxo automático faria as duas grades divergirem. Cada célula recebe grid-column nomeado nos dois breakpoints."
-      },
-      {
-        "name": "separadores",
-        "value": ".sep — grid-column:1/-1, align-self:end, 1px rgba(20,18,15,.16), margin-bottom:-3px",
-        "purpose": "Cinco filetes entre instrumentos, vindos do painel. A linha vai na classe dupla (#seq > .sep.r3) porque a regra genérica :nth-child(n+151) jogaria todas para a linha do accent."
-      }
+    "authority": [
+      "Source/MaschinLookAndFeel.h + PluginEditor.cpp (o painel do plugin)",
+      "~/Sistema AI/MaschinDealer/DESIGN.md",
+      "drum-dealer-site/DESIGN.md (este)"
     ]
   },
   "components": [
     {
-      "name": "Botão Primário",
+      "name": "Tecla laranja (ação primária)",
       "kind": "button",
-      "refersTo": "button-primary",
-      "description": "O botão da máquina. Laranja, canto reto, e a sombra é a distância de curso da tecla.",
-      "html": "<button class=\"ds-btn\">&#9654; Play</button>",
-      "css": ".ds-btn{font-family:'Archivo Black',sans-serif;text-transform:uppercase;font-size:.9rem;letter-spacing:.04em;color:var(--ink,#14120f);background:var(--orange,#e8762c);border:2.5px solid var(--ink,#14120f);box-shadow:3px 3px 0 var(--ink,#14120f);border-radius:6px;padding:11px 20px;cursor:pointer;transition:transform .06s,box-shadow .06s}.ds-btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--ink,#14120f)}.ds-btn:focus-visible{outline:3px solid var(--ink,#14120f);outline-offset:3px}.ds-btn:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink,#14120f)}"
+      "refersTo": "key-orange",
+      "description": "A ação primária de cada bloco: PLAY, RAND, Comprar, Entrar. Serigrafia gravada sobre plástico laranja; afunda ao apertar.",
+      "html": "<button class=\"ds-key ds-orange ds-big\"><span class=\"ds-led\"></span>Play</button>",
+      "css": ".ds-key{--face-a:#4b4b4c;--face-b:#212123;--body:#171718;--edge:#151516;--txt:#e9e6de;--engrave:rgba(14,14,16,.6);font-family:Barlow,'Arial Narrow',sans-serif;font-weight:700;font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:var(--txt);text-shadow:0 1px 0 var(--engrave);background:linear-gradient(180deg,var(--face-a),var(--face-b));border:1px solid var(--edge);border-radius:3px;height:44px;padding:0 22px;cursor:pointer;position:relative;display:inline-flex;align-items:center;justify-content:center;gap:.4em;text-decoration:none;white-space:nowrap;box-shadow:0 3px 0 var(--body),1.5px 3px 0 1.2px rgba(14,14,16,.25),1.5px 3px 0 2.4px rgba(14,14,16,.10),1.5px 3px 0 3.6px rgba(14,14,16,.05);transition:none;user-select:none}.ds-key::before{content:'';position:absolute;inset:1.5px;border-radius:2px;pointer-events:none;background:linear-gradient(135deg,rgba(255,255,255,.30),rgba(255,255,255,0) 42%) 0 0/160px 100% no-repeat}.ds-key:active:not([disabled]){transform:translateY(2px);box-shadow:0 1px 0 var(--body)}.ds-key:focus-visible{outline:2px solid #36d476;outline-offset:3px}.ds-key[disabled]{cursor:not-allowed;transform:translateY(2px);box-shadow:0 1px 0 var(--body);--face-a:#3a3a3c;--face-b:#2a2a2c;--txt:#a39e93}.ds-key.ds-orange{--face-a:#e68a50;--face-b:#d36a28;--body:#91481b;--edge:#844219}.ds-key .ds-led{width:7px;height:7px;border-radius:50%;background:#4a1613;border:1px solid rgba(14,14,16,.8);display:inline-block;flex:none}.ds-key.ds-playing .ds-led{background:#ff3b2f;box-shadow:0 0 0 3px rgba(255,59,47,.28),0 0 9px 2px rgba(255,59,47,.55)}.ds-key.ds-big{height:56px;font-size:17px;padding:0 30px;min-width:180px}"
     },
     {
-      "name": "Botão Fantasma (desativado)",
+      "name": "Tecla creme (ação secundária)",
       "kind": "button",
-      "refersTo": "button-ghost",
-      "description": "Os controles que só existem no plugin instalado. Nascem afundados: deslocados 3px e sem sombra.",
-      "html": "<span class=\"ds-plugin-only\"><button class=\"ds-btn-ghost\" disabled>Sampler</button><span class=\"ds-tagline\">só no plugin</span></span>",
-      "css": ".ds-plugin-only{display:inline-flex;flex-direction:column;align-items:center;gap:4px}.ds-btn-ghost{font-family:'Archivo Black',sans-serif;text-transform:uppercase;font-size:.9rem;letter-spacing:.04em;border:2.5px solid var(--ink,#14120f);border-radius:6px;padding:11px 20px;background:var(--card,#f2ead9);color:var(--ink,#14120f);box-shadow:3px 3px 0 var(--ink,#14120f);cursor:pointer}.ds-btn-ghost[disabled]{cursor:not-allowed;background:var(--bg,#e8e0cf);color:#5f5849;box-shadow:none;transform:translate(3px,3px)}.ds-tagline{font-family:'Martian Mono',monospace;font-size:.58rem;font-weight:600;letter-spacing:-.03em;color:#5f5849;text-transform:uppercase}"
+      "refersTo": "key-cream",
+      "description": "Ação secundária e utilidade: downloads, Comprar Solo/Equipe, Criar conta. Tinta com sombra branca sobre plástico creme.",
+      "html": "<button class=\"ds-key ds-cream ds-big\">Baixar o instalador</button>",
+      "css": ".ds-key{--face-a:#4b4b4c;--face-b:#212123;--body:#171718;--edge:#151516;--txt:#e9e6de;--engrave:rgba(14,14,16,.6);font-family:Barlow,'Arial Narrow',sans-serif;font-weight:700;font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:var(--txt);text-shadow:0 1px 0 var(--engrave);background:linear-gradient(180deg,var(--face-a),var(--face-b));border:1px solid var(--edge);border-radius:3px;height:44px;padding:0 22px;cursor:pointer;position:relative;display:inline-flex;align-items:center;justify-content:center;gap:.4em;text-decoration:none;white-space:nowrap;box-shadow:0 3px 0 var(--body),1.5px 3px 0 1.2px rgba(14,14,16,.25),1.5px 3px 0 2.4px rgba(14,14,16,.10),1.5px 3px 0 3.6px rgba(14,14,16,.05);transition:none;user-select:none}.ds-key::before{content:'';position:absolute;inset:1.5px;border-radius:2px;pointer-events:none;background:linear-gradient(135deg,rgba(255,255,255,.30),rgba(255,255,255,0) 42%) 0 0/160px 100% no-repeat}.ds-key:active:not([disabled]){transform:translateY(2px);box-shadow:0 1px 0 var(--body)}.ds-key:focus-visible{outline:2px solid #36d476;outline-offset:3px}.ds-key[disabled]{cursor:not-allowed;transform:translateY(2px);box-shadow:0 1px 0 var(--body);--face-a:#3a3a3c;--face-b:#2a2a2c;--txt:#a39e93}.ds-key.ds-cream{--face-a:#efebdd;--face-b:#dfd9ca;--body:#98948a;--edge:#8b877e;--txt:#0e0e10;--engrave:rgba(255,255,255,.35)}.ds-key.ds-big{height:56px;font-size:17px;padding:0 30px;min-width:180px}"
     },
     {
-      "name": "Botão de Download",
+      "name": "Tecla preta (serviço) e desabilitada",
       "kind": "button",
-      "refersTo": "download-primary",
-      "description": "O bloco de download. Mac é laranja, Windows é amarelo (.alt); sobre o rack a sombra vira preto puro (.on-rack).",
-      "html": "<a class=\"ds-download\" href=\"#\"><svg class=\"ds-ico\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M16.4 12.8c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9s-1.8-.9-3-.8c-1.5 0-2.9.9-3.7 2.3-1.6 2.7-.4 6.8 1.1 9 .8 1.1 1.7 2.3 2.9 2.3 1.2 0 1.6-.7 3-.7s1.8.7 3 .7c1.3 0 2.1-1.1 2.8-2.2.9-1.2 1.3-2.5 1.3-2.5s-2.5-1-2.5-3.7zM14.2 5.7c.6-.8 1.1-1.9 1-3-.9 0-2.1.6-2.8 1.4-.6.7-1.2 1.8-1 2.9 1 .1 2.1-.5 2.8-1.3z\"/></svg>Baixar para Mac<small>.pkg · Intel e Apple Silicon</small></a>",
-      "css": ".ds-download{display:block;text-decoration:none;color:var(--ink,#14120f);text-align:center;font-family:'Archivo Black',sans-serif;font-size:clamp(1.05rem,2vw,1.4rem);text-transform:uppercase;letter-spacing:.02em;background:var(--orange,#e8762c);border:2.5px solid var(--ink,#14120f);border-radius:6px;box-shadow:5px 5px 0 var(--ink,#14120f);padding:1.25rem .875rem;transition:transform .06s,box-shadow .06s}.ds-download small{display:block;font-family:'Martian Mono',monospace;font-weight:400;font-size:.66rem;letter-spacing:-.04em;text-transform:none;margin-top:7px}.ds-download .ds-ico{width:1em;height:1em;fill:currentColor;vertical-align:-.09em;margin-right:.45em}.ds-download:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 var(--ink,#14120f)}.ds-download:focus-visible{outline:3px solid var(--ink,#14120f);outline-offset:3px}.ds-download:active{transform:translate(4px,4px);box-shadow:0 0 0 var(--ink,#14120f)}"
+      "refersTo": "key",
+      "description": "Botão de serviço (Sair, Desativar, −/+) e o estado 'só no plugin': tecla afundada, cinza, cursor not-allowed.",
+      "html": "<button class=\"ds-key\">Sair</button> <button class=\"ds-key ds-cream\" disabled>Sampler</button>",
+      "css": ".ds-key{--face-a:#4b4b4c;--face-b:#212123;--body:#171718;--edge:#151516;--txt:#e9e6de;--engrave:rgba(14,14,16,.6);font-family:Barlow,'Arial Narrow',sans-serif;font-weight:700;font-size:15px;letter-spacing:.06em;text-transform:uppercase;color:var(--txt);text-shadow:0 1px 0 var(--engrave);background:linear-gradient(180deg,var(--face-a),var(--face-b));border:1px solid var(--edge);border-radius:3px;height:44px;padding:0 22px;cursor:pointer;position:relative;display:inline-flex;align-items:center;justify-content:center;gap:.4em;text-decoration:none;white-space:nowrap;box-shadow:0 3px 0 var(--body),1.5px 3px 0 1.2px rgba(14,14,16,.25),1.5px 3px 0 2.4px rgba(14,14,16,.10),1.5px 3px 0 3.6px rgba(14,14,16,.05);transition:none;user-select:none}.ds-key::before{content:'';position:absolute;inset:1.5px;border-radius:2px;pointer-events:none;background:linear-gradient(135deg,rgba(255,255,255,.30),rgba(255,255,255,0) 42%) 0 0/160px 100% no-repeat}.ds-key:active:not([disabled]){transform:translateY(2px);box-shadow:0 1px 0 var(--body)}.ds-key:focus-visible{outline:2px solid #36d476;outline-offset:3px}.ds-key[disabled]{cursor:not-allowed;transform:translateY(2px);box-shadow:0 1px 0 var(--body);--face-a:#3a3a3c;--face-b:#2a2a2c;--txt:#a39e93}.ds-key.ds-cream{--face-a:#efebdd;--face-b:#dfd9ca;--body:#98948a;--edge:#8b877e;--txt:#0e0e10;--engrave:rgba(255,255,255,.35)}.ds-key.ds-cream[disabled]{--face-a:#bdb8ab;--face-b:#aaa497;--txt:#5a574f}"
     },
     {
-      "name": "Step do Sequencer",
+      "name": "Step do sequencer",
       "kind": "custom",
       "refersTo": "step",
-      "description": "A tecla do sequencer: 46px de altura, raio 4px (o fillRoundedRectangle(face,4.0f) do plugin), colorida pelo quarto de compasso. O LED enche de tinta quando ligado; tocando (.ds-ph) a tecla acende e sobe. Altura explícita e min-width:0, nunca aspect-ratio.",
-      "html": "<span class=\"ds-steps\"><button class=\"ds-step ds-g1 ds-on\" aria-label=\"kick, step 1\"></button><button class=\"ds-step ds-g1\"></button><button class=\"ds-step ds-g2 ds-on ds-grp ds-ph\"></button><button class=\"ds-step ds-g2\"></button><button class=\"ds-step ds-g3 ds-grp\"></button><button class=\"ds-step ds-g4 ds-grp\"></button></span>",
-      "css": ".ds-steps{display:flex;gap:5px;align-items:stretch}.ds-step{width:34px;height:46px;min-width:0;border:2px solid var(--ink,#14120f);border-radius:4px;cursor:pointer;position:relative;padding:0;background:var(--card,#f2ead9);transition:box-shadow .07s ease-out,transform .07s ease-out}.ds-step::after{content:'';position:absolute;top:5px;left:50%;transform:translateX(-50%);width:9px;height:9px;border:2px solid var(--ink,#14120f);border-radius:50%;background:transparent}.ds-step.ds-on::after{background:var(--ink,#14120f)}.ds-step:focus-visible{outline:3px solid var(--ink,#14120f);outline-offset:3px}.ds-g1{background:var(--red,#d92b26)}.ds-g2{background:var(--orange,#e8762c)}.ds-g3{background:var(--yellow,#e8c53a)}.ds-g4{background:var(--card,#f2ead9)}.ds-step.ds-ph{box-shadow:inset 0 0 0 3px var(--ink,#14120f),0 3px 0 rgba(20,18,15,.35);transform:translateY(-2px)}@media (prefers-reduced-motion:reduce){.ds-step{transition:none}.ds-step.ds-ph{transform:none;box-shadow:inset 0 0 0 3px var(--ink,#14120f)}}.ds-steps .ds-grp{margin-left:12px}"
-    },
-    {
-      "name": "Knob",
-      "kind": "custom",
-      "refersTo": "knob-channel",
-      "description": "A regra de cor do painel em uma peça: grafite 35px é controle de canal, laranja 52px é controle de painel/FX. O ponteiro gira de -135° a +135° pela custom property --rot.",
-      "html": "<span class=\"ds-kcell\"><span class=\"ds-knob\" role=\"slider\" tabindex=\"0\" aria-label=\"Decay do kick\" style=\"--rot:-40deg\"></span><small>DECAY</small></span><span class=\"ds-kcell ds-panel\"><span class=\"ds-knob ds-orange\" role=\"slider\" tabindex=\"0\" aria-label=\"Amount do groove\" style=\"--rot:60deg\"></span><small>AMOUNT</small></span>",
-      "css": ".ds-kcell{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;margin-right:16px}.ds-kcell small{font-family:'Martian Mono',monospace;font-size:.53rem;font-weight:600;letter-spacing:-.03em}.ds-knob{width:36px;height:36px;border:2px solid var(--ink,#14120f);border-radius:50%;background:var(--graphite,#2b2925);position:relative;cursor:ns-resize;touch-action:none;display:block}.ds-knob::after{content:'';position:absolute;left:50%;top:2px;width:3px;height:12px;background:var(--card,#f2ead9);border-radius:2px;transform-origin:50% 14px;transform:translateX(-50%) rotate(var(--rot,0deg))}.ds-knob:focus-visible{outline:3px solid var(--ink,#14120f);outline-offset:3px}.ds-knob.ds-orange{background:var(--orange,#e8762c)}.ds-knob.ds-orange::after{background:var(--ink,#14120f)}.ds-panel .ds-knob{width:52px;height:52px}.ds-panel .ds-knob::after{height:17px;transform-origin:50% 21px}.ds-panel small{font-size:.58rem}"
-    },
-    {
-      "name": "Painel com Etiqueta",
-      "kind": "card",
-      "refersTo": "panel",
-      "description": "A moldura do plugin: caixa creme com o título serigrafado encaixado por cima da borda superior, mordendo a moldura.",
-      "html": "<div class=\"ds-panel-box\"><span class=\"ds-ptitle\">Groove</span><select class=\"ds-select\" aria-label=\"Tipo de groove\"><option>Straight</option><option>Swing</option></select></div>",
-      "css": ".ds-panel-box{border:2px solid var(--ink,#14120f);border-radius:8px;background:var(--card,#f2ead9);box-shadow:3px 3px 0 var(--ink,#14120f);padding:.875rem;position:relative;max-width:250px;margin-top:14px}.ds-ptitle{border-radius:5px;position:absolute;top:-11px;left:10px;font-family:'Archivo Black',sans-serif;font-size:.62rem;background:var(--orange,#e8762c);border:2px solid var(--ink,#14120f);padding:2px 9px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink,#14120f)}.ds-select{border-radius:5px;font-family:'Archivo',sans-serif;font-weight:700;font-size:.8rem;border:2px solid var(--ink,#14120f);background:var(--bg,#e8e0cf);padding:6px 7px;width:100%;color:var(--ink,#14120f)}.ds-select:focus-visible{outline:3px solid var(--ink,#14120f);outline-offset:3px}"
+      "description": "Tecla de plástico 36×42 na cor do grupo com LED a 10px do topo; ativa acende com halo; sob o playhead a face sobe.",
+      "html": "<div class=\"ds-steps\"><button class=\"ds-step ds-g1 ds-on\"></button><button class=\"ds-step ds-g2\"></button><button class=\"ds-step ds-g3 ds-ph\"></button><button class=\"ds-step ds-g4\"></button></div>",
+      "css": ".ds-steps{display:flex;gap:8px}.ds-step{width:36px;height:42px;border:1px solid var(--edge);border-radius:3px;cursor:pointer;position:relative;padding:0;background:linear-gradient(180deg,var(--face-a),var(--face-b));box-shadow:0 3px 0 var(--body),1.5px 3px 0 1.2px rgba(14,14,16,.25),1.5px 3px 0 2.4px rgba(14,14,16,.10),1.5px 3px 0 3.6px rgba(14,14,16,.05);transition:none}.ds-step::before{content:'';position:absolute;inset:1.5px;border-radius:2px;pointer-events:none;background:linear-gradient(135deg,rgba(255,255,255,.30),rgba(255,255,255,0) 42%)}.ds-step::after{content:'';position:absolute;top:10px;left:50%;width:7px;height:7px;margin-left:-3.5px;border-radius:50%;background:#4a1613;border:1px solid rgba(14,14,16,.8)}.ds-step.ds-on::after{background:#ff3b2f;box-shadow:0 0 0 3px rgba(255,59,47,.28),0 0 9px 2px rgba(255,59,47,.55)}.ds-step:active{transform:translateY(2px);box-shadow:0 1px 0 var(--body)}.ds-step:focus-visible{outline:2px solid #36d476;outline-offset:3px}.ds-g1{--face-a:#d25550;--face-b:#bd2d28;--body:#811f1b;--edge:#761c19;--ph-a:#dc7a77;--ph-b:#c85752}.ds-g2{--face-a:#e68a50;--face-b:#d36a28;--body:#91481b;--edge:#844219;--ph-a:#eba377;--ph-b:#da8752}.ds-g3{--face-a:#e7ca5e;--face-b:#d5b337;--body:#927b25;--edge:#857022;--ph-a:#ecd581;--ph-b:#dfc25f}.ds-g4{--face-a:#efebdd;--face-b:#dfd9ca;--body:#98948a;--edge:#8b877e;--ph-a:#f3efe5;--ph-b:#e9e4d8}.ds-step.ds-ph{background:linear-gradient(180deg,var(--ph-a),var(--ph-b))}.ds-step.ds-ph::after{background:rgba(255,59,47,.55);box-shadow:0 0 0 2px rgba(255,59,47,.2),0 0 6px 1px rgba(255,59,47,.4)}"
     },
     {
       "name": "MUTE / SOLO",
       "kind": "chip",
-      "refersTo": "toggle-mute",
-      "description": "Dois toggles empilhados numa coluna só, como no painel. Creme desligados; vermelho (mute) e amarelo (solo) ligados, sempre com aria-pressed.",
-      "html": "<span class=\"ds-ms-stack\"><button class=\"ds-ms ds-on-mute\" aria-pressed=\"true\">MUTE</button><button class=\"ds-ms\" aria-pressed=\"false\">SOLO</button></span>",
-      "css": ".ds-ms-stack{display:grid;grid-template-rows:1fr 1fr;gap:3px;width:54px;height:70px}.ds-ms{font-family:'Archivo Black',sans-serif;font-size:.6rem;border:2px solid var(--ink,#14120f);border-radius:4px;background:var(--card,#f2ead9);color:var(--ink,#14120f);cursor:pointer;padding:0;width:100%;letter-spacing:.02em}.ds-ms:focus-visible{outline:3px solid var(--ink,#14120f);outline-offset:3px}.ds-ms.ds-on-mute{background:var(--red,#d92b26);color:var(--card,#f2ead9)}.ds-ms.ds-on-solo{background:var(--yellow,#e8c53a)}"
+      "refersTo": "toggle-mute-solo",
+      "description": "Tecla preta 56×22 com LED: ligado muda face, texto e LED (vermelho no MUTE, amarelo no SOLO).",
+      "html": "<div class=\"ds-ms-stack\"><button class=\"ds-ms ds-on-mute\">Mute</button><button class=\"ds-ms\">Solo</button></div>",
+      "css": ".ds-ms-stack{display:grid;grid-template-rows:22px 22px;gap:4px}.ds-ms{--face-a:#4b4b4c;--face-b:#212123;--body:#171718;--edge:#151516;font-family:Barlow,'Arial Narrow',sans-serif;font-weight:700;font-size:10px;letter-spacing:.03em;text-transform:uppercase;color:#a39e93;text-shadow:0 1px 0 rgba(14,14,16,.6);background:linear-gradient(180deg,var(--face-a),var(--face-b));border:1px solid var(--edge);border-radius:3px;height:22px;width:56px;cursor:pointer;position:relative;padding:0 0 0 14px;text-align:left;box-shadow:0 2px 0 var(--body),1.5px 3px 0 1.2px rgba(14,14,16,.25),1.5px 3px 0 2.4px rgba(14,14,16,.10),1.5px 3px 0 3.6px rgba(14,14,16,.05)}.ds-ms::after{content:'';position:absolute;left:6px;top:50%;width:5.5px;height:5.5px;margin-top:-2.75px;border-radius:50%;background:#4a1613;border:1px solid rgba(14,14,16,.8)}.ds-ms:active{transform:translateY(1px);box-shadow:0 1px 0 var(--body)}.ds-ms.ds-on-mute,.ds-ms.ds-on-solo{--face-a:#636366;--face-b:#3d3d40;color:#e9e6de}.ds-ms.ds-on-mute::after{background:#ff3b2f;box-shadow:0 0 0 2px rgba(255,59,47,.3),0 0 6px 1px rgba(255,59,47,.55)}.ds-ms.ds-on-solo::after{background:#e2be3a;box-shadow:0 0 0 2px rgba(226,190,58,.3),0 0 6px 1px rgba(226,190,58,.55)}"
     },
     {
-      "name": "Bloco de Feature",
+      "name": "Knob torneado",
+      "kind": "custom",
+      "refersTo": "knob-fx",
+      "description": "Saia serrilhada, anel de 11 LEDs verdes acesos até o valor, capa laranja (FX) ou preta (canal) com ponteiro. Sem número.",
+      "html": "<span class=\"ds-kcell\"><span class=\"ds-knob ds-orange\" style=\"--rot:40deg\"><i class=\"ds-lit\" style=\"--a:-135deg\"></i><i class=\"ds-lit\" style=\"--a:-108deg\"></i><i class=\"ds-lit\" style=\"--a:-81deg\"></i><i class=\"ds-lit\" style=\"--a:-54deg\"></i><i class=\"ds-lit\" style=\"--a:-27deg\"></i><i class=\"ds-lit\" style=\"--a:0deg\"></i><i class=\"ds-lit\" style=\"--a:27deg\"></i><i style=\"--a:54deg\"></i><i style=\"--a:81deg\"></i><i style=\"--a:108deg\"></i><i style=\"--a:135deg\"></i></span><small>Amount</small></span>",
+      "css": ".ds-kcell{display:inline-flex;flex-direction:column;align-items:center;gap:6px}.ds-kcell small{font-family:Barlow,'Arial Narrow',sans-serif;font-weight:600;font-size:9.5px;letter-spacing:.02em;text-transform:uppercase;color:#a39e93;line-height:1}.ds-knob{--d:46px;--cap:70%;width:var(--d);height:var(--d);border-radius:50%;position:relative;display:block;cursor:ns-resize;background:radial-gradient(circle,#3b3b3e 0 77%,transparent 77.5%),repeating-conic-gradient(#151517 0 6deg,#3b3b3e 6deg 13.33deg);border:1px solid #0e0e10;box-shadow:inset 1px 1px 0 rgba(255,255,255,.20),1.5px 3px 0 1.2px rgba(14,14,16,.325),1.5px 3px 0 2.4px rgba(14,14,16,.13),1.5px 3px 0 3.6px rgba(14,14,16,.065)}.ds-knob::before{content:'';position:absolute;left:50%;top:50%;width:var(--cap);height:var(--cap);transform:translate(-50%,-50%);border-radius:50%;background:linear-gradient(135deg,#5c5c5e,#1b1b1c);border:1px solid rgba(14,14,16,.85);box-shadow:inset 1px 1px 0 rgba(255,255,255,.12),.75px 1.5px 2px rgba(14,14,16,.6)}.ds-knob.ds-orange::before{background:linear-gradient(135deg,#e37d3d,#ac5620)}.ds-knob::after{content:'';position:absolute;left:50%;top:50%;width:2.4px;height:calc(var(--cap) * .31);background:#f2f0ea;border-radius:1.2px;transform:translate(-50%,0) rotate(var(--rot,0deg)) translateY(calc(var(--cap) * -1.32));transform-origin:50% 0}.ds-knob i{position:absolute;left:50%;top:50%;width:2.8px;height:2.8px;margin:-1.4px 0 0 -1.4px;border-radius:50%;background:#0c0c0d;transform:rotate(var(--a)) translateY(calc(var(--d) * -.415))}.ds-knob i.ds-lit{background:#36d476;box-shadow:0 0 0 1.4px rgba(54,212,118,.45)}"
+    },
+    {
+      "name": "Campo rebaixado (select e input)",
+      "kind": "input",
+      "refersTo": "field-input",
+      "description": "Tudo que recebe valor é cortado no aço: select em serigrafia centrada de 26px; input de 40px em caixa baixa para e-mail e senha. Foco em LED verde.",
+      "html": "<label class=\"ds-field\"><span class=\"ds-legend\">E-mail</span><input class=\"ds-recess ds-input\" type=\"email\" placeholder=\"voce@exemplo.com\"></label><select class=\"ds-recess ds-select\" aria-label=\"Tipo de groove\"><option>Straight</option><option>Swing</option></select>",
+      "css": ".ds-field{display:grid;gap:5px;margin-bottom:12px}.ds-legend{font-family:Barlow,'Arial Narrow',sans-serif;font-weight:600;font-size:.66rem;letter-spacing:.03em;text-transform:uppercase;color:#a39e93}.ds-recess{background:#161618;border:1px solid #0e0e10;border-radius:4px;color:#e9e6de;box-shadow:inset 0 3px 6px -1px rgba(14,14,16,.7),0 1px 0 rgba(255,255,255,.10);font-family:Barlow,'Arial Narrow',sans-serif;width:100%;appearance:none;-webkit-appearance:none}.ds-select{font-weight:700;font-size:12px;letter-spacing:.03em;text-transform:uppercase;height:26px;padding:0 26px 0 8px;text-align:center;text-align-last:center;cursor:pointer;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='7' height='4.5'%3E%3Cpath d='M0 0h7L3.5 4.5z' fill='%23e9e6de'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 11px center}.ds-select:active{background-color:#1d1d20}.ds-input{font-size:15px;font-weight:600;height:40px;padding:0 12px}.ds-input::placeholder{color:#a39e93;font-weight:500}.ds-input:focus{outline:2px solid #36d476;outline-offset:1px}.ds-select:focus-visible{outline:2px solid #36d476;outline-offset:3px}"
+    },
+    {
+      "name": "Display de preço (luz laranja)",
+      "kind": "custom",
+      "refersTo": "screen-price",
+      "description": "O preço é luz num rebaixo, a mesma tela do BPM com um número maior: Barlow 700 laranja com halo de 6px.",
+      "html": "<div class=\"ds-screen ds-price\"><small>R$</small><span>147</span></div>",
+      "css": ".ds-screen{background:#161618;border:1px solid #0e0e10;border-radius:4px;color:#e0702a;box-shadow:inset 0 3px 6px -1px rgba(14,14,16,.7),0 1px 0 rgba(255,255,255,.10);font-family:Barlow,'Arial Narrow',sans-serif;font-weight:700;letter-spacing:.02em;text-shadow:0 0 6px rgba(224,112,42,.55)}.ds-price{height:64px;display:flex;align-items:baseline;justify-content:center;gap:6px;font-size:34px;padding:0 12px;max-width:280px}.ds-price small{font-size:14px;letter-spacing:.04em}"
+    },
+    {
+      "name": "Painel serigrafado com soquetes de acesso",
       "kind": "card",
-      "refersTo": "step-g1",
-      "description": "Os quatro blocos herdam as quatro cores dos grupos do sequencer, com o quarto trocando creme por grafite. Legenda mono empurrada para o rodapé por margin-top:auto.",
-      "html": "<article class=\"ds-feat ds-f1\"><h3>Sequencer 16 steps</h3><p>6 instrumentos, accent por step, groove straight/swing e botão RAND.</p><span class=\"ds-n\">6 instrumentos · accent por step</span></article>",
-      "css": ".ds-feat{border:2.5px solid var(--ink,#14120f);border-radius:8px;box-shadow:5px 5px 0 var(--ink,#14120f);padding:1.25rem;display:flex;flex-direction:column;gap:.875rem;min-height:230px;max-width:330px}.ds-feat h3{font-family:'Archivo Black',sans-serif;font-weight:400;font-size:clamp(1.15rem,2vw,1.45rem);line-height:1.02;letter-spacing:-.02em;text-transform:uppercase}.ds-feat p{font-family:'Archivo',system-ui,sans-serif;font-weight:500;font-size:.875rem;line-height:1.5}.ds-feat .ds-n{font-family:'Martian Mono',monospace;font-size:.62rem;letter-spacing:-.04em;margin-top:auto;font-weight:600}.ds-f1{background:var(--red,#d92b26);color:#fff}.ds-f2{background:var(--orange,#e8762c);color:var(--ink,#14120f)}.ds-f3{background:var(--yellow,#e8c53a);color:var(--ink,#14120f)}.ds-f4{background:var(--graphite,#2b2925);color:#fff}"
+      "refersTo": "panel-plan",
+      "description": "Moldura de painel como fieldset/legend (título vazado na linha) e a fila de cinco soquetes de LED que conta acessos: aceso é ocupado.",
+      "html": "<fieldset class=\"ds-panel ds-hot\"><legend>Studio <span class=\"ds-badge\"><span class=\"ds-dot\"></span>Recomendado</span></legend><div class=\"ds-seats\"><span class=\"ds-socket ds-on\"></span><span class=\"ds-socket ds-on\"></span><span class=\"ds-socket ds-on\"></span><span class=\"ds-socket\"></span><span class=\"ds-socket\"></span><span class=\"ds-legend\">3 acessos</span></div><p class=\"ds-p\"><b>3 computadores</b> ativos ao mesmo tempo: estúdio, notebook e a máquina do parceiro.</p></fieldset>",
+      "css": ".ds-panel{position:relative;border:1.5px solid rgba(233,230,222,.55);border-radius:8px;background:rgba(14,14,16,.25);padding:28px 22px 22px;margin:0;min-width:0;color:#e9e6de;font-family:Barlow,'Arial Narrow',sans-serif;max-width:320px}.ds-panel>legend{font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:#e9e6de;padding:0 8px;margin-inline:auto;text-align:center}.ds-panel.ds-hot{border-color:#e9e6de;background:rgba(14,14,16,.38);box-shadow:inset 1px 1px 0 rgba(255,255,255,.06),2px 6px 16px rgba(14,14,16,.5)}.ds-badge{display:inline-flex;align-items:center;gap:7px;margin-left:8px;color:#e0702a}.ds-dot{width:7px;height:7px;border-radius:50%;background:#ff3b2f;border:1px solid rgba(14,14,16,.8);box-shadow:0 0 0 3px rgba(255,59,47,.28),0 0 9px 2px rgba(255,59,47,.55)}.ds-seats{display:flex;gap:10px;align-items:center;margin-bottom:18px}.ds-socket{width:11px;height:11px;border-radius:50%;background:#4a1613;border:1px solid rgba(14,14,16,.8);box-shadow:inset 0 1px 2px rgba(14,14,16,.6)}.ds-socket.ds-on{background:#ff3b2f;box-shadow:0 0 0 3px rgba(255,59,47,.25),0 0 10px 2px rgba(255,59,47,.55)}.ds-legend{font-weight:600;font-size:.66rem;letter-spacing:.03em;text-transform:uppercase;color:#a39e93;margin-left:4px}.ds-p{font-weight:500;font-size:.9rem;line-height:1.5;color:#a39e93;margin:0}.ds-p b{font-weight:700;color:#fff}"
     },
     {
-      "name": "Faixa de Identidade",
-      "kind": "custom",
-      "refersTo": "panel-title",
-      "description": "Os quatro quartos de cor do sequencer reduzidos a uma barra. Gradiente de corte duro, nunca transição. Aparece no cabeçalho (11px, máx 460px) e na plaqueta de marca (7px, largura total).",
-      "html": "<span class=\"ds-stripe\"></span>",
-      "css": ".ds-stripe{display:block;height:11px;border:2.5px solid var(--ink,#14120f);border-radius:4px;max-width:460px;background:linear-gradient(90deg,var(--red,#d92b26) 0 25%,var(--orange,#e8762c) 0 50%,var(--yellow,#e8c53a) 0 75%,var(--graphite,#2b2925) 0 100%)}"
-    },
-    {
-      "name": "Ícone",
-      "kind": "custom",
-      "refersTo": "download-primary",
-      "description": "Seis SVG inline, dois desenhos (maçã e janela) usados três vezes cada. Substituíram glifos de fonte que caíam na área privativa do Unicode e saíam como tofu no Windows e no Android — os dois sistemas que os ícones identificam.",
-      "html": "<span class=\"ds-ico-demo\"><svg class=\"ds-ico\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M16.4 12.8c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9s-1.8-.9-3-.8c-1.5 0-2.9.9-3.7 2.3-1.6 2.7-.4 6.8 1.1 9 .8 1.1 1.7 2.3 2.9 2.3 1.2 0 1.6-.7 3-.7s1.8.7 3 .7c1.3 0 2.1-1.1 2.8-2.2.9-1.2 1.3-2.5 1.3-2.5s-2.5-1-2.5-3.7zM14.2 5.7c.6-.8 1.1-1.9 1-3-.9 0-2.1.6-2.8 1.4-.6.7-1.2 1.8-1 2.9 1 .1 2.1-.5 2.8-1.3z\"/></svg>Mac<svg class=\"ds-ico\" viewBox=\"0 0 24 24\" aria-hidden=\"true\" style=\"margin-left:1.2em\"><path d=\"M3 5.9l7.6-1v7.2H3V5.9zm0 12.2l7.6 1v-7.1H3v6.1zm8.7 1.2L21 20.6v-8.6h-9.3v7.3zM11.7 4.2L21 3v8.2h-9.3V4.2z\"/></svg>Windows</span>",
-      "css": ".ds-ico-demo{font-family:'Archivo Black',sans-serif;text-transform:uppercase;font-size:1.1rem;color:var(--ink,#14120f);display:inline-flex;align-items:center}.ds-ico{width:1em;height:1em;fill:currentColor;vertical-align:-.09em;margin-right:.45em;flex:none}"
-    },
-    {
-      "name": "Tally",
-      "kind": "custom",
-      "refersTo": "step",
-      "description": "A tecla do sequencer: 46px de altura, raio 4px (o fillRoundedRectangle(face,4.0f) do plugin), colorida pelo quarto de compasso. O LED enche de tinta quando ligado; tocando (.ds-ph) a tecla acende e sobe. Altura explícita e min-width:0, nunca aspect-ratio.",
-      "html": "<span class=\"ds-tally\"><b></b> <span>Parado</span></span><span class=\"ds-tally ds-live ds-beat\"><b></b> <span>Tocando</span></span>",
-      "css": ".ds-tally{display:inline-flex;align-items:center;gap:7px;font-family:'Martian Mono',monospace;font-size:.58rem;letter-spacing:-.03em;text-transform:uppercase;color:var(--ink,#14120f);margin-right:24px}.ds-tally b{width:11px;height:11px;border:2px solid var(--ink,#14120f);border-radius:50%;background:#7a6b58;display:block;transition:transform .1s cubic-bezier(.2,.9,.3,1)}.ds-tally.ds-live b{background:var(--red,#d92b26)}.ds-tally.ds-beat b{transform:scale(1.6)}@media (prefers-reduced-motion:reduce){.ds-tally b{transition:none}.ds-tally.ds-beat b{transform:none}}.ds-steps .ds-grp{margin-left:12px}"
-    },
-    {
-      "name": "Accent (volume por step)",
-      "kind": "custom",
-      "refersTo": "step",
-      "description": "Deixou de ser liga/desliga e virou volume por step, como no painel: role=slider de 0 a 1, neutro em 0.5, arraste vertical com 90px de curso, duplo clique reseta, setas/Home/End no teclado. O valor É a altura do preenchimento laranja.",
-      "html": "<span class=\"ds-accrow\"><span class=\"ds-acclab\">ACCENT</span><button class=\"ds-acc\" role=\"slider\" aria-label=\"Volume do accent no step 1\" aria-valuemin=\"0\" aria-valuemax=\"1\" aria-valuenow=\"0.85\" style=\"--v:.85\"></button><button class=\"ds-acc\" role=\"slider\" aria-valuenow=\"0.50\" style=\"--v:.5\"></button><button class=\"ds-acc\" role=\"slider\" aria-valuenow=\"0.20\" style=\"--v:.2\"></button><button class=\"ds-acc ds-grp\" role=\"slider\" aria-valuenow=\"0.65\" style=\"--v:.65\"></button></span>",
-      "css": ".ds-accrow{display:flex;gap:5px;align-items:center}.ds-acclab{font-family:'Archivo Black',sans-serif;font-size:.68rem;letter-spacing:.08em;color:var(--ink,#14120f);padding-right:.875rem;background:none;border:none}.ds-acc{width:34px;height:46px;min-width:0;border:2px solid var(--ink,#14120f);border-radius:4px;padding:0;cursor:ns-resize;touch-action:none;background:linear-gradient(0deg,var(--orange,#e8762c) 0 calc(var(--v,.5) * 100%),var(--graphite,#2b2925) calc(var(--v,.5) * 100%) 100%)}.ds-acc:focus-visible{outline:3px solid var(--ink,#14120f);outline-offset:3px}.ds-accrow .ds-grp{margin-left:12px}"
-    },
-    {
-      "name": "Separador de Instrumento",
-      "kind": "custom",
-      "refersTo": "step",
-      "description": "Filete de 1px ao pé de cada linha de instrumento, atravessando a grade inteira. Cinco deles, vindos do painel, aria-hidden e sem eventos de ponteiro.",
-      "html": "<span class=\"ds-sepdemo\"><span class=\"ds-seprow\">KICK</span><span class=\"ds-sep\" aria-hidden=\"true\"></span><span class=\"ds-seprow\">SNARE</span><span class=\"ds-sep\" aria-hidden=\"true\"></span><span class=\"ds-seprow\">CLAP</span></span>",
-      "css": ".ds-sepdemo{display:block;max-width:260px}.ds-seprow{font-family:'Archivo Black',sans-serif;font-size:.68rem;letter-spacing:.03em;color:var(--ink,#14120f);display:block;padding:10px 0}.ds-sep{display:block;height:1px;background:rgba(20,18,15,.16);pointer-events:none}"
+      "name": "Navegação da barra do topo",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Marca em Barlow Bold com a designação em Yellowtail, e links em serigrafia apagada que acendem em hover e na página atual. Sem fundo, sem borda.",
+      "html": "<header class=\"ds-topbar\"><a class=\"ds-brand\" href=\"#\"><b>Drum Dealer</b><i>Rhythm Composer&nbsp; - &nbsp;DD 001</i></a><nav><a href=\"#\">Preços</a><a href=\"#\">Download</a><a href=\"#\">Instalação</a><a href=\"#\" aria-current=\"page\">Conta</a></nav></header>",
+      "css": ".ds-topbar{display:flex;align-items:center;justify-content:space-between;gap:1.25rem;flex-wrap:wrap;padding:18px 0 14px;font-family:Barlow,'Arial Narrow',sans-serif}.ds-brand{display:flex;align-items:baseline;gap:12px;text-decoration:none}.ds-brand b{font-weight:700;font-size:19px;letter-spacing:.06em;text-transform:uppercase;color:#e9e6de}.ds-brand i{font-family:Yellowtail,'Brush Script MT',cursive;font-style:normal;font-size:15px;color:#a39e93}.ds-topbar nav{display:flex;gap:22px;flex-wrap:wrap}.ds-topbar nav a{font-weight:600;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:#a39e93;text-decoration:none}.ds-topbar nav a:hover,.ds-topbar nav a[aria-current]{color:#e9e6de}.ds-topbar nav a:focus-visible{outline:2px solid #36d476;outline-offset:3px}"
     }
   ],
   "narrative": {
-    "northStar": "O Painel Virou Página",
-    "overview": "Este mundo visual não foi inventado para a web. Ele já existia, parafusado dentro do plugin, e a página apenas se estendeu a partir dele. A autoridade visual é dupla e tem endereço: drum-dealer-ui.png para o que se vê, e MaschinLookAndFeel.h — o código que desenha o painel — para os números. O site é neobrutalista porque o aparelho é neobrutalista: creme de painel, contorno preto grosso, sombra dura sem desfoque, canto suavemente arredondado na medida do plugin, cor chapada. Nada aqui é estilo aplicado por cima; é a mesma serigrafia continuando fora do plugin.\n\nA consequência prática é que a página não tem liberdade de paleta nem de forma. Quando um controle da demo precisa de cor, a resposta já está no painel: laranja se for painel/FX, grafite se for canal. Quando um bloco de conteúdo precisa de cor, a resposta também já está lá: os quatro quartos do sequencer. A página é densa onde a máquina é densa e larga onde é texto, e guarda seu único momento de movimento para a batida. Ela alterna campos de cor em escala de página — creme, rack escuro, creme, amarelo, creme, rack escuro — de modo que a máquina apareça montada num rack e o fecho devolva o visitante ao mesmo escuro em que ele a viu tocar.\n\nAnti-referência confirmada: existiu uma tentativa de substituir este mundo por um painel de rack preto anodizado com fita de gaffer e etiqueta Dymo — a direção 'Sala Técnica', seed 7ca4ebdb. Ela foi travada e depois revertida explicitamente pelo Diogo em 2026-08-27, com a instrução de voltar a ser fiel ao VST de hoje e seguir o neobrutalismo. O veredito e as comps estão em .impeccable/mocks/DESCARTADO.md. Nenhuma sessão futura deve reconstruir aquela direção.",
+    "northStar": "A 808 de Verdade",
+    "overview": "O site é o mesmo aparelho do plugin, parafusado numa página. A primeira tela é o painel inteiro, tocável, com moldura, parafusos e banda de identidade, rodando o motor C++ do plugin em WebAssembly; tudo que vem abaixo (afirmação, planos, download, instalação, conta) é feito das mesmas peças que o painel usa: teclas de plástico abauladas que afundam, LEDs que acendem com halo, knobs com saia serrilhada e anel de LEDs verdes, rebaixos cortados no aço para tudo que recebe ou mostra valor, molduras serigrafadas com o título vazado na linha. A cor mora nas teclas e nas luzes; o fundo é aço grafite com grão, do canto ao canto, e nunca ganha cor.\n\nA autoridade visual não é este documento. **A ordem é: o painel do plugin (`Source/MaschinLookAndFeel.h`, `PluginEditor.cpp`) → `~/Sistema AI/MaschinDealer/DESIGN.md` → este arquivo.** Este DESIGN.md registra como o mundo do painel pousou em `dd.css`, `index.html`, `conta.html` e `dd-main.js`; quando uma receita daqui e uma do plugin discordarem, vale a do plugin, e a divergência é ou um erro a corrigir aqui ou uma adaptação nomeada na seção correspondente. O site nunca manda no painel.\n\nO que o site acrescenta que o painel não tem, e que este documento existe para registrar: uma rampa de prosa em Barlow (o painel é só serigrafia; a página precisa de título, lead e corpo), a tecla larga de CTA com o brilho diagonal limitado a 160px, a moldura de painel como `fieldset/legend`, o display de preço em luz laranja, os soquetes de LED que contam acessos nos planos, a página da conta com campos rebaixados, a grade do sequencer com `minmax` nas colunas de step e a reordenação das colunas no celular, foco de teclado em LED verde, e um estado desabilitado para o que \"só existe no plugin\".",
     "keyCharacteristics": [
-      "Mundo incumbente: a autoridade é o painel do plugin, não a página",
-      "Contorno preto de 2,5px (2px nas peças internas) em tudo que é superfície",
-      "Sombra dura deslocada, sem blur e sem alpha; a sombra é curso de tecla, não profundidade",
-      "Escada de raios herdada do MaschinLookAndFeel.h (2/3/4/5/6/8), círculo só onde o aparelho é redondo",
-      "Cor chapada; gradiente só como corte duro, nunca como transição",
-      "Quatro cores de grupo do sequencer governando a página inteira",
-      "Um único momento de movimento na página inteira, e ele é a batida"
+      "Mundo skeuomórfico herdado: cada controle é um objeto com material, espessura e sombra, e a página é feita das mesmas peças",
+      "Uma luz só, do alto à esquerda; toda sombra cai 1,5px para a direita e 3px para baixo, macia, em três camadas",
+      "Aço grafite com grão (`feTurbulence` a 11%, overlay) como único fundo; a cor mora nas teclas e nos LEDs",
+      "Quatro plásticos da 808 na grade; laranja = painel/FX/ação primária; preto = canal/serviço; creme = ação secundária",
+      "LED como linguagem de estado e de contagem: vermelho é vivo (e é acesso ocupado), amarelo é SOLO, verde é valor (e é foco de teclado)",
+      "Serigrafia Barlow em caixa alta com tracking leve para tudo que é peça; prosa Barlow 500 para tudo que é página",
+      "Rebaixo cortado no aço para tudo que recebe ou mostra valor: campo, tela, preço, medidor, código, número de passo",
+      "Raios baixos (3/4/6/8), nunca canto reto, nunca pílula",
+      "Movimento só onde o áudio se move: playhead, medidor e o LED de compasso"
     ],
     "rules": [
       {
         "name": "A Regra do Painel",
-        "body": "Laranja marca controle de painel/FX; grafite marca controle de canal. Os cinco knobs por instrumento (DECAY, TONE, VOL, PAN, NOISE) são grafite; REV, DEL, MASTER, GROOVE AMOUNT, FILL RATE e FILL VOLUME são laranja. Sem essa regra os dois viram a mesma coisa.",
+        "body": "Herdada. Laranja marca painel/FX; preto marca canal. No site a mesma regra se estende à página: **laranja é a ação primária de cada bloco** (uma por bloco: PLAY, RAND, \"Comprar\", \"Comprar Studio\", \"Entrar\"), **creme é a ação secundária ou de utilidade** (\"Baixar o instalador\", downloads, \"Comprar Solo/Equipe\", \"Criar conta\"), **preto é o botão de serviço** (\"Sair\", \"Desativar\", `−`/`+`). Dois botões laranja lado a lado é erro.",
         "section": "colors"
       },
       {
         "name": "A Regra dos Quatro Grupos",
-        "body": "Os 16 steps são quatro quartos de cor: vermelho, laranja, amarelo, creme. Essa sequência não fica presa ao sequencer: os quatro blocos de feature repetem a mesma ordem, com o quarto trocando creme por grafite. O agrupamento nunca vive só na cor: entre cada bloco de quatro há uma coluna de vão de 12px no template da grade (14px no celular) e uma régua numerada de 1 a 16 com o tempo forte em tinta cheia.",
+        "body": "Herdada sem alteração: vermelho, laranja, amarelo, creme nos 16 steps, invertida na banda de identidade (creme, amarelo, laranja, vermelho de cima para baixo, com 1px de tinta entre as faixas). O site repete os quatro plásticos nos quatro painéis de \"O que tem dentro\" (uma tecla de step de 36×42 com LED aceso por painel, g1 a g4, na ordem) e repete a banda no fecho da página (560px de largura máxima, centrada).",
         "section": "colors"
       },
       {
-        "name": "A Regra da Sombra Preta no Rack",
-        "body": "Dentro do campo escuro, a sombra dura deixa de ser tinta e passa a preto puro. Tinta sobre rack não aparece.",
+        "name": "A Regra do LED",
+        "body": "Herdada: vermelho é vivo, amarelo é SOLO, verde é valor. O site acrescenta dois sentidos sem mudar a cor: **soquete aceso é acesso ocupado** (vermelho, porque a máquina está viva naquele acesso) e **verde é foco de teclado**, porque o foco é o valor que o teclado está apontando. Nenhum outro elemento brilha.",
         "section": "colors"
       },
       {
-        "name": "A Regra do Contorno Único",
-        "body": "Toda borda da página é preta e sólida. Não existe borda colorida, borda clara nem divisória de opacidade — a única exceção é o border-top do rodapé, em linha de rack, porque preto sobre rack seria invisível.",
+        "name": "A Regra da Luz no Rebaixo",
+        "body": "O que está dentro de um rebaixo e mostra valor é luz laranja com halo curto (`text-shadow: 0 0 6px rgba(224,112,42,.55)`, ou 5px a 50% nos números de passo): BPM, preço, número do passo, `<code>`. É a mesma luz das notas da tela do piano roll. Texto laranja fora de um rebaixo só existe como legenda REV/DEL e no selo \"Recomendado\".",
         "section": "colors"
       },
       {
-        "name": "A Regra do Piso de Contraste",
-        "body": "Nenhuma cor entra por gosto: ela passa por um piso medido. Texto claro sobre cor chapada usa creme de superfície por padrão e branco puro quando o creme não alcança 4,5:1. Os cinzas de apoio seguem a mesma lógica, cada um calibrado para o seu fundo. Elemento não textual tem piso próprio, de 3:1, e ele vale igual: o LED do tally apagado é #7a6b58 a 3,93:1 e aceso é vermelho a 3,70:1 — os dois estados passam.",
+        "name": "A Regra do Aço Contido",
+        "body": "Herdada. O fundo não tem cor, não tem campo de cor por seção, não tem degradê colorido. O site tem sete seções e nenhuma delas muda o fundo: a separação é um filete de 1px em `{colors.lane-line}` e espaço.",
         "section": "colors"
       },
       {
-        "name": "A Regra do Sinal Duplo",
-        "body": "Neste sistema, estado nunca é comunicado só por cor. Toda mudança de estado carrega um segundo sinal, de outra natureza: o step ligado enche o LED de tinta, MUTE e SOLO carregam aria-pressed, o quarto de compasso tem o vão de 9px e a régua numerada, o playhead tem anel e deslocamento, o botão desativado afunda e perde a sombra, e o LED do tally é acompanhado de um rótulo que alterna entre 'Parado' e 'Tocando'. Cor é sempre o reforço, nunca o portador único da informação.",
-        "section": "colors"
+        "name": "A Regra das Duas Vozes",
+        "body": "Peça fala em serigrafia (700 ou 600, caixa alta, tracking de 0.02 a 0.08em); página fala em prosa (500, caixa baixa, sem tracking). Um texto está numa das duas: tecla, legenda, título de painel, campo e display são serigrafia; `h1`, `h2`, lead, corpo e lista são prosa em Barlow Bold ou Medium. A única ponte é o `h1`/`h2`, que é caixa alta com tracking de 0.02 a 0.03em porque é a plaqueta da seção, não um parágrafo.",
+        "section": "typography"
       },
       {
-        "name": "A Regra do Mono Apertado",
-        "body": "Martian Mono nunca é usada com tracking neutro. Todas as ocorrências carregam tracking negativo, de -0.03em a -0.06em, apertando mais quanto menor o corpo.",
+        "name": "A Regra da Caixa Alta Leve",
+        "body": "Herdada: tracking de 0.03em por padrão, 0.08em só no título de painel, 0 nos números. O site não abre além de 0.08em em lugar nenhum.",
+        "section": "typography"
+      },
+      {
+        "name": "A Regra do Texto Gravado",
+        "body": "Herdada e aplicada a toda tecla: `text-shadow: 0 1px 0 rgba(14,14,16,.6)` sobre preto e laranja, `0 1px 0 rgba(255,255,255,.35)` sobre creme (e sobre a tecla laranja de \"Baixar .mid\", que leva tinta). Texto sobre aço não tem sombra; texto em rebaixo tem halo, não sombra.",
         "section": "typography"
       },
       {
         "name": "A Regra da Plaqueta",
-        "body": "O nome do produto é sempre Archivo Black; a designação 'Rhythm Composer — DD 001' é sempre Georgia itálico. As duas nunca trocam de face.",
+        "body": "Herdada: o nome em Barlow Bold, a designação em Yellowtail, a designação nunca mais larga que o nome. O site escreve \"Drum Dealer\" na barra do topo e no fecho e \"DRUMSFULL\" na plaqueta dentro do aparelho, como o painel; as duas grafias coexistem até o Diogo decidir o nome.",
         "section": "typography"
       },
       {
-        "name": "A Regra da Legenda Técnica",
-        "body": "Número, unidade, formato de arquivo e status são sempre mono. Nunca em Archivo. É o que separa o que a máquina informa do que a página afirma.",
-        "section": "typography"
-      },
-      {
-        "name": "A Regra do Aparelho Inteiro",
-        "body": "A máquina rola horizontalmente; ela nunca perde controle para caber. Em telas pequenas o min-width cai de 1010px para 880px, mas os 96 steps, os 42 knobs e a linha de accent continuam todos lá.",
+        "name": "A Regra da Pista",
+        "body": "Herdada no desktop: estado → som → nome → padrão → envio. No celular a ordem muda de propósito (nome → padrão → envio → som → estado) e é a única exceção documentada; ela existe porque a tela é estreita e o padrão é o que se toca.",
         "section": "layout"
       },
       {
-        "name": "A Regra dos Dois Contêineres",
-        "body": "Texto a 1080px, máquina a 1480px. Não alargar o texto para acompanhar a máquina.",
+        "name": "A Regra do Vão de Compasso",
+        "body": "Herdada: o grupo de quatro é feito de uma coluna de `{spacing.group-gap}` no template, não de margem no item. Os faders de accent e a régua herdam as mesmas colunas.",
         "section": "layout"
       },
       {
-        "name": "A Regra do Único Movimento",
-        "body": "A página tem um momento de movimento, e ele é a batida: a coluna do playhead acende (anel interno de 3px, translateY(-2px) e sombra de apoio, 70ms), o numeral da régua vira tinta cheia em peso 700, e a lâmpada tally pulsa scale(1.6) no tempo forte, por 100ms. O playhead acende, não escurece — a versão anterior usava filter:brightness(.5), que apagava a cor do grupo na coluna que o olho precisa achar. Não espalhar movimento: ele vale porque é um só.",
+        "name": "A Regra das Duas Larguras",
+        "body": "O aparelho é largo (1560); a página é estreita (1080). Nenhum bloco de prosa usa a largura larga, e nada além do aparelho e da barra do topo mora nela.",
+        "section": "layout"
+      },
+      {
+        "name": "A Regra da Luz Única",
+        "body": "Herdada: sombra em (1,5, 3), brilho no canto superior esquerdo (a face da tecla tem um brilho diagonal branco a 30% que some aos 42%), lábio de luz em cima e à esquerda, rebaixo com sombra em cima e fio de luz embaixo. Peça nova que ponha luz embaixo ou sombra para cima está fora do mundo.",
         "section": "elevation"
       },
       {
         "name": "A Regra do Curso da Tecla",
-        "body": "A sombra é a distância de curso do botão, não uma sombra de luz. Em repouso o botão está a 3px ou 5px do painel; no hover sobe e a sombra cresce; no clique afunda até encostar, com box-shadow zero. O botão desativado já nasce afundado.",
+        "body": "Herdada e implementada com `transform: translateY(2px)` (1px na tecla pequena) e o corpo encurtando a `0 1px 0`, com `transition: none`: a tecla afunda e encosta, sem animar. **Tecla desabilitada fica afundada**: é a leitura de \"esta tecla não sobe aqui\" (SAMPLER, EXPORT, \"Baixar .mid\" antes de gerar).",
         "section": "elevation"
       },
       {
-        "name": "A Regra do Corte Duro",
-        "body": "Gradiente existe, mas nunca como transição. São todos cortes secos: a faixa em quatro quartos exatos, o accent cortado a 55%, o medidor em três faixas duras. A única exceção é a scanline de 3,5% do rack, que é ruído de superfície e não sombreamento.",
+        "name": "A Regra do Halo Só no LED",
+        "body": "Herdada. O site tem uma segunda luz, a do texto laranja dentro de um rebaixo (ver **A Regra da Luz no Rebaixo**), e ela também é LED: é o display. Nada mais brilha, e nenhuma tecla, moldura ou link tem glow.",
         "section": "elevation"
       },
       {
-        "name": "A Regra do Raio Herdado",
-        "body": "O raio de uma peça nova se decide olhando a peça equivalente no MaschinLookAndFeel.h, não pelo que parece bonito: tecla é 4 (fillRoundedRectangle(face,4.0f)), campo é 5 (drawComboBox), controle é 6 (kRadius), superfície de página é 8, círculo só em knob e LED. Não inventar degrau intermediário e não voltar a zerar o canto — o aparelho nunca teve canto reto; o site é que estava errado.",
+        "name": "A Regra do Brilho Curto",
+        "body": "O brilho diagonal da face da tecla é pintado num quadro de **160px de largura** (`background-size: 160px 100%`, sem repetição, ancorado à esquerda). Numa tecla de 44px ele cobre a face inteira; numa tecla larga (CTA de 180px+, botão de formulário a 100%, tecla de download) ele fica no canto superior esquerdo, como um reflexo de janela, em vez de se esticar até virar degradê. É o que deixa uma tecla de 400px continuar lendo como plástico, não como botão web com gradiente.",
+        "section": "elevation"
+      },
+      {
+        "name": "A Regra do Raio Baixo",
+        "body": "Herdada: tecla é 3, campo é 4, painel é 8, aparelho é 6. Peça nova pega o raio da equivalente; sem equivalente, é 3.",
         "section": "shapes"
       },
       {
-        "name": "O Vão é Coluna, Não Margem",
-        "body": "O agrupamento de compasso vem de uma coluna de 12px declarada no grid-template-columns, nunca de margin-left na primeira tecla do bloco. Com a margem no item, #seq e #seq-ruler calculavam larguras diferentes a partir do min-content, o que amassava as teclas de início de tempo e desalinhava a régua; com a coluna, as duas grades concordam por construção. Medido: 5px entre teclas, 22px entre blocos, desvio zero da régua e do accent.",
-        "section": "layout"
+        "name": "A Regra do Knob Torneado",
+        "body": "Herdada e feita em CSS: saia serrilhada em `repeating-conic-gradient` (dente `{colors.tooth}` de 6° a cada 13,33°, 27 dentes) sob um disco `{colors.skirt}` a 77%; anel de 11 pontos (15 em FX e painel) de 2,2px (2,8px) a −135°…+135°, acesos em verde do mínimo até o ponteiro; capa a 70% com gradiente diagonal (preto `#5c5c5e → #1b1b1c`, laranja `#e37d3d → #ac5620`) e ponteiro `{colors.pointer}`. Sem saia é botão; sem anel é knob de outro mundo.",
+        "section": "shapes"
       }
     ],
     "dos": [
-      "Do tratar `drum-dealer-ui.png` e `MaschinLookAndFeel.h` como a autoridade visual. Antes de escolher cor, raio ou forma para um controle novo, olhe como o plugin resolve o mesmo controle — a imagem mostra, o header dá o número.",
-      "Do seguir A Regra do Painel: laranja para controle de painel/FX, grafite para controle de canal.",
-      "Do repetir a sequência vermelho → laranja → amarelo → creme quando um conjunto de quatro itens precisar de cor, trocando creme por grafite se o item ficar sobre fundo creme.",
-      "Do usar sombra dura deslocada (3px interno, 5px de peça, 8px só para a unidade) e trocar para `#000` sobre o campo do rack.",
-      "Do tirar o raio de uma peça nova da peça equivalente no `MaschinLookAndFeel.h`: tecla 4px, campo 5px, controle 6px, superfície de página 8px, círculo só em knob e LED.",
-      "Do abrir agrupamento com coluna de vão no template da grade, nunca com margem no item — é o que mantém `#seq` e `#seq-ruler` concordando.",
-      "Do dar altura explícita a tecla e accent (`46px`) com `min-width: 0`, nunca `aspect-ratio`.",
-      "Do escrever número, unidade, formato e status em Martian Mono, sempre com tracking negativo.",
-      "Do garantir que todo estado tenha um sinal além da cor: LED preenchido no step, `aria-pressed` no MUTE/SOLO, coluna de vão a cada quatro steps, régua numerada com o tempo forte em tinta cheia, rótulo que alterna entre \"Parado\" e \"Tocando\".",
-      "Do medir também o que não é texto: LED, indicador e afim têm piso de 3:1 contra o fundo em que sentam.",
-      "Do dar anel de foco visível a tudo que é operável, inclusive aos knobs, e trocá-lo para amarelo dentro do rack.",
-      "Do deixar a máquina rolar por inteiro em vez de esconder controles em tela pequena.",
-      "Do manter o movimento concentrado na batida: playhead que acende, numeral da régua e pulso do tally, e nada mais.",
-      "Do medir antes de escolher entre creme e branco em texto sobre cor chapada; o piso é 4,5:1.",
-      "Do desenhar ícone como caminho SVG inline em `currentColor`, dimensionado em `1em`.",
-      "Do manter a régua e a grade com o mesmo `grid-template-columns` e travar as colunas de step em 24px no celular, senão as duas desalinham."
+      "**Do** tratar o painel do plugin e `~/Sistema AI/MaschinDealer/DESIGN.md` como a autoridade. Peça nova no site: achar a equivalente no painel e copiar a receita com os números; só depois adaptar, e registrar a adaptação aqui.",
+      "**Do** fazer todo botão com `.key`: face em gradiente, corpo de 3px, contorno de 1px, brilho de 160px, sombra macia em três camadas, texto gravado, `transition: none`.",
+      "**Do** afundar a tecla apertada (`translateY(2px)`, corpo `0 1px 0`, sombra some) e deixar a tecla desabilitada afundada.",
+      "**Do** seguir **A Regra do Painel** na página: uma tecla laranja por bloco, creme para a secundária, preta para serviço.",
+      "**Do** cortar no aço (`.recess`) tudo que recebe ou mostra valor: campo, tela, preço, medidor, código, número de passo, aviso.",
+      "**Do** escrever valor dentro de rebaixo em luz laranja com halo de 6px a 55%.",
+      "**Do** usar `<fieldset class=\"panel\">` com `<legend>` para toda moldura de conteúdo; o título vazado vem do próprio `fieldset`.",
+      "**Do** contar acessos com soquetes de LED (vermelho aceso = ocupado) e manter a legenda \"N acessos\" ao lado como texto acessível.",
+      "**Do** manter a luz no alto à esquerda: sombra em (1,5, 3), brilho no canto superior esquerdo, rebaixo com sombra em cima e fio de luz embaixo.",
+      "**Do** carregar Barlow 500, 600 e 700 e Yellowtail 400; prosa em 500, legenda em 600, tecla e título em 700.",
+      "**Do** manter serigrafia em caixa alta com tracking de 0.02 a 0.08em e prosa em caixa baixa sem tracking (**A Regra das Duas Vozes**).",
+      "**Do** reproduzir a grade do sequencer com `minmax(28px, 36px)` nas colunas de step e a coluna de 6px de vão de compasso no template, e reordenar as colunas no celular com a tecla do instrumento primeiro.",
+      "**Do** dar anel de foco verde (2px, 3px de distância) a tudo que recebe teclado.",
+      "**Do** marcar como \"só no plugin\" (tecla afundada + legenda) o que existe no painel e não pode existir na página, em vez de esconder.",
+      "**Do** manter o movimento onde o áudio se move: playhead, medidor, LED de compasso; e desligar tudo em `prefers-reduced-motion`."
     ],
     "donts": [
-      "Don't reconstruir a direção \"Sala Técnica\" (rack preto anodizado, gaffer, Dymo, paleta `0E0F0F / B7BCBD / FF5A1F / C2211A / EDEAE3`). Foi rejeitada pelo Diogo; ver `.impeccable/mocks/DESCARTADO.md`.",
-      "Don't introduzir sombra desfocada, alpha em sombra, bisel, brilho, textura de material ou qualquer fisicalidade fingida. A única textura do site é a scanline de 3,5% no rack.",
-      "Don't usar gradiente como transição. Gradiente aqui é corte duro entre cores chapadas.",
-      "Don't zerar o canto de um retângulo. O aparelho nunca teve canto reto; a versão do site que tinha estava errada, e voltar a ela desalinha o site do plugin de novo.",
-      "Don't inventar degrau de raio fora da escada (2 / 3 / 4 / 5 / 6 / 8 / 50%).",
-      "Don't usar `aspect-ratio` em tecla ou accent: a largura passa a ser resolvida a partir da altura, a peça transborda a trilha, engole o gap e corta o LED na borda.",
-      "Don't criar borda colorida, borda clara ou divisória por opacidade. Borda é preta e sólida; `{colors.rack-line}` só existe onde preto seria invisível.",
-      "Don't reintroduzir `'IBM Plex Mono'`: ela era pedida no CSS antigo e nunca era carregada. A mono do sistema é Martian Mono.",
-      "Don't usar Archivo em legenda técnica nem Martian Mono em texto corrido.",
-      "Don't deixar cor sozinha carregando um estado. Se um indicador mudar de cor, alguma outra coisa muda junto — forma, posição, atributo ARIA ou palavra.",
-      "Don't espalhar movimento. O inventário inteiro é: curso de 60ms nos botões, 70ms no playhead e no numeral da régua, 100ms no pulso do tally, 120ms no empurrão de troca de sample. Uma transição nova precisa justificar por que não cabe nesse conjunto.",
-      "Don't voltar a escurecer o playhead com `filter: brightness()`: apaga a cor do grupo justamente na coluna que o olho procura.",
-      "Don't usar glifo de fonte como ícone. Os que estavam ali caíam na área privativa do Unicode e viravam tofu no Windows e no Android.",
-      "Don't trocar `#seq >` por `.seq >` na reordenação de celular, nem tirar o `grid-row` explícito: a régua entra na conta do `25n` e cada instrumento passa a ocupar duas linhas.",
-      "Don't tratar os tamanhos abaixo de `{typography.body}` como fora da rampa. Peça de máquina é dimensionada por peça; a rampa `--t-*` governa a prosa.",
-      "Don't reviver `.chip`, `.card`, `.cheia` ou os degraus `--s7` e `--t-legend`: são resíduo declarado e não usado, não vocabulário do sistema."
+      "**Don't** reconstruir o neobrutalismo creme do site anterior: fundo creme, contorno de 2,5px, sombra dura de blur zero, Archivo Black, Martian Mono. Descartado em 2026-09-09.",
+      "**Don't** fazer o \"VST escuro genérico\": degradê de carvão em superfície, anel de cromo em knob, glow em borda, botão ou moldura.",
+      "**Don't** colorir o fundo: sem campo de cor por seção, sem degradê colorido, sem faixa de destaque. Seção se separa com um filete de 1px e espaço.",
+      "**Don't** usar sombra dura de blur zero, sombra para cima ou para a esquerda, nem sombra grande fora do aparelho e do plano recomendado.",
+      "**Don't** pintar tecla chapada, nem esticar o brilho da face além de 160px numa tecla larga.",
+      "**Don't** pôr duas teclas laranja lado a lado, nem usar laranja em tecla de serviço.",
+      "**Don't** usar vermelho, amarelo ou creme como cor de estado ou de texto. Estado é LED; erro é `{colors.led-on}`, sucesso é `{colors.led-green}`.",
+      "**Don't** mostrar preço, BPM ou número de passo como texto em serigrafia: é luz num rebaixo.",
+      "**Don't** usar card com fundo sólido, borda de 1px cinza ou cabeçalho em barra. Contêiner de conteúdo é `fieldset.panel` com `legend`.",
+      "**Don't** adicionar hover a tecla, knob, step ou campo. Hover só em link de prosa e navegação.",
+      "**Don't** mostrar o valor do knob em número.",
+      "**Don't** usar Barlow Condensed, outra família de texto ou uma fonte mono. `<code>` é Barlow 600 em rebaixo.",
+      "**Don't** usar Yellowtail fora da designação \"Rhythm Composer - DD 001\", nem deixar a designação mais larga que o nome.",
+      "**Don't** abrir o tracking além de 0.08em, nem usar caixa alta em prosa (lead, corpo, lista, placeholder, `input`).",
+      "**Don't** inventar raio fora da escada (1,2 / 2 / 3 / 4 / 6 / 8 / círculo), nem canto reto, nem pílula.",
+      "**Don't** engrossar contorno: 1px em peça, 1,5px em moldura de painel; 2px só no anel de foco.",
+      "**Don't** juntar as quatro faixas da banda em degradê nem trocar a ordem; no site ela aparece duas vezes (aparelho e fecho) e nas duas é a mesma.",
+      "**Don't** usar a largura larga (1560px) para prosa; só o aparelho e a barra do topo moram nela.",
+      "**Don't** deixar o site mandar no painel. A ordem é painel → DESIGN.md do plugin → este arquivo."
     ]
   }
 }
