@@ -1,10 +1,11 @@
 // Página da conta: entrar / criar conta, licença e máquinas, compra pelo Mercado Pago.
-import { signIn, signUp, signOut, getSession, select, call, loadPlans, formatBRL, ApiError } from './dd-api.js';
+import { signIn, signUp, signOut, getSession, select, call, loadPlans, formatBRL, ApiError, DOWNLOADS } from './dd-api.js';
 
 const $ = (id) => document.getElementById(id);
 const params = new URLSearchParams(location.search);
 const planoPedido = params.get('plano');
 const pagamento = params.get('pagamento');
+const baixarPedido = params.get('baixar');   // 'mac' | 'win': veio do botão de download
 
 let plans = [];
 
@@ -162,7 +163,9 @@ async function esperarLicenca(session) {
 function renderAuth() {
   $('view-account').hidden = true;
   $('view-auth').hidden = false;
-  $('titulo').textContent = planoPedido ? 'Entre ou crie a conta para comprar' : 'Sua conta';
+  $('titulo').textContent = planoPedido ? 'Entre ou crie a conta para comprar'
+    : baixarPedido ? 'Crie sua conta para baixar' : 'Sua conta';
+  if (baixarPedido) aviso('O download pede uma conta: é a mesma que você vai usar dentro do plugin. Leva 10 segundos, e o instalador começa a baixar sozinho depois.');
   setStatus('Não conectado', false);
 }
 
@@ -197,10 +200,21 @@ $('btn-logout').addEventListener('click', async () => {
 });
 
 async function depoisDoLogin(session) {
-  await renderConta(session);
+  const { lic } = await renderConta(session);
   if (planoPedido && plans.some((p) => p.id === planoPedido)) {
     history.replaceState(null, '', 'conta.html');
     await comprar(planoPedido);
+  } else if (baixarPedido && DOWNLOADS[baixarPedido]) {
+    history.replaceState(null, '', 'conta.html');
+    const a = document.createElement('a');
+    a.href = DOWNLOADS[baixarPedido]; a.download = ''; document.body.appendChild(a); a.click(); a.remove();
+    if (lic) {
+      aviso(`O instalador para ${baixarPedido === 'mac' ? 'Mac' : 'Windows'} está baixando. Instale e entre com esta conta no plugin.`, 'ok');
+    } else {
+      // sem licença o plugin abre em silêncio: o caminho volta sempre para o pagamento
+      aviso(`O instalador para ${baixarPedido === 'mac' ? 'Mac' : 'Windows'} está baixando. Pra destravar o plugin, escolha um plano abaixo e pague; ele libera na hora.`, 'ok');
+      $('panel-buy').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
   }
 }
 

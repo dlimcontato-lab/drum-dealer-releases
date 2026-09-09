@@ -27,5 +27,6 @@ function perSeat(cents, seats) {
   if (s?.user?.email) {
     const nav = document.getElementById('nav-conta');
     if (nav) nav.textContent = 'Minha conta';
+    // já tem conta: o botão vai pra conta e o download começa lá (e a página leva pro pagamento)
   }
 })();

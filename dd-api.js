@@ -123,3 +123,8 @@ export function formatBRL(cents) {
 export async function loadPlans() {
   return select('plans', 'select=id,name,seats,price_cents,badge,sort&active=eq.true&order=sort.asc', { auth: false });
 }
+
+export const DOWNLOADS = {
+  mac: 'https://github.com/dlimcontato-lab/drum-dealer-releases/releases/latest/download/DrumDealer-macOS.pkg',
+  win: 'https://github.com/dlimcontato-lab/drum-dealer-releases/releases/latest/download/DrumDealer-Windows-Setup.exe',
+};
