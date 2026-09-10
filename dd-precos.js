@@ -1,5 +1,5 @@
 // Preços da home: os valores no HTML são o placeholder; a tabela `plans` manda.
-import { loadPlans, formatBRL, getSession } from './dd-api.js?v=20260909c';
+import { loadPlans, formatBRL, getSession } from './dd-api.js?v=20260909d';
 
 function perSeat(cents, seats) {
   const v = cents / seats / 100;

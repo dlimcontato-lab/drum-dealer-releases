@@ -1,5 +1,5 @@
 // Página da conta: entrar / criar conta, licença e máquinas, compra pelo Mercado Pago.
-import { signIn, signUp, signOut, getSession, select, call, loadPlans, formatBRL, ApiError, DOWNLOADS } from './dd-api.js?v=20260909c';
+import { signIn, signUp, signOut, getSession, select, call, loadPlans, formatBRL, ApiError, DOWNLOADS } from './dd-api.js?v=20260909d';
 
 const $ = (id) => document.getElementById(id);
 const params = new URLSearchParams(location.search);
@@ -46,8 +46,17 @@ function statusPedido(s) {
 async function comprar(planId) {
   msg('msg-buy', 'Abrindo o pagamento…');
   try {
-    const { init_point } = await call('checkout', { plan_id: planId });
-    location.href = init_point;
+    const r = await call('checkout', { plan_id: planId });
+    if (r.simulated) {
+      // pagamento ainda não ligado: o pedido foi aprovado na hora
+      msg('msg-buy', '');
+      const s = await getSession();
+      await renderConta(s);
+      aviso('Licença liberada nesta conta. Baixe o instalador e entre com este e-mail dentro do plugin.', 'ok');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+    location.href = r.init_point;
   } catch (e) {
     if (e.code === 'mp_not_configured') msg('msg-buy', 'O pagamento online ainda não está ligado. Sua conta já existe: fale com a gente informando este e-mail e a licença é liberada nela.', '');
     else msg('msg-buy', e.message, 'err');
