@@ -89,6 +89,7 @@ a:hover{text-decoration-color:var(--orange)}
 .key:active:not([disabled]),.key.down{transform:translateY(2px);box-shadow:0 1px 0 var(--body)}
 .key.cream{--face-a:#efebdd;--face-b:#dfd9ca;--body:#98948a;--edge:#8b877e;--txt:var(--ink);--engrave:rgba(255,255,255,.35)}
 .key.orange{--face-a:#e68a50;--face-b:#d36a28;--body:#91481b;--edge:#844219}
+.key.green{--face-a:#5adc8f;--face-b:#33c86f;--body:#23894c;--edge:#207d45;--txt:var(--ink);--engrave:rgba(255,255,255,.35)}
 .key.pad{--face-a:#4b4b4c;--face-b:#212123;--body:#171718;--edge:#151516}
 .key.small{height:22px;font-size:10px;letter-spacing:.03em;padding:0 10px;box-shadow:0 2px 0 var(--body),var(--sh-key)}
 .key.small:active:not([disabled]),.key.small.down{transform:translateY(1px);box-shadow:0 1px 0 var(--body)}
@@ -426,10 +427,21 @@ section{padding:var(--s6) 0}
 .cta-row .key{min-width:180px}
 
 /* ---------- preços ---------- */
-.plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s4);align-items:stretch}
-.plan{display:flex;flex-direction:column;gap:18px;padding:28px 22px 22px}
-.plan.hot{border-color:var(--silk);background:rgba(14,14,16,.38);
-     box-shadow:inset 1px 1px 0 rgba(255,255,255,.06),2px 6px 16px rgba(14,14,16,.5)}
+.plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--s4);align-items:stretch;padding-top:8px}
+/* os planos são placas apoiadas sobre o aço, não rebaixos: sobem do fundo com sombra */
+.plan{display:flex;flex-direction:column;gap:18px;padding:28px 22px 22px;
+     background:linear-gradient(180deg,#323234,#2c2c2e);border-color:rgba(233,230,222,.35);
+     box-shadow:inset 1px 1px 0 rgba(255,255,255,.08),3px 8px 18px rgba(14,14,16,.6)}
+.plan > legend{background:#323234}
+.plan.hot > legend{background:#38383a}
+.plan.hot{border-color:var(--silk);background:linear-gradient(180deg,#38383a,#2f2f31);
+     box-shadow:inset 1px 1px 0 rgba(255,255,255,.10),5px 14px 28px rgba(14,14,16,.7),0 0 0 1px rgba(54,212,118,.18);
+     transform:translateY(-6px);animation:plan-float 3.2s ease-in-out infinite}
+.plan.hot .badge .led-dot{background:var(--led-green);box-shadow:0 0 0 3px rgba(54,212,118,.28),0 0 9px 2px rgba(54,212,118,.5);
+     animation:led-blink 1.6s ease-in-out infinite}
+.plan.hot .badge{color:var(--led-green)}
+@keyframes plan-float{0%,100%{transform:translateY(-6px)}50%{transform:translateY(-12px)}}
+@keyframes led-blink{0%,100%{opacity:1}50%{opacity:.35}}
 .plan legend .badge{display:inline-flex;align-items:center;gap:7px;margin-left:8px;color:var(--orange)}
 .seats{display:flex;gap:10px;align-items:center}
 .seats .socket{width:11px;height:11px;border-radius:50%;background:var(--led-off);border:1px solid rgba(14,14,16,.8);
@@ -446,7 +458,7 @@ section{padding:var(--s6) 0}
 .plan li::before{content:'';position:absolute;left:0;top:8px;width:5px;height:5px;border-radius:50%;
      background:var(--silk-dim)}
 .plan .key{margin-top:auto;width:100%}
-.plans-note{margin-top:var(--s4);max-width:70ch;color:var(--silk-dim);font-size:var(--t-small)}
+.plans-note{margin:var(--s4) auto 0;max-width:70ch;color:var(--silk-dim);font-size:var(--t-small);text-align:center}
 .plans-note b{color:var(--silk)}
 
 /* ---------- download ---------- */
@@ -633,4 +645,5 @@ footer{margin-top:var(--s5);padding-top:var(--s3);border-top:1px solid var(--lan
 @media (prefers-reduced-motion:reduce){
   *{transition:none!important;animation:none!important}
   .tally.beat b{transform:none}
+  .plan.hot{transform:translateY(-6px)}
 }

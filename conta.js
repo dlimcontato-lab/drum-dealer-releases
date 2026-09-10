@@ -1,5 +1,5 @@
 // Página da conta: entrar / criar conta, licença e máquinas, compra pelo Mercado Pago.
-import { signIn, signUp, signOut, getSession, select, call, loadPlans, formatBRL, ApiError, DOWNLOADS } from './dd-api.js?v=20260909d';
+import { signIn, signUp, signOut, getSession, select, call, loadPlans, formatBRL, ApiError, DOWNLOADS } from './dd-api.js?v=20260909e';
 
 const $ = (id) => document.getElementById(id);
 const params = new URLSearchParams(location.search);
