@@ -5,7 +5,7 @@
 // Versão do motor. O AudioWorklet e o .wasm são cacheados com força pelo
 // navegador; sem esta query, publicar um motor novo deixa o usuário com o
 // worklet antigo — e um 'case' que não existe mais falha em silêncio.
-const ENGINE_V = '2';
+const ENGINE_V = '3';
 
 const INSTS = ['KICK', 'SNARE', 'CLAP', 'CHAT', 'OHAT', 'TOM'];
 const FILES = ['kick', 'snare', 'clap', 'chat', 'ohat', 'tom'];
@@ -18,7 +18,8 @@ const GROOVE_TYPES = ['Straight', 'Random', 'Ableton Swing 8', 'Ableton Swing 16
   'MPC 16 Swing 54%', 'MPC 16 Swing 58%', 'MPC 16 Swing 62%', 'MPC 16 Swing 66%',
   'MPC 16 Swing 70%', 'MPC 16 Swing 75%', 'SP-1200 Swing 54%', 'SP-1200 Swing 58%',
   'SP-1200 Swing 62%', 'SP-1200 Swing 66%', 'TR-909 Shuffle 2', 'TR-909 Shuffle 4',
-  'TR-909 Shuffle 6', 'FL Swing 25%', 'FL Swing 50%', 'FL Swing 75%', 'FL Swing 100%'];
+  'TR-909 Shuffle 6', 'FL Swing 25%', 'FL Swing 50%', 'FL Swing 75%', 'FL Swing 100%',
+  'MPC 16 Swing 80%', 'MPC 16 Swing 85%', 'HARD Swing 90%'];
 
 // mesmo groove inicial de sempre
 const grid = [

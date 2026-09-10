@@ -2,7 +2,7 @@
 // Sem SharedArrayBuffer: o módulo emcc é single-file e importado como ES module
 // dentro do AudioWorkletGlobalScope; a UI conversa por port.postMessage.
 import './url-shim.js'; // precisa vir antes: o glue referencia URL no top-level
-import createEngine from './engine.mjs?v=2'; // casa com ENGINE_V em dd-main.js
+import createEngine from './engine.mjs?v=3'; // casa com ENGINE_V em dd-main.js
 
 const BLOCK = 128;
 
