@@ -22,7 +22,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Yellowtail&family=Montserrat:wght@300;500;700;800&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='4' y='4' width='92' height='92' rx='10' fill='%232a2a2c' stroke='%230e0e10' stroke-width='3'/><rect x='22' y='16' width='56' height='68' rx='6' fill='%23e0702a' stroke='%23844219' stroke-width='3'/><circle cx='50' cy='34' r='8' fill='%23ff3b2f'/><circle cx='50' cy='34' r='14' fill='%23ff3b2f' opacity='.3'/></svg>">
-<link rel="stylesheet" href="dd.css?v=20260911l">
+<link rel="stylesheet" href="dd.css?v=20260911m">
 </head>
 <body>
 <!-- impeccable direction contract · seed 4268164a (herdado do painel do plugin)
@@ -48,12 +48,15 @@ RISK: aço demais sem cor; a cor mora nas teclas e nos LEDs, nunca no fundo. -->
 
 <!-- vídeo de apresentação: toca sozinho, mudo e em loop; no celular carrega a versão de 720p -->
 <div class="hero-video" id="hero-video">
-  <video id="apresentacao" poster="img/hero-poster.jpg" autoplay muted loop playsinline preload="auto"
-         aria-label="Apresentação do BRDRUM: crie grooves únicos em um clique">
-    <source src="video/apresentacao-720.mp4" type="video/mp4" media="(max-width: 900px)">
-    <source src="video/apresentacao.mp4" type="video/mp4">
+  <video id="apresentacao" poster="img/hero-poster.jpg?v=2" autoplay muted loop playsinline preload="auto"
+         aria-label="Apresentação do BRDRUM">
+    <source src="video/apresentacao-720.mp4?v=2" type="video/mp4" media="(max-width: 900px)">
+    <source src="video/apresentacao.mp4?v=2" type="video/mp4">
   </video>
-  <button class="key small hero-toggle" id="hero-toggle" type="button" aria-label="Pausar vídeo">Pausar</button>
+  <div class="hero-ctrls">
+    <button class="key small" id="hero-sound" type="button" aria-label="Ligar o som do vídeo"><span class="led" aria-hidden="true"></span>Som</button>
+    <button class="key small" id="hero-toggle" type="button" aria-label="Pausar vídeo">Pausar</button>
+  </div>
 </div>
 
 <div class="wrap-wide">
@@ -195,7 +198,7 @@ RISK: aço demais sem cor; a cor mora nas teclas e nos LEDs, nunca no fundo. -->
   </p>
 </div>
 
-<script type="module" src="dd-main.js?v=20260911l"></script>
+<script type="module" src="dd-main.js?v=20260911m"></script>
 
 <section class="wrap compat-row">
   <h2 class="compat-title"><b>compatível</b> com todas as DAWs</h2>
@@ -435,6 +438,6 @@ RISK: aço demais sem cor; a cor mora nas teclas e nos LEDs, nunca no fundo. -->
 </a>
 
 <script type="module" src="dd-precos.js?v=20260911e"></script>
-<script type="module" src="dd-reviews.js?v=20260911l"></script>
+<script type="module" src="dd-reviews.js?v=20260911m"></script>
 </body>
 </html>

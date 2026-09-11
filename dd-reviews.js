@@ -56,4 +56,11 @@ if (v && tog) {
   v.addEventListener('play', pinta); v.addEventListener('pause', pinta);
   tog.addEventListener('click', () => { v.paused ? v.play() : v.pause(); });
   pinta();
+  const som = $('hero-sound');
+  if (som) som.addEventListener('click', () => {
+    v.muted = !v.muted;
+    if (!v.muted && v.paused) v.play().catch(() => {});
+    som.classList.toggle('on', !v.muted);
+    som.setAttribute('aria-label', v.muted ? 'Ligar o som do vídeo' : 'Desligar o som do vídeo');
+  });
 }
