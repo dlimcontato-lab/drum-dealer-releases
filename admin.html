@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin — BRDRUM</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#2a2a2c">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Yellowtail&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='4' y='4' width='92' height='92' rx='10' fill='%232a2a2c' stroke='%230e0e10' stroke-width='3'/><rect x='22' y='16' width='56' height='68' rx='6' fill='%23e0702a' stroke='%23844219' stroke-width='3'/><circle cx='50' cy='34' r='8' fill='%23ff3b2f'/><circle cx='50' cy='34' r='14' fill='%23ff3b2f' opacity='.3'/></svg>">
+<link rel="stylesheet" href="dd.css?v=20260911p">
+</head>
+<body>
+
+<div class="wrap-wide">
+  <header class="topbar">
+    <a class="brand" href="./">
+      <b>BRDRUM</b><i>Rhythm Composer&nbsp; - &nbsp;001</i>
+    </a>
+    <nav aria-label="Seções">
+      <a href="./#precos">Preços</a>
+      <a href="packs.html">Sample Packs</a>
+      <a href="admin.html" class="nav-admin" aria-current="page">Admin</a>
+      <a href="conta.html" id="nav-conta">Conta</a>
+    </nav>
+  </header>
+</div>
+
+<div class="wrap">
+  <div class="sec-head" style="margin-top:var(--s3)">
+    <h2>Painel</h2>
+    <span class="legend status-row"><span class="led-dot green" id="status-led" aria-hidden="true"></span><span id="status-text">Conferindo acesso…</span></span>
+  </div>
+
+  <div class="recess warn" id="aviso" hidden></div>
+
+  <fieldset class="panel" id="bloqueio" hidden>
+    <legend>Sem acesso</legend>
+    <p class="sub">Esta página é do administrador do BRDRUM. Você vai voltar para a página inicial.</p>
+    <div class="form-row" style="margin-top:16px"><a class="key cream" href="./">Ir para a home</a></div>
+  </fieldset>
+
+  <div id="app" hidden>
+    <div class="tabs" id="tabs" role="tablist" aria-label="Áreas do painel">
+      <button class="key" type="button" role="tab" data-aba="visao"><span class="led" aria-hidden="true"></span>Visão geral</button>
+      <button class="key" type="button" role="tab" data-aba="usuarios"><span class="led" aria-hidden="true"></span>Usuários</button>
+      <button class="key" type="button" role="tab" data-aba="licencas"><span class="led" aria-hidden="true"></span>Licenças</button>
+      <button class="key" type="button" role="tab" data-aba="pagamentos"><span class="led" aria-hidden="true"></span>Pagamentos</button>
+      <button class="key" type="button" role="tab" data-aba="promocoes"><span class="led" aria-hidden="true"></span>Promoções</button>
+      <button class="key" type="button" role="tab" data-aba="packs"><span class="led" aria-hidden="true"></span>Packs</button>
+    </div>
+
+    <!-- ---------- visão geral ---------- -->
+    <div class="pane" id="pane-visao" hidden>
+      <fieldset class="panel">
+        <legend>Visão geral</legend>
+        <div class="adm-head">
+          <p class="sub" id="visao-sub">Números do servidor.</p>
+          <button class="key small" type="button" id="btn-visao">Atualizar</button>
+        </div>
+        <div class="stats" id="stats" style="margin-top:16px"></div>
+        <p class="msg" id="msg-visao" aria-live="polite" style="min-height:1.3em;font-size:var(--t-small)"></p>
+      </fieldset>
+    </div>
+
+    <!-- ---------- usuários ---------- -->
+    <div class="pane" id="pane-usuarios" hidden>
+      <fieldset class="panel">
+        <legend>Usuários</legend>
+        <div class="filtros">
+          <label><span class="legend">Buscar por e-mail ou nome</span><input class="recess" type="search" id="u-q" placeholder="ex.: nana" autocomplete="off"></label>
+          <button class="key small cream" type="button" id="u-buscar">Buscar</button>
+        </div>
+        <div class="tbl-wrap recess">
+          <table class="tbl" id="tbl-users">
+            <thead><tr><th>Usuário</th><th>Criado</th><th>Último login</th><th>Licença</th><th>Packs</th><th>Pedidos</th><th></th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p class="empty" id="u-empty" hidden>Nenhum usuário encontrado.</p>
+        <div class="pager">
+          <button class="key small" type="button" id="u-prev">Anterior</button>
+          <span class="legend" id="u-page">página 1</span>
+          <button class="key small" type="button" id="u-next">Próxima</button>
+        </div>
+        <p class="msg" id="msg-users" aria-live="polite" style="min-height:1.3em;font-size:var(--t-small)"></p>
+      </fieldset>
+
+      <fieldset class="panel" id="u-det" hidden>
+        <legend id="u-det-legend">Usuário</legend>
+        <div id="u-det-body"></div>
+      </fieldset>
+    </div>
+
+    <!-- ---------- licenças ---------- -->
+    <div class="pane" id="pane-licencas" hidden>
+      <fieldset class="panel">
+        <legend>Licenças</legend>
+        <div class="filtros">
+          <label><span class="legend">Buscar (e-mail ou nome)</span><input class="recess" type="search" id="l-q" placeholder="ex.: nana" autocomplete="off"></label>
+          <label><span class="legend">Status</span>
+            <select class="recess" id="l-status"><option value="">todas</option><option value="active">ativas</option><option value="revoked">revogadas</option></select>
+          </label>
+          <button class="key small cream" type="button" id="l-buscar">Buscar</button>
+        </div>
+        <div class="tbl-wrap recess">
+          <table class="tbl" id="tbl-lics">
+            <thead><tr><th>Dono</th><th>Acessos</th><th>Vagas em uso</th><th>Status</th><th></th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p class="empty" id="l-empty" hidden>Nenhuma licença encontrada.</p>
+        <div class="pager">
+          <button class="key small" type="button" id="l-prev">Anterior</button>
+          <span class="legend" id="l-page">página 1</span>
+          <button class="key small" type="button" id="l-next">Próxima</button>
+        </div>
+        <p class="msg" id="msg-lics" aria-live="polite" style="min-height:1.3em;font-size:var(--t-small)"></p>
+      </fieldset>
+
+      <fieldset class="panel" id="l-det" hidden>
+        <legend id="l-det-legend">Vagas da licença</legend>
+        <div id="l-det-body"></div>
+      </fieldset>
+    </div>
+
+    <!-- ---------- pagamentos ---------- -->
+    <div class="pane" id="pane-pagamentos" hidden>
+      <fieldset class="panel">
+        <legend>Pagamentos</legend>
+        <div class="filtros">
+          <label><span class="legend">Status</span>
+            <select class="recess" id="o-status">
+              <option value="">todos</option><option value="approved">pago</option><option value="pending">aguardando</option>
+              <option value="rejected">recusado</option><option value="refunded">estornado</option><option value="cancelled">cancelado</option>
+            </select>
+          </label>
+          <label><span class="legend">Tipo</span>
+            <select class="recess" id="o-kind"><option value="">todos</option><option value="plan">plano</option><option value="pack">pack</option></select>
+          </label>
+          <button class="key small cream" type="button" id="o-buscar">Filtrar</button>
+        </div>
+        <div class="tbl-wrap recess">
+          <table class="tbl" id="tbl-orders">
+            <thead><tr><th>Quando</th><th>Usuário</th><th>Item</th><th>Valor</th><th>Desconto</th><th>Cupom</th><th>Status</th><th></th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p class="empty" id="o-empty" hidden>Nenhum pedido com esse filtro.</p>
+        <div class="pager">
+          <button class="key small" type="button" id="o-prev">Anterior</button>
+          <span class="legend" id="o-page">página 1</span>
+          <button class="key small" type="button" id="o-next">Próxima</button>
+        </div>
+        <p class="msg" id="msg-orders" aria-live="polite" style="min-height:1.3em;font-size:var(--t-small)"></p>
+      </fieldset>
+    </div>
+
+    <!-- ---------- promoções ---------- -->
+    <div class="pane" id="pane-promocoes" hidden>
+      <fieldset class="panel">
+        <legend>Cupons</legend>
+        <form class="grid-form" id="form-cupom" novalidate>
+          <label><span class="legend">Código</span><input class="recess" type="text" name="code" maxlength="32" required placeholder="BRDRUM10"></label>
+          <label><span class="legend">Tipo</span>
+            <select class="recess" name="kind"><option value="percent">porcentagem</option><option value="fixed">valor fixo</option></select>
+          </label>
+          <label><span class="legend">Valor (% ou centavos)</span><input class="recess" type="number" name="value" min="1" required value="10"></label>
+          <label><span class="legend">Vale para</span>
+            <select class="recess" name="applies_to"><option value="all">tudo</option><option value="plans">planos</option><option value="packs">packs</option></select>
+          </label>
+          <label><span class="legend">Começa</span><input class="recess" type="datetime-local" name="valid_from"></label>
+          <label><span class="legend">Termina</span><input class="recess" type="datetime-local" name="valid_until"></label>
+          <label><span class="legend">Usos máximos</span><input class="recess" type="number" name="max_uses" min="1" placeholder="sem limite"></label>
+          <div style="display:flex;align-items:end"><button class="key orange" type="submit" id="cupom-salvar">Criar cupom</button></div>
+          <p class="msg wide" id="msg-cupom" aria-live="polite" style="font-size:var(--t-small)"></p>
+        </form>
+        <div class="tbl-wrap recess">
+          <table class="tbl" id="tbl-cupons">
+            <thead><tr><th>Código</th><th>Desconto</th><th>Vale para</th><th>Validade</th><th>Usos</th><th>Status</th><th></th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p class="empty" id="c-empty" hidden>Nenhum cupom criado.</p>
+      </fieldset>
+
+      <fieldset class="panel">
+        <legend>Preço dos planos</legend>
+        <p class="sub">Preço cheio e preço promocional com data. Vazio = sem promoção.</p>
+        <div id="promo-planos" style="display:grid;gap:14px;margin-top:14px"></div>
+      </fieldset>
+
+      <fieldset class="panel">
+        <legend>Promoção dos packs</legend>
+        <p class="sub">Mesma regra dos planos, pack por pack.</p>
+        <div id="promo-packs" style="display:grid;gap:14px;margin-top:14px"></div>
+        <p class="empty" id="pp-empty" hidden>Nenhum pack cadastrado.</p>
+      </fieldset>
+    </div>
+
+    <!-- ---------- packs ---------- -->
+    <div class="pane" id="pane-packs" hidden>
+      <fieldset class="panel">
+        <legend>Packs</legend>
+        <div class="adm-head">
+          <p class="sub">A ordem da loja segue o campo "ordem"; menor primeiro.</p>
+          <button class="key small cream" type="button" id="p-novo">Novo pack</button>
+        </div>
+        <div class="tbl-wrap recess">
+          <table class="tbl" id="tbl-packs">
+            <thead><tr><th>Ordem</th><th>Pack</th><th>Tipo</th><th>Preço</th><th>Arquivos</th><th>Status</th><th></th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p class="empty" id="p-empty" hidden>Nenhum pack cadastrado ainda.</p>
+        <p class="msg" id="msg-packs" aria-live="polite" style="min-height:1.3em;font-size:var(--t-small)"></p>
+      </fieldset>
+
+      <fieldset class="panel" id="p-editor" hidden>
+        <legend id="p-editor-legend">Novo pack</legend>
+        <form class="grid-form" id="form-pack" novalidate>
+          <label><span class="legend">Título</span><input class="recess" type="text" name="title" maxlength="80" required></label>
+          <label><span class="legend">Artista</span><input class="recess" type="text" name="artist" maxlength="80"></label>
+          <label><span class="legend">Slug (URL)</span><input class="recess" type="text" name="slug" maxlength="60" required placeholder="tech-house-001"></label>
+          <label><span class="legend">Tipo</span>
+            <select class="recess" name="kind">
+              <option value="drums">bateria</option><option value="midi">MIDI</option><option value="drums+midi">bateria + MIDI</option>
+            </select>
+          </label>
+          <label><span class="legend">Preço (centavos)</span><input class="recess" type="number" name="price_cents" min="1" required value="2990"></label>
+          <label><span class="legend">Preço promocional</span><input class="recess" type="number" name="promo_price_cents" min="1" placeholder="sem promoção"></label>
+          <label><span class="legend">Promo começa</span><input class="recess" type="datetime-local" name="promo_starts_at"></label>
+          <label><span class="legend">Promo termina</span><input class="recess" type="datetime-local" name="promo_ends_at"></label>
+          <label><span class="legend">Ordem</span><input class="recess" type="number" name="sort" value="0"></label>
+          <label><span class="legend">Ativo na loja</span>
+            <select class="recess" name="active"><option value="false">não</option><option value="true">sim</option></select>
+          </label>
+          <label class="wide"><span class="legend">Descrição</span><textarea class="recess" name="description" maxlength="600"></textarea></label>
+          <label class="wide"><span class="legend">Conteúdo (JSON: {"wav": 48, "midi": 20, "bpm": "124-128"})</span><textarea class="recess" name="contents" rows="2">{}</textarea></label>
+          <div class="wide form-row">
+            <button class="key orange" type="submit" id="p-salvar">Salvar pack</button>
+            <button class="key" type="button" id="p-fechar">Fechar</button>
+          </div>
+          <p class="msg wide" id="msg-pack" aria-live="polite" style="font-size:var(--t-small)"></p>
+        </form>
+
+        <div id="p-uploads" hidden style="margin-top:var(--s3)">
+          <span class="legend">Arquivos</span>
+          <div class="upl" id="upl-cover"></div>
+          <div class="upl" id="upl-preview"></div>
+          <div class="upl" id="upl-file"></div>
+        </div>
+      </fieldset>
+    </div>
+  </div>
+</div>
+
+<div class="close">
+  <div class="wrap">
+    <footer class="legend">
+      <span>BRDRUM · painel do administrador</span>
+      <span id="quem"></span>
+    </footer>
+  </div>
+</div>
+
+<script type="module" src="dd-topo.js?v=20260911p"></script>
+<script type="module" src="dd-admin.js?v=20260911p"></script>
+</body>
+</html>
