@@ -711,21 +711,16 @@ footer{margin-top:var(--s5);padding-top:var(--s3);border-top:1px solid var(--lan
 
 .compat-row{text-align:center;padding:var(--s4) 0 var(--s5)}
 .compat-title{font-family:var(--punch-font);font-weight:300;text-transform:none;letter-spacing:0;
-     font-size:clamp(1.3rem,2.4vw,1.8rem);color:var(--silk)}
+     font-size:clamp(1.2rem,2vw,1.5rem);color:var(--silk)}
 .compat-title b{font-weight:500;color:#fff}
 .compat-title.small{font-size:1.1rem;margin-bottom:12px}
-.compat-row ul{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:var(--s3) 0 var(--s2)}
-.compat-row li{--face-a:#4b4b4c;--face-b:#212123;--body:#171718;--edge:#151516;
-     font-weight:700;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--silk);
-     text-shadow:0 1px 0 rgba(14,14,16,.6);background:linear-gradient(180deg,var(--face-a),var(--face-b));
-     border:1px solid var(--edge);border-radius:3px;height:34px;padding:0 14px;display:inline-flex;align-items:center;
-     box-shadow:0 3px 0 var(--body),var(--sh-key);position:relative}
-.compat-row li::before{content:'';position:absolute;inset:1.5px;border-radius:2px;pointer-events:none;
-     background:linear-gradient(135deg,rgba(255,255,255,.30),rgba(255,255,255,0) 42%) 0 0/150px 100% no-repeat}
 .compat-row .fine{max-width:none;margin-top:var(--s2)}
-.daw-logos{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(14px,2vw,26px);margin:var(--s3) 0 var(--s2)}
-.daw-logos li{width:50px;height:50px;display:flex;align-items:center;justify-content:center}
-.daw-logos img{width:50px;height:50px;object-fit:contain;filter:drop-shadow(1.5px 3px 4px rgba(14,14,16,.45))}
+.daw-logos{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:14px;margin:var(--s2) 0 0}
+.daw-logos li{width:30px;height:30px;padding:0;display:flex;align-items:center;justify-content:center;
+     background:none;border:0;box-shadow:none;text-shadow:none}
+.daw-logos li::before{display:none}
+.daw-logos li.wide{width:40px}
+.daw-logos img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(1px 2px 2px rgba(14,14,16,.4))}
 
 .statement2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:var(--s5);align-items:center;
      padding:var(--s5) 0 var(--s6)}
