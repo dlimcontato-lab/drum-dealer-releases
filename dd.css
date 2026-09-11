@@ -743,6 +743,9 @@ footer{margin-top:var(--s5);padding-top:var(--s3);border-top:1px solid var(--lan
 .plan2{position:relative;display:flex;flex-direction:column;gap:14px;padding:30px 28px 26px;border-radius:22px;
      background:linear-gradient(180deg,#222224,#1b1b1d);border:1px solid rgba(14,14,16,.9);
      box-shadow:inset 1px 1px 0 rgba(255,255,255,.05),4px 10px 24px rgba(14,14,16,.6);text-align:center}
+.plan2 .off{position:absolute;top:18px;right:18px;font-family:var(--silk-font);font-weight:700;font-size:13px;
+     letter-spacing:.04em;color:var(--ink);background:var(--led-green);border-radius:3px;padding:3px 8px;
+     box-shadow:0 2px 0 #23894c,0 0 10px rgba(54,212,118,.35)}
 .plan2 h3{font-family:var(--punch-font);font-weight:700;text-transform:none;letter-spacing:0;font-size:1.7rem;color:#fff}
 .plan2 .big-price{display:flex;align-items:flex-start;justify-content:center;gap:4px;line-height:1;margin:4px 0 2px;max-width:none}
 .plan2 .big-price small{font-family:var(--punch-font);font-weight:800;font-size:1.5rem;color:var(--orange);align-self:center;margin-right:2px}
