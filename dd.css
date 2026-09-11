@@ -704,10 +704,11 @@ footer{margin-top:var(--s5);padding-top:var(--s3);border-top:1px solid var(--lan
    rodapé de loja, balão de chat ======== */
 :root{--punch-font:'Montserrat','Barlow',sans-serif}
 
-.hero-video{position:relative;background:#141416;max-height:560px;overflow:hidden;
+.hero-video{position:relative;background:#1b1b1d;overflow:hidden;
      border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);margin-bottom:var(--s4)}
-.hero-video video{display:block;width:100%;max-height:560px;object-fit:cover;background:#141416}
-.hero-video .hero-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
+.hero-video video{display:block;width:100%;aspect-ratio:16/9;max-height:78vh;object-fit:cover;object-position:center 45%;background:#1b1b1d}
+.hero-video .hero-toggle{position:absolute;right:16px;bottom:14px;opacity:.75}
+.hero-video .hero-toggle:hover{opacity:1}
 
 .compat-row{text-align:center;padding:var(--s4) 0 var(--s5)}
 .compat-title{font-family:var(--punch-font);font-weight:300;text-transform:none;letter-spacing:0;

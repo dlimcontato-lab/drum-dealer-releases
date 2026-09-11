@@ -46,14 +46,14 @@ if ($('ajuda') && LINKS.ajuda) $('ajuda').href = LINKS.ajuda;
 const bubble = $('chat-bubble');
 if (bubble && LINKS.whatsapp) { bubble.href = LINKS.whatsapp; bubble.target = '_blank'; bubble.rel = 'noopener'; bubble.hidden = false; }
 
-// vídeo de apresentação: o botão só aparece quando o arquivo existe
-const v = $('apresentacao'), play = $('hero-play');
-if (v && play) {
-  v.addEventListener('loadedmetadata', () => { play.hidden = false; v.controls = true; });
-  v.addEventListener('error', () => { play.hidden = true; }, true);
-  play.addEventListener('click', () => { v.play(); play.hidden = true; });
-  v.addEventListener('pause', () => { play.hidden = false; });
-  v.addEventListener('play', () => { play.hidden = true; });
-  // força a leitura dos metadados sem baixar o vídeo inteiro
-  v.preload = 'metadata';
+// vídeo de apresentação: autoplay mudo em loop; respeita "reduzir movimento"
+const v = $('apresentacao'), tog = $('hero-toggle');
+if (v && tog) {
+  const reduz = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const pinta = () => { tog.textContent = v.paused ? 'Tocar' : 'Pausar'; tog.setAttribute('aria-label', v.paused ? 'Tocar vídeo' : 'Pausar vídeo'); };
+  if (reduz) { v.removeAttribute('autoplay'); v.pause(); }
+  else v.play().catch(() => {});
+  v.addEventListener('play', pinta); v.addEventListener('pause', pinta);
+  tog.addEventListener('click', () => { v.paused ? v.play() : v.pause(); });
+  pinta();
 }
