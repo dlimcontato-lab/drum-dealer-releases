@@ -672,6 +672,9 @@ footer{margin-top:var(--s5);padding-top:var(--s3);border-top:1px solid var(--lan
 .compat-row li::before{content:'';position:absolute;inset:1.5px;border-radius:2px;pointer-events:none;
      background:linear-gradient(135deg,rgba(255,255,255,.30),rgba(255,255,255,0) 42%) 0 0/150px 100% no-repeat}
 .compat-row .fine{max-width:none;margin-top:var(--s2)}
+.daw-logos{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:clamp(18px,3vw,40px);margin:var(--s3) 0 var(--s2)}
+.daw-logos li{width:64px;height:64px;display:flex;align-items:center;justify-content:center}
+.daw-logos img{width:64px;height:64px;object-fit:contain;border-radius:12px;filter:drop-shadow(1.5px 3px 4px rgba(14,14,16,.45))}
 
 .statement2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:var(--s5);align-items:center;
      padding:var(--s5) 0 var(--s6)}
