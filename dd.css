@@ -715,12 +715,12 @@ footer{margin-top:var(--s5);padding-top:var(--s3);border-top:1px solid var(--lan
 .compat-title b{font-weight:500;color:#fff}
 .compat-title.small{font-size:1.1rem;margin-bottom:12px}
 .compat-row .fine{max-width:none;margin-top:var(--s2)}
-.daw-logos{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:19px;margin:var(--s2) 0 0}
-.daw-logos li{width:40px;height:40px;padding:0;display:flex;align-items:center;justify-content:center;
+.daw-logos{list-style:none;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:38px;margin:var(--s3) 0 0}
+.daw-logos li{width:80px;height:80px;padding:0;display:flex;align-items:center;justify-content:center;
      background:none;border:0;box-shadow:none;text-shadow:none}
 .daw-logos li::before{display:none}
-.daw-logos li.wide{width:54px}
-.daw-logos img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(1px 2px 2px rgba(14,14,16,.4))}
+.daw-logos li.wide{width:108px}
+.daw-logos img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(1.5px 3px 4px rgba(14,14,16,.45))}
 
 .statement2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:var(--s5);align-items:center;
      padding:var(--s5) 0 var(--s6)}
@@ -826,4 +826,10 @@ footer{margin-top:var(--s5);padding-top:var(--s3);border-top:1px solid var(--lan
 @media (prefers-reduced-motion:reduce){
   .plan2.hot{animation:none;transform:translateY(-8px)}
   .plan2 .ribbon .led-dot{animation:none}
+}
+
+@media (max-width:760px){
+  .daw-logos{gap:18px}
+  .daw-logos li{width:52px;height:52px}
+  .daw-logos li.wide{width:70px}
 }
