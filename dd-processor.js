@@ -2,7 +2,7 @@
 // Sem SharedArrayBuffer: o módulo emcc é single-file e importado como ES module
 // dentro do AudioWorkletGlobalScope; a UI conversa por port.postMessage.
 import './url-shim.js'; // precisa vir antes: o glue referencia URL no top-level
-import createEngine from './engine.mjs?v=3'; // casa com ENGINE_V em dd-main.js
+import createEngine from './engine.mjs?v=4'; // casa com ENGINE_V em dd-main.js
 
 const BLOCK = 128;
 
@@ -56,6 +56,7 @@ class DrumDealerProcessor extends AudioWorkletProcessor {
       case 'step':    M._web_set_step(m.inst, m.step, m.on ? 1 : 0); break;
       case 'accent':  M._web_set_accent(m.step, m.value); break;
       case 'bpm':     M._web_set_bpm(m.value); break;
+      case 'toneX20': M._web_set_tone_x20(m.on ? 1 : 0); break;
       case 'playing': M._web_set_playing(m.on ? 1 : 0); this.lastStep = -1; break;
       case 'trigger': M._web_trigger(m.inst); break;
       case 'sample': {

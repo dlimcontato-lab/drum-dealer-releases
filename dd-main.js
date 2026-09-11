@@ -5,7 +5,7 @@
 // Versão do motor. O AudioWorklet e o .wasm são cacheados com força pelo
 // navegador; sem esta query, publicar um motor novo deixa o usuário com o
 // worklet antigo — e um 'case' que não existe mais falha em silêncio.
-const ENGINE_V = '3';
+const ENGINE_V = '4';
 
 const INSTS = ['KICK', 'SNARE', 'CLAP', 'CHAT', 'OHAT', 'TOM'];
 const FILES = ['kick', 'snare', 'clap', 'chat', 'ohat', 'tom'];
@@ -34,15 +34,17 @@ const grid = [
 const accents = Array(16).fill(0.5);
 
 let ctx = null, node = null, ready = false;
-let bpm = 126, playing = false;
+let bpm = 126, playing = false, toneX20 = false;
 const current = [0, 0, 0, 0, 0, 0];
 const sampleData = {}; // sampleData[inst][variante] = Float32Array
 
 const send = (msg) => { if (node) node.port.postMessage(msg); };
 
 // ---------- knobs ----------
-// range: {min,max,def,skew?}; envia via cb(valor)
-function makeKnob(el, range, cb, label) {
+// range: {min,max,def,pos?}; envia via cb(valor). pos(v) -> 0..1 é a curva do
+// parâmetro no plugin (ex.: TIME do ECHO em escala log); sem ela, linear.
+// opts.disabled: knob só pintado no valor de fábrica, sem arrasto, teclado nem envio.
+function makeKnob(el, range, cb, label, opts = {}) {
   let val = range.def;
   // Um knob que só responde a arrasto exclui teclado e leitor de tela; o próprio
   // PRODUCT.md exige foco visível em tudo que é operável.
@@ -61,12 +63,19 @@ function makeKnob(el, range, cb, label) {
     el.appendChild(d); dots.push(d);
   }
   const paint = () => {
-    const t = (val - range.min) / (range.max - range.min);
+    const t = range.pos ? range.pos(val) : (val - range.min) / (range.max - range.min);
     el.style.setProperty('--rot', (-135 + t * 270).toFixed(1) + 'deg');
     el.setAttribute('aria-valuenow', val.toFixed(2));
     const lit = Math.round(t * (nDots - 1));
     dots.forEach((d, i) => d.classList.toggle('lit', i <= lit));
   };
+  if (opts.disabled) {
+    el.removeAttribute('tabindex');
+    el.setAttribute('aria-disabled', 'true');
+    el.classList.add('off');
+    paint();
+    return { set: () => {} };
+  }
   const apply = () => { paint(); cb(val); };
   let startY = 0, startVal = 0;
   el.addEventListener('pointerdown', (e) => {
@@ -285,6 +294,51 @@ makeKnob(document.getElementById('fill-vol'), { min: 0, max: 1, def: 0.8 },
 makeKnob(document.getElementById('master-gain'), { min: -24, max: 6, def: 0 },
   (v) => send({ type: 'param', id: G.gain, value: v }));
 
+// ---------- TONE ×20 ----------
+// parâmetro toneX20 do plugin: o curso do TONE das seis pistas passa de ±1 oitava
+// para 20x mais rápido / 20x mais lento. Toggle com LED, como o MUTE.
+const toneBtn = document.getElementById('tone-x20');
+toneBtn.addEventListener('click', () => {
+  toneX20 = !toneX20;
+  toneBtn.classList.toggle('on', toneX20);
+  toneBtn.setAttribute('aria-pressed', String(toneX20));
+  send({ type: 'toneX20', on: toneX20 });
+});
+
+// ---------- MASTER FX (só no plugin) ----------
+// Mesmos controles, ordem e valores de fábrica do painel do plugin 1.4.x
+// (PluginProcessor.cpp: satDrive..echoMix). O motor web ainda não tem o estágio
+// MasterFx, então os knobs nascem desabilitados e nada vai para o worklet.
+{
+  // echoTime: 1..1000 ms com setSkewForCentre(31.62) -> proporção do knob
+  const echoSkew = Math.log(0.5) / Math.log((31.62 - 1) / (1000 - 1));
+  const timePos = (v) => Math.pow((v - 1) / (1000 - 1), echoSkew);
+  const MFX = {
+    sat:  [['DRIVE', { min: 0, max: 1, def: 0 }], ['COLOR', { min: 0, max: 1, def: 0.5 }],
+           ['MIX', { min: 0, max: 1, def: 0 }]],
+    mb:   [['LOW', { min: 0, max: 1, def: 0 }], ['MID', { min: 0, max: 1, def: 0 }],
+           ['HIGH', { min: 0, max: 1, def: 0 }], ['MIX', { min: 0, max: 1, def: 0 }]],
+    echo: [['TIME', { min: 1, max: 1000, def: 250, pos: timePos }],
+           ['FEEDBACK', { min: 0, max: 1, def: 0.35 }], ['INPUT', { min: -24, max: 12, def: 0 }],
+           ['FILTER', { min: -1, max: 1, def: 0 }], ['MOD', { min: 0, max: 1, def: 0 }],
+           ['DRY/WET', { min: 0, max: 1, def: 0 }]],
+  };
+  const GROUP_NAME = { sat: 'Saturation', mb: 'Multiband', echo: 'Echo' };
+  for (const box of document.querySelectorAll('.mfx-knobs')) {
+    const g = box.dataset.mfx;
+    for (const [label, range] of MFX[g]) {
+      const cell = document.createElement('div'); cell.className = 'kcell';
+      // SATURATION e MULTIBAND: knob de FX (46px); ECHO: 38px, capa laranja nos dois
+      const k = document.createElement('span'); k.className = 'knob orange' + (g === 'echo' ? '' : ' fx');
+      cell.appendChild(k);
+      const cap = document.createElement('small'); cap.textContent = label;
+      cell.appendChild(cap);
+      box.appendChild(cell);
+      makeKnob(k, range, () => {}, `${label} do ${GROUP_NAME[g]} (só no plugin)`, { disabled: true });
+    }
+  }
+}
+
 // ---------- áudio ----------
 let booting = null;
 
@@ -352,6 +406,7 @@ function pushSample(i) {
 
 function pushFullState() {
   send({ type: 'bpm', value: bpm });
+  send({ type: 'toneX20', on: toneX20 });
   for (let r = 0; r < 6; r++)
     for (let c = 0; c < 16; c++)
       if (grid[r][c]) send({ type: 'step', inst: r, step: c, on: true });

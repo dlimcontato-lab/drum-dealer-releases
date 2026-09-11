@@ -303,9 +303,9 @@ input.recess:focus{outline:2px solid var(--led-green);outline-offset:1px}
 .ms::after{content:'';position:absolute;left:6px;top:50%;width:5.5px;height:5.5px;margin-top:-2.75px;border-radius:50%;
      background:var(--led-off);border:1px solid rgba(14,14,16,.8)}
 .ms:active{transform:translateY(1px);box-shadow:0 1px 0 var(--body)}
-.ms.on-mute,.ms.on-solo{--face-a:#636366;--face-b:#3d3d40;color:var(--silk)}
+.ms.on-mute,.ms.on-solo,.ms.on-sync{--face-a:#636366;--face-b:#3d3d40;color:var(--silk)}
 .ms.on-mute::after{background:var(--led-on);box-shadow:0 0 0 2px rgba(255,59,47,.3),0 0 6px 1px rgba(255,59,47,.55)}
-.ms.on-solo::after{background:var(--yellow);box-shadow:0 0 0 2px rgba(226,190,58,.3),0 0 6px 1px rgba(226,190,58,.55)}
+.ms.on-solo::after,.ms.on-sync::after{background:var(--yellow);box-shadow:0 0 0 2px rgba(226,190,58,.3),0 0 6px 1px rgba(226,190,58,.55)}
 
 /* step: tecla de plástico 36×42 na cor do grupo, LED a 10px do topo */
 .step{height:42px;min-width:0;border:1px solid var(--edge);border-radius:3px;cursor:pointer;position:relative;padding:0;
@@ -546,6 +546,55 @@ footer{margin-top:var(--s5);padding-top:var(--s3);border-top:1px solid var(--lan
 .upgrade .key{justify-content:space-between;padding:0 16px}
 .upgrade .key span{font-size:11px;letter-spacing:.03em;opacity:.85}
 
+/* TONE ×20: a tecla de toggle da barra (plástico preto 110×44, LED de 7px a 12px
+   da borda esquerda, texto centrado no que sobra à direita do LED). Mesmos três
+   sinais do MUTE: face plastic-hi, serigrafia cheia e LED vermelho quando ligada. */
+.key.toggle{--txt:var(--silk-dim);width:110px;padding:0 0 0 22px}
+.key.toggle .led{position:absolute;left:12px;top:50%;margin-top:-5px}
+.key.toggle.on{--face-a:#636366;--face-b:#3d3d40;--txt:var(--silk)}
+.key.toggle.on .led{background:var(--led-on);box-shadow:0 0 0 3px rgba(255,59,47,.28),0 0 9px 2px rgba(255,59,47,.55)}
+
+/* ---------- MASTER FX: a faixa deitada abaixo do ACCENT ----------
+   Três grupos (SATURATION 360 · MULTIBAND 448 · ECHO 378 no plugin) separados por
+   filete de 1px em lane-line. Knobs de FX de 46px a passo de 64; no ECHO, 38px a
+   passo de 48 com a tecla SYNC sob o subtítulo. Legendas alinhadas pela base. */
+.mfx-wrap{container-type:inline-size;margin-top:14px}
+.panel.mfx{padding:0 0 3px}
+.panel.mfx > legend{line-height:16px}
+.mfx-note{font-family:var(--silk-font);font-weight:600;font-size:9.5px;letter-spacing:.03em;
+     color:var(--silk-dim);margin-left:10px;vertical-align:1px}
+.mfx-row{display:grid;grid-template-columns:360fr 448fr 378fr;align-items:stretch}
+.mfx-group{position:relative;display:flex;align-items:flex-end;justify-content:center;padding:4px 0 0}
+.mfx-group + .mfx-group::before{content:'';position:absolute;left:0;top:3px;bottom:8px;width:1px;
+     background:var(--lane-line);pointer-events:none}
+.mfx-sub{font-family:var(--silk-font);font-weight:600;font-size:9.5px;letter-spacing:.03em;line-height:12px;
+     text-transform:uppercase;color:var(--silk-dim);width:96px;flex:none;margin-bottom:31px;white-space:nowrap}
+.mfx-knobs{display:flex;align-items:flex-end;margin-left:5px}
+.mfx .kcell{width:64px;gap:2px}
+.mfx .kcell small{line-height:12px}
+.mfx-echo{padding-inline:12px 11px}
+.mfx-echo .mfx-sub{width:auto;margin:0}
+.mfx-echo-head{display:flex;flex-direction:column;align-items:flex-start;gap:12px;flex:none;margin-bottom:18px}
+.mfx-echo .mfx-knobs{margin-left:11px}
+.mfx-echo .kcell{width:48px;gap:6px}
+/* desabilitado: o motor do site ainda não roda o MasterFx do plugin */
+.knob.off{opacity:.45;cursor:not-allowed}
+.ms[disabled]{opacity:.45;cursor:not-allowed}
+.ms[disabled]:active{transform:none;box-shadow:0 2px 0 var(--body),var(--sh-key)}
+
+/* coluna estreita demais para os três grupos lado a lado: empilha, filete deitado */
+@container (max-width:1059px){
+  .mfx-row{grid-template-columns:minmax(0,1fr)}
+  .mfx-group{padding:12px 0 10px}
+  .mfx-group + .mfx-group::before{left:12px;right:12px;top:0;bottom:auto;width:auto;height:1px}
+}
+@container (max-width:440px){
+  .mfx-group{flex-direction:column;align-items:center}
+  .mfx-sub{width:auto;margin:0 0 8px}
+  .mfx-knobs,.mfx-echo .mfx-knobs{margin-left:0}
+  .mfx-echo-head{flex-direction:row;align-items:center;margin:0 0 10px}
+}
+
 /* ---------- telas menores ---------- */
 @media (max-width:1180px){
   .unit-body{grid-template-columns:minmax(0,1fr)}
@@ -627,6 +676,8 @@ footer{margin-top:var(--s5);padding-top:var(--s3);border-top:1px solid var(--lan
   .unit-top{padding:0 0 0 16px;gap:10px}
   #sampler,#export{display:none}
   .unit-top .key{padding:0 14px;font-size:13px}
+  .unit-top .key.toggle{width:auto;padding:0 12px 0 26px}
+  .unit-top .key.toggle .led{left:10px}
   .band{margin:10px 14px 0}
   .unit-body,.unit-foot{padding-inline:14px}
   .screw{width:10px;height:10px}
