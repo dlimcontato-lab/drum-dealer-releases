@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sample Packs — BRDRUM</title>
+<meta name="description" content="Sample packs do BRDRUM: bateria e MIDI prontos para o seu set. Exclusivos para quem tem um plano do BRDRUM.">
+<meta name="theme-color" content="#2a2a2c">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Yellowtail&family=Montserrat:wght@300;500;700;800&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='4' y='4' width='92' height='92' rx='10' fill='%232a2a2c' stroke='%230e0e10' stroke-width='3'/><rect x='22' y='16' width='56' height='68' rx='6' fill='%23e0702a' stroke='%23844219' stroke-width='3'/><circle cx='50' cy='34' r='8' fill='%23ff3b2f'/><circle cx='50' cy='34' r='14' fill='%23ff3b2f' opacity='.3'/></svg>">
+<link rel="stylesheet" href="dd.css?v=20260911p">
+</head>
+<body>
+
+<div class="wrap-wide">
+  <header class="topbar">
+    <a class="brand" href="./">
+      <b>BRDRUM</b><i>Rhythm Composer&nbsp; - &nbsp;001</i>
+    </a>
+    <nav aria-label="Seções">
+      <a href="./#precos">Preços</a>
+      <a href="packs.html" aria-current="page">Sample Packs</a>
+      <a href="./#download">Download</a>
+      <a href="./#instalacao">Instalação</a>
+      <a href="conta.html" id="nav-conta">Conta</a>
+    </nav>
+  </header>
+</div>
+
+<div class="wrap">
+  <div class="sec-head" style="margin-top:var(--s3)">
+    <h2>Sample Packs</h2>
+    <span class="legend status-row"><span class="led-dot green" id="status-led" aria-hidden="true"></span><span id="status-text">Carregando…</span></span>
+  </div>
+
+  <div class="recess warn" id="aviso" hidden></div>
+
+  <!-- detalhe do pack: painel dentro da própria página -->
+  <fieldset class="panel" id="detalhe" hidden style="margin-bottom:var(--s4)">
+    <legend id="det-legend">Pack</legend>
+    <div class="pack-det">
+      <div>
+        <div class="pack-cover" id="det-cover"></div>
+        <div class="form-row" style="margin-top:12px">
+          <button class="key cream small" type="button" id="det-previa" hidden>Tocar prévia</button>
+          <button class="key small" type="button" id="det-fechar">Fechar</button>
+        </div>
+      </div>
+      <div>
+        <h3 id="det-titulo"></h3>
+        <p class="artist dim" id="det-artista" style="font-size:var(--t-small);margin-top:4px"></p>
+        <p id="det-desc" style="margin-top:12px;font-size:var(--t-small)"></p>
+        <dl id="det-dl"></dl>
+        <div class="valor" id="det-valor"></div>
+        <div id="det-compra">
+          <div class="cupom" id="det-cupom-box">
+            <label><span class="legend">Cupom (opcional)</span><input class="recess" type="text" id="det-cupom" maxlength="32" placeholder="tem um cupom? digite aqui" autocomplete="off"></label>
+            <button class="key small" type="button" id="det-cupom-ok">Aplicar</button>
+          </div>
+          <div class="form-row" style="margin-top:14px">
+            <button class="key orange" type="button" id="det-comprar">Comprar</button>
+          </div>
+        </div>
+        <p class="msg" id="det-msg" aria-live="polite" style="min-height:1.3em;font-size:var(--t-small);margin-top:8px"></p>
+      </div>
+    </div>
+  </fieldset>
+
+  <div class="packs" id="grade"></div>
+
+  <div class="vazio" id="vazio" hidden>
+    <div class="band" aria-hidden="true"></div>
+    <h3>Os primeiros packs chegam em breve</h3>
+    <p>Bateria e MIDI feitos para o BRDRUM, prontos pra jogar no sequencer. Quando o primeiro sair, ele aparece aqui.</p>
+    <a class="key cream" href="./#precos">Ver os planos do BRDRUM</a>
+  </div>
+
+  <p class="plans-note" id="nota">Os sample packs são exclusivos para quem tem um plano do BRDRUM.
+    Com o plano ativo, o pack é pagamento único e fica na sua conta pra baixar quando quiser.</p>
+</div>
+
+<div class="close">
+  <div class="wrap">
+    <footer class="legend">
+      <span>BRDRUM · Rhythm Composer - 001 · criado por Brazilian Waves</span>
+      <span>Pagamento único pelo Mercado Pago</span>
+    </footer>
+  </div>
+</div>
+
+<script type="module" src="dd-topo.js?v=20260911p"></script>
+<script type="module" src="dd-packs.js?v=20260911p"></script>
+</body>
+</html>
