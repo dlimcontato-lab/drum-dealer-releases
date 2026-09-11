@@ -393,7 +393,7 @@ O aço do site é `{colors.steel}` com uma luz radial de `{colors.steel-light}` 
 - **Knob Legend** (Barlow 600, 9,5px, ls 0.02em, caixa alta, apagada): legenda de knob, escala de dB. Números da régua de steps a 10px / 600, sem tracking.
 - **Brand** (Barlow 700, caixa alta): 19px / 0.06em na barra do topo; 30px / 0.03em na plaqueta BRDRUM dentro do aparelho.
 - **Nav** (Barlow 600, 11px, ls 0.06em, caixa alta, apagada; cheia em hover e na página atual).
-- **Script** (Yellowtail 400, sem caixa alta, apagada): só a designação "Rhythm Composer - DD 001" (15px na barra do topo e na plaqueta, `clamp(1.2rem, 2.6vw, 1.9rem)` no fecho), sempre logo abaixo ou ao lado do nome, sempre mais estreita que ele.
+- **Script** (Yellowtail 400, sem caixa alta, apagada): só a designação "Rhythm Composer - 001" (15px na barra do topo e na plaqueta, `clamp(1.2rem, 2.6vw, 1.9rem)` no fecho), sempre logo abaixo ou ao lado do nome, sempre mais estreita que ele.
 
 ### Named Rules
 
@@ -593,7 +593,7 @@ Seis pistas, uma por instrumento, com 16 teclas de step em quatro grupos de cor,
 - **Don't** adicionar hover a tecla, knob, step ou campo. Hover só em link de prosa e navegação.
 - **Don't** mostrar o valor do knob em número.
 - **Don't** usar Barlow Condensed, outra família de texto ou uma fonte mono. `<code>` é Barlow 600 em rebaixo.
-- **Don't** usar Yellowtail fora da designação "Rhythm Composer - DD 001", nem deixar a designação mais larga que o nome.
+- **Don't** usar Yellowtail fora da designação "Rhythm Composer - 001", nem deixar a designação mais larga que o nome.
 - **Don't** abrir o tracking além de 0.08em, nem usar caixa alta em prosa (lead, corpo, lista, placeholder, `input`).
 - **Don't** inventar raio fora da escada (1,2 / 2 / 3 / 4 / 6 / 8 / círculo), nem canto reto, nem pílula.
 - **Don't** engrossar contorno: 1px em peça, 1,5px em moldura de painel; 2px só no anel de foco.
