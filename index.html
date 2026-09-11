@@ -20,9 +20,9 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Yellowtail&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Yellowtail&family=Montserrat:wght@300;500;700;800&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='4' y='4' width='92' height='92' rx='10' fill='%232a2a2c' stroke='%230e0e10' stroke-width='3'/><rect x='22' y='16' width='56' height='68' rx='6' fill='%23e0702a' stroke='%23844219' stroke-width='3'/><circle cx='50' cy='34' r='8' fill='%23ff3b2f'/><circle cx='50' cy='34' r='14' fill='%23ff3b2f' opacity='.3'/></svg>">
-<link rel="stylesheet" href="dd.css?v=20260909e">
+<link rel="stylesheet" href="dd.css?v=20260911a">
 </head>
 <body>
 <!-- impeccable direction contract · seed 4268164a (herdado do painel do plugin)
@@ -44,7 +44,17 @@ RISK: aço demais sem cor; a cor mora nas teclas e nos LEDs, nunca no fundo. -->
       <a href="conta.html" id="nav-conta">Conta</a>
     </nav>
   </header>
+</div>
 
+<!-- vídeo de apresentação (arquivo em video/apresentacao.mp4; até chegar, fica o poster) -->
+<div class="hero-video" id="hero-video">
+  <video id="apresentacao" poster="img/hero-poster.jpg" preload="none" playsinline>
+    <source src="video/apresentacao.mp4" type="video/mp4">
+  </video>
+  <button class="key orange big hero-play" id="hero-play" type="button" hidden><span class="led" aria-hidden="true"></span>Assistir</button>
+</div>
+
+<div class="wrap-wide">
   <!-- o aparelho -->
   <div class="unit" id="unit">
     <span class="screw tl" aria-hidden="true"></span><span class="screw tr" aria-hidden="true"></span>
@@ -156,89 +166,33 @@ RISK: aço demais sem cor; a cor mora nas teclas e nos LEDs, nunca no fundo. -->
   </p>
 </div>
 
-<script type="module" src="dd-main.js?v=20260910a"></script>
+<script type="module" src="dd-main.js?v=20260911a"></script>
 
-<div class="wrap">
-  <div class="statement">
-    <div>
-      <h1>Sua bateria e baixo em 1 clique!</h1>
-      <p class="lead">Milhares de possibilidades com os seus samples e MIDIs, além dos pacotes que já vêm
-        dentro. Aperta RAND e sai uma batida pronta; aperta BASS e o baixo vem junto, no tom certo.
-        O que você acabou de tocar aí em cima é exatamente o que instala.</p>
-      <div class="cta-row">
-        <a class="key orange big" href="#precos">Comprar</a>
-        <a class="key cream big" href="#download">Baixar o instalador</a>
-      </div>
-    </div>
-    <fieldset class="panel spec">
-      <legend>Especificações</legend>
-      <dl>
-        <div><dt>Formatos</dt><dd>VST3 · AU · standalone</dd></div>
-        <div><dt>Sistemas</dt><dd>macOS 10.15+ · Windows 10/11</dd></div>
-        <div><dt>Bateria</dt><dd>6 instrumentos · 16 passos · batida pronta em 1 clique</dd></div>
-        <div><dt>Sons</dt><dd>232 de fábrica + os seus</dd></div>
-        <div><dt>Baixo e melodia</dt><dd>automáticos, no tom da batida · arrasta pro DAW</dd></div>
-        <div><dt>Export</dt><dd>cada instrumento em arquivo separado (wav)</dd></div>
-        <div><dt>Licença</dt><dd>por conta · 1, 3 ou 5 computadores</dd></div>
-      </dl>
-    </fieldset>
+<section class="wrap compat-row">
+  <h2 class="compat-title"><b>compatível</b> com todas as DAWs</h2>
+  <ul>
+    <li>Ableton Live</li><li>FL Studio</li><li>Logic Pro</li><li>Cubase</li><li>Studio One</li><li>Bitwig</li><li>Reaper</li><li>GarageBand</li>
+  </ul>
+  <p class="fine legend">VST3 · AU · standalone. Pro Tools só aceita AAX: use o app standalone junto dele.</p>
+</section>
+
+<section class="wrap statement2">
+  <div class="statement-left">
+    <div class="logo-slot" id="logo-slot" aria-hidden="true"><b>Drumsfull</b><i>Rhythm Composer&nbsp; - &nbsp;DD 001</i></div>
+    <h1 class="punch">Sua <b class="c-cream">bateria</b><br>e <b class="c-orange">baixo</b> em<br><b class="c-yellow">1 clique</b></h1>
+    <p class="lead">Milhares de possibilidades com os seus samples e MIDIs, além dos pacotes que já vêm
+      dentro. Aperta RAND e sai uma batida pronta; aperta BASS e o baixo vem junto, no tom certo.</p>
   </div>
-</div>
-
-<section class="wrap" id="precos">
-  <div class="plans" id="plans">
-    <fieldset class="panel plan" data-plan="solo">
-      <legend>Solo</legend>
-      <div class="seats" aria-label="1 acesso">
-        <span class="socket on"></span><span class="socket"></span><span class="socket"></span><span class="socket"></span><span class="socket"></span>
-        <span class="legend">1 acesso</span>
-      </div>
-      <div class="screen price"><small>R$</small><span class="amount">97</span></div>
-      <div class="per legend"><span>por computador</span><b class="per-seat">R$ 97</b></div>
-      <ul>
-        <li>1 computador ativo por vez</li>
-        <li>VST3, AU e standalone, Mac e Windows</li>
-        <li>232 samples de fábrica e todas as atualizações</li>
-      </ul>
-      <a class="key cream" href="conta.html?plano=solo">Comprar Solo</a>
-    </fieldset>
-
-    <fieldset class="panel plan hot" data-plan="studio">
-      <legend>Studio <span class="badge"><span class="led-dot on" aria-hidden="true"></span>Recomendado</span></legend>
-      <div class="seats" aria-label="3 acessos">
-        <span class="socket on"></span><span class="socket on"></span><span class="socket on"></span><span class="socket"></span><span class="socket"></span>
-        <span class="legend">3 acessos</span>
-      </div>
-      <div class="screen price"><small>R$</small><span class="amount">147</span></div>
-      <div class="per legend"><span>por computador</span><b class="per-seat">R$ 49</b></div>
-      <ul>
-        <li><b>3 computadores</b> ativos ao mesmo tempo: estúdio, notebook e a máquina do parceiro</li>
-        <li>Metade do preço por computador em relação ao Solo</li>
-        <li>Troque de máquina quando quiser, direto no plugin</li>
-      </ul>
-      <a class="key green" href="conta.html?plano=studio">Comprar Studio</a>
-    </fieldset>
-
-    <fieldset class="panel plan" data-plan="team">
-      <legend>Equipe</legend>
-      <div class="seats" aria-label="5 acessos">
-        <span class="socket on"></span><span class="socket on"></span><span class="socket on"></span><span class="socket on"></span><span class="socket on"></span>
-        <span class="legend">5 acessos</span>
-      </div>
-      <div class="screen price"><small>R$</small><span class="amount">247</span></div>
-      <div class="per legend"><span>por computador</span><b class="per-seat">R$ 49,40</b></div>
-      <ul>
-        <li>5 computadores ativos ao mesmo tempo</li>
-        <li>Para produtora, dupla ou coletivo com várias máquinas</li>
-        <li>Mesmo preço por computador do Studio</li>
-      </ul>
-      <a class="key cream" href="conta.html?plano=team">Comprar Equipe</a>
-    </fieldset>
-  </div>
-  <p class="plans-note">Pagamento único, sem mensalidade. Pix, cartão ou boleto pelo <b>Mercado Pago</b>.
-    A licença fica na sua conta: você entra com e-mail e senha dentro do plugin, e cada computador que
-    entra ocupa um acesso. Precisa trocar de máquina? Desativa a antiga no próprio plugin ou na
-    <a href="conta.html">página da conta</a>.</p>
+  <table class="spec-table">
+    <tr><th>Formatos</th><td>VST3 · AU · standalone</td></tr>
+    <tr><th>Sistemas</th><td>macOS 10.15+ · Windows 10/11</td></tr>
+    <tr><th>Bateria</th><td>6 instrumentos · 16 passos · batida pronta em 1 clique</td></tr>
+    <tr><th>Sons</th><td>232 de fábrica + os seus</td></tr>
+    <tr><th>Baixo e melodia</th><td>automáticos, no tom da batida · arrasta pro DAW</td></tr>
+    <tr><th>Master FX</th><td>saturação, compressor multibanda e echo</td></tr>
+    <tr><th>Export</th><td>cada instrumento em arquivo separado (wav)</td></tr>
+    <tr><th>Licença</th><td>por conta · 1, 3 ou 5 computadores</td></tr>
+  </table>
 </section>
 
 <section class="wrap" id="download">
@@ -271,20 +225,56 @@ RISK: aço demais sem cor; a cor mora nas teclas e nos LEDs, nunca no fundo. -->
   </div>
 </section>
 
-<section class="wrap compat">
-  <div class="sec-head">
-    <h2>Compatível com qualquer DAW VST3 ou AU</h2>
-    <span class="legend">Mac · Windows</span>
+<section class="wrap" id="precos">
+  <div class="plans" id="plans">
+    <article class="plan2" data-plan="solo">
+      <h3>Solo</h3>
+      <p class="big-price"><small>R$</small><span class="amount">97</span><sup class="cents"></sup></p>
+      <p class="per-line"><span class="per-seat">R$ 97</span> por computador · <span class="seats-n">1 acesso</span></p>
+      <ul>
+        <li>1 computador ativo por vez</li>
+        <li>VST3, AU e standalone, Mac e Windows</li>
+        <li>232 samples de fábrica e todas as atualizações</li>
+      </ul>
+      <a class="key green" href="conta.html?plano=solo">Comprar Solo</a>
+    </article>
+    <article class="plan2 hot" data-plan="studio">
+      <span class="ribbon"><span class="led-dot green on" aria-hidden="true"></span>Recomendado</span>
+      <h3>Studio</h3>
+      <p class="big-price"><small>R$</small><span class="amount">147</span><sup class="cents"></sup></p>
+      <p class="per-line"><span class="per-seat">R$ 49</span> por computador · <span class="seats-n">3 acessos</span></p>
+      <ul>
+        <li><b>3 computadores</b> ativos ao mesmo tempo: estúdio, notebook e a máquina do parceiro</li>
+        <li>Metade do preço por computador em relação ao Solo</li>
+        <li>Troque de máquina quando quiser, direto no plugin</li>
+      </ul>
+      <a class="key green" href="conta.html?plano=studio">Comprar Studio</a>
+    </article>
+    <article class="plan2" data-plan="team">
+      <h3>Equipe</h3>
+      <p class="big-price"><small>R$</small><span class="amount">247</span><sup class="cents"></sup></p>
+      <p class="per-line"><span class="per-seat">R$ 49,40</span> por computador · <span class="seats-n">5 acessos</span></p>
+      <ul>
+        <li>5 computadores ativos ao mesmo tempo</li>
+        <li>Para produtora, dupla ou coletivo com várias máquinas</li>
+        <li>Mesmo preço por computador do Studio</li>
+      </ul>
+      <a class="key green" href="conta.html?plano=team">Comprar Equipe</a>
+    </article>
   </div>
-  <p>Funciona em <b>Mac</b> (Intel e Apple Silicon) e <b>Windows</b> (10/11), dentro de qualquer DAW:</p>
-  <ul>
-    <li>Ableton Live</li><li>FL Studio</li><li>Logic Pro</li><li>GarageBand</li>
-    <li>Bitwig</li><li>Studio One</li><li>Cubase</li><li>Reaper</li><li>Pro Tools*</li>
-  </ul>
-  <p>Formato <b>VST3</b> (Ableton, FL Studio, Bitwig, Studio One, Cubase, Reaper…) e
-     <b>AU</b> (Logic e GarageBand no Mac). Também roda <b>sozinho, sem DAW nenhum</b>:
-     instala junto um app standalone.</p>
-  <p class="fine">*Pro Tools só aceita AAX; use a versão standalone junto dele.</p>
+  <p class="plans-note">Pagamento único, sem mensalidade. Pix, cartão ou boleto pelo <b>Mercado Pago</b>.
+    A licença fica na sua conta: você entra com e-mail e senha dentro do plugin, e cada computador que
+    entra ocupa um acesso. Precisa trocar de máquina? Desativa a antiga no próprio plugin ou na
+    <a href="conta.html">página da conta</a>.</p>
+</section>
+
+<!-- vídeos de produtores usando o Drumsfull (lista em dd-reviews.js; a seção só aparece quando houver vídeo) -->
+<section class="wrap" id="review" hidden>
+  <div class="sec-head">
+    <h2>Review</h2>
+    <span class="legend">Produtores usando o Drumsfull</span>
+  </div>
+  <div class="reels" id="reels"></div>
 </section>
 
 <section class="wrap">
@@ -294,29 +284,30 @@ RISK: aço demais sem cor; a cor mora nas teclas e nos LEDs, nunca no fundo. -->
   </div>
   <div class="feats">
     <fieldset class="panel feat"><legend>Batida pronta</legend>
-      <span class="stepkey g1" aria-hidden="true"></span>
+      <svg class="feat-ico" viewBox="0 0 48 48" aria-hidden="true"><path d="M6 14h8l6 8 6-8h8M6 34h8l6-8 6 8h8" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M34 9l6 5-6 5M34 29l6 5-6 5" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <p><b>Aperta RAND e sai um groove completo</b>: bumbo, caixa, palma, chimbais e tom, já com os
          sons escolhidos. Gostou, mantém. Não gostou, aperta de novo. Quer mexer? Cada tecla
          colorida liga ou desliga uma batida.</p>
       <span class="legend">1 clique</span>
     </fieldset>
     <fieldset class="panel feat"><legend>Seus sons</legend>
-      <span class="stepkey g2" aria-hidden="true"></span>
+      <svg class="feat-ico" viewBox="0 0 48 48" aria-hidden="true"><path d="M6 12a3 3 0 013-3h10l4 4h16a3 3 0 013 3v20a3 3 0 01-3 3H9a3 3 0 01-3-3z" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><path d="M6 20h36" stroke="currentColor" stroke-width="3"/></svg>
       <p>Vem com <b>232 sons de bateria</b> prontos. Quer usar os seus? Joga os arquivos numa pasta
          e eles entram no sorteio junto com os que já vêm. Milhares de combinações.</p>
       <span class="legend">232 sons + os seus</span>
     </fieldset>
     <fieldset class="panel feat"><legend>Baixo e melodia</legend>
-      <span class="stepkey g3" aria-hidden="true"></span>
+      <svg class="feat-ico" viewBox="0 0 48 48" aria-hidden="true"><rect x="5" y="9" width="38" height="30" rx="3" fill="none" stroke="currentColor" stroke-width="3"/><path d="M14 9v18M24 9v18M34 9v18" stroke="currentColor" stroke-width="3"/><path d="M11 9v16h6V9M21 9v16h6V9M31 9v16h6V9" fill="currentColor"/></svg>
       <p>Com um clique ele <b>escreve o baixo e a melodia combinando com a sua batida</b>, no tom que
          você escolher. Arrasta pro seu programa de música e pronto. Seus MIDIs também entram na
          mistura.</p>
       <span class="legend">arrasta pro DAW</span>
     </fieldset>
     <fieldset class="panel feat"><legend>Acabamento</legend>
-      <span class="stepkey g4" aria-hidden="true"></span>
-      <p><b>Viradas automáticas</b>, reverb e delay em cada instrumento, e um botão que salva cada
-         instrumento num arquivo separado pra você mixar do seu jeito.</p>
+      <svg class="feat-ico" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="12" fill="none" stroke="currentColor" stroke-width="3"/><path d="M24 24l6-8" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><path d="M24 5v4M24 39v4M5 24h4M39 24h4M10.6 10.6l2.8 2.8M34.6 34.6l2.8 2.8M10.6 37.4l2.8-2.8M34.6 13.4l2.8-2.8" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>
+      <p><b>Viradas automáticas</b>, saturação, compressor multibanda e echo no master, reverb e delay
+         em cada instrumento, e um botão que salva cada instrumento num arquivo separado pra você
+         mixar do seu jeito.</p>
       <span class="legend">cada som em um arquivo</span>
     </fieldset>
   </div>
@@ -372,23 +363,42 @@ RISK: aço demais sem cor; a cor mora nas teclas e nos LEDs, nunca no fundo. -->
 </section>
 
 <div class="close">
-  <div class="wrap">
-    <div class="close-plate">
-      <b>Drumsfull</b>
-      <i>Rhythm Composer&nbsp; - &nbsp;DD 001</i>
-      <div class="band" aria-hidden="true"></div>
+  <div class="wrap close-grid">
+    <div class="close-buy">
+      <a class="key green big" href="conta.html?plano=studio">Comprar Studio</a>
+      <p class="legend">Pagamento único, sem mensalidade. Pix, cartão ou boleto pelo Mercado Pago. A licença fica na sua conta.</p>
     </div>
-    <div class="cta-row">
-      <a class="key orange big" href="#precos">Comprar</a>
-      <a class="key cream big" href="conta.html">Entrar na conta</a>
+    <div class="close-dl">
+      <p class="compat-title small"><b>compatível</b> com todas as DAWs</p>
+      <a class="key cream dl" data-baixar="mac" href="conta.html?baixar=mac">Baixar para Mac<small>.pkg · Intel e Apple Silicon · macOS 10.15+</small></a>
+      <a class="key cream dl" data-baixar="win" href="conta.html?baixar=win">Baixar para Windows<small>.exe · Windows 10/11, 64 bits</small></a>
     </div>
-    <footer class="legend">
-      <span>Drumsfull · Rhythm Composer DD 001 · por Drop Dealer</span>
-      <span>Pagamento único pelo Mercado Pago · VST3 · AU · standalone</span>
-    </footer>
   </div>
 </div>
 
-<script type="module" src="dd-precos.js?v=20260909e"></script>
+<footer class="store-footer">
+  <div class="wrap footer-grid">
+    <div class="footer-left">
+      <div class="social" id="social"></div>
+      <p class="legend" id="horario">Horário de atendimento:<br>de segunda a sábado, das 9h às 18h30</p>
+      <a class="key cream small-help" id="ajuda" href="conta.html">Central de ajuda</a>
+    </div>
+    <div class="footer-cols">
+      <div><h4>Institucional</h4><a href="./#precos">Planos</a><a href="./#instalacao">Instalação</a></div>
+      <div><h4>Suporte</h4><a href="conta.html">Minha conta</a><a href="conta.html?baixar=mac">Download</a></div>
+    </div>
+  </div>
+  <div class="wrap footer-bottom">
+    <span class="pay-chips"><i>Pix</i><i>Cartão</i><i>Boleto</i><i>Mercado Pago</i></span>
+    <span class="legend">Drumsfull · Rhythm Composer DD 001 · por Drop Dealer</span>
+  </div>
+</footer>
+
+<a class="chat-bubble" id="chat-bubble" href="#" hidden aria-label="Falar com a gente">
+  <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 6C12.4 6 4 13.6 4 23c0 4.8 2.3 9.1 6 12.2L8 42l9.6-4.2c2 .5 4.2.8 6.4.8 11.6 0 20-7.6 20-17S35.6 6 24 6z" fill="currentColor"/><circle cx="16" cy="23" r="2.6" fill="#1b1b1c"/><circle cx="24" cy="23" r="2.6" fill="#1b1b1c"/><circle cx="32" cy="23" r="2.6" fill="#1b1b1c"/></svg>
+</a>
+
+<script type="module" src="dd-precos.js?v=20260911a"></script>
+<script type="module" src="dd-reviews.js?v=20260911a"></script>
 </body>
 </html>
