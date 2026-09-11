@@ -706,7 +706,7 @@ footer{margin-top:var(--s5);padding-top:var(--s3);border-top:1px solid var(--lan
 
 .hero-video{position:relative;background:#1b1b1d;overflow:hidden;
      border-top:1px solid var(--ink);border-bottom:1px solid var(--ink);margin-bottom:var(--s4)}
-.hero-video video{display:block;width:100%;aspect-ratio:16/9;max-height:78vh;object-fit:cover;object-position:center 45%;background:#1b1b1d}
+.hero-video video{display:block;width:100%;aspect-ratio:32/9;max-height:39vh;min-height:190px;object-fit:cover;object-position:center center;background:#1b1b1d}
 .hero-video .hero-ctrls{position:absolute;right:16px;bottom:14px;display:flex;gap:8px;opacity:.8}
 .hero-video .hero-ctrls:hover{opacity:1}
 .hero-video .hero-ctrls .key .led{width:6px;height:6px}
