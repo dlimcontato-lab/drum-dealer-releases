@@ -55,7 +55,7 @@ A demo da própria página é o motor C++ do plugin compilado para WebAssembly, 
 ## Evidence on Hand
 
 - **A demo WASM tocável é a única prova que existe** — e é forte, porque é o motor real.
-- Os 232 samples de fábrica e o print da interface do plugin (`drum-dealer-ui.png`, 340 KB) estão no repo.
+- Os 232 samples de fábrica e o print do painel atual do plugin (`img/og-brdrum.jpg`, 1200×630, recortado de `MaschinDealer/validation/ui-licenciado.png`; é a imagem de compartilhamento) estão no repo. O print antigo `drum-dealer-ui.png` saiu em 2026-09-11.
 - **Não existe** e não pode ser inventado: depoimento, nome de usuário, contagem de downloads, avaliação, logo de artista, menção de imprensa, selo de compatibilidade oficial, prêmio ou número de qualquer natureza. Nenhuma faixa de referência pronta feita com o plugin está disponível hoje.
 
 ## Product Principles

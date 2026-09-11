@@ -1,0 +1,11 @@
+# GitHub Pages (Jekyll 3). Não há .nojekyll: o Jekyll roda e copia os arquivos estáticos
+# (html, js, wasm, mp4, wav) sem processar, porque nenhum deles tem front matter.
+# Documentos internos de produto e design ficam no repo, mas fora do site publicado.
+# Arquivos e pastas que começam com "." já ficam de fora por padrão; .impeccable está
+# listado para deixar explícito.
+exclude:
+  - PRODUCT.md
+  - DESIGN.md
+  - .impeccable
+  - .gitignore
+  - _config.yml

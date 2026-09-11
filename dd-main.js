@@ -449,7 +449,7 @@ async function comCarregando(btn, rotulo, fn) {
     await fn();
   } catch (err) {
     mostrarFalha('Não consegui carregar o motor de áudio. Recarregue a página.');
-    console.error('drum dealer:', err);
+    console.error('brdrum:', err);
     return false;
   } finally {
     if (!jaTemMotor) { btn.innerHTML = antes; btn.disabled = false; }

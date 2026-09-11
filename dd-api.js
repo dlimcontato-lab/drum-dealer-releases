@@ -47,6 +47,7 @@ function traduzAuth(code, msg, status) {
   if (m.includes('invalid login') || m.includes('invalid_credentials')) return 'E-mail ou senha não conferem.';
   if (m.includes('already registered') || m.includes('user_already_exists')) return 'Já existe uma conta com esse e-mail. Entre com a senha.';
   if (m.includes('password') && m.includes('at least')) return 'A senha precisa ter pelo menos 8 caracteres.';
+  if (m.includes('known to be weak') || m.includes('pwned')) return 'Essa senha já apareceu em vazamentos de dados. Escolha outra.';
   if (m.includes('weak_password')) return 'Senha fraca demais. Use pelo menos 8 caracteres.';
   if (m.includes('rate') || status === 429) return 'Muitas tentativas. Espere um minuto e tente de novo.';
   if (m.includes('email') && m.includes('invalid')) return 'Esse e-mail não parece válido.';

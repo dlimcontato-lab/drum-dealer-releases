@@ -15,7 +15,8 @@ O Diogo chegou a travar essa direção e depois reverteu, com estas palavras:
 O que valeu a partir daí:
 
 - O mundo visual do site é o **neobrutalismo do próprio plugin** — a interface em
-  `drum-dealer-ui.png` é a autoridade. Ver `DESIGN.md`.
+  `drum-dealer-ui.png` é a autoridade. Ver `DESIGN.md`. (Esse print saiu do repo em 2026-09-11;
+  hoje a autoridade é o painel do plugin, e `img/og-brdrum.jpg` é o recorte atual dele.)
 - A demo tem que espelhar o painel do VST, com todos os controles.
 - `buildPath` voltou para `code`: o que está no ar foi construído direto em código
   sobre o mundo incumbente, sem comp aprovado.
