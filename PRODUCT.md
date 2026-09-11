@@ -47,7 +47,7 @@ A demo da própria página é o motor C++ do plugin compilado para WebAssembly, 
 ## Brand Commitments
 
 - Nome do produto: **BRDRUM** (decisão do Diogo em 2026-09-09; no painel e no site). O plugin foi renomeado no mesmo dia: no DAW e no instalador também é BRDRUM (assets `BRDRUM-macOS.pkg` e `BRDRUM-Windows-Setup.exe`). Designação de hardware: **Rhythm Composer - 001**.
-- No DAW o plugin aparece como "BRDRUM Rhythm Composer - 001" (fabricante BRDRUM, bundle `com.brdrum.plugin`). Assinatura do rodapé do site (decisão do Diogo em 2026-09-11): "BRDRUM · Rhythm Composer - 001 · por Drop Dealer, DJ Glen e Nana Torres".
+- No DAW o plugin aparece como "BRDRUM Rhythm Composer - 001" (fabricante BRDRUM, bundle `com.brdrum.plugin`). Assinatura do rodapé do site (decisão do Diogo em 2026-09-11): "BRDRUM · Rhythm Composer - 001 · por Drop Dealer, DJ Glen e Nana Torres · criado por Brazilian Waves".
 - Voz: português do Brasil, direta, frases curtas, sem jargão de marketing e sem promessa que o produto não cumpre. **Sem jargão técnico na primeira dobra e nos blocos de features** (Diogo, 2026-09-09: "tenho medo do cliente não entender"): bumbo/caixa/chimbal em vez de kick/snare/hat, "programa de música" junto de DAW, benefício antes do termo.
 - Frase de abertura escolhida por ele: "Sua bateria e baixo em 1 clique!" + "Milhares de possibilidades com seus samples e MIDIs, além dos pacotes". O produto NÃO se apresenta como referência à 808 (o slogan "A 808 de verdade" foi retirado).
 - Referência musical do produto: tech house brasileiro e minimal (Beltran, Ragie Ban, DJ Glen, Michael Bibi, PAWSA).
