@@ -4,14 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Conta — BRDRUM</title>
-<meta name="description" content="Entre na sua conta do BRDRUM: licença, computadores ativos, compra e download.">
+<meta name="description" content="Entre na sua conta do BRDRUM: licença, chaves de ativação, computadores, sample packs e pedidos.">
 <meta name="theme-color" content="#2a2a2c">
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Yellowtail&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='4' y='4' width='92' height='92' rx='10' fill='%232a2a2c' stroke='%230e0e10' stroke-width='3'/><rect x='22' y='16' width='56' height='68' rx='6' fill='%23e0702a' stroke='%23844219' stroke-width='3'/><circle cx='50' cy='34' r='8' fill='%23ff3b2f'/><circle cx='50' cy='34' r='14' fill='%23ff3b2f' opacity='.3'/></svg>">
-<link rel="stylesheet" href="dd.css?v=20260911n">
+<link rel="stylesheet" href="dd.css?v=20260911p">
 </head>
 <body>
 
@@ -22,9 +22,10 @@
     </a>
     <nav aria-label="Seções">
       <a href="./#precos">Preços</a>
+      <a href="packs.html">Sample Packs</a>
       <a href="./#download">Download</a>
       <a href="./#instalacao">Instalação</a>
-      <a href="conta.html" aria-current="page">Conta</a>
+      <a href="conta.html" id="nav-conta" aria-current="page">Conta</a>
     </nav>
   </header>
 </div>
@@ -62,48 +63,133 @@
   </div>
 
   <!-- logado -->
-  <div class="account" id="view-account" hidden>
-    <div style="display:grid;gap:var(--s4)">
+  <div id="view-account" hidden>
+    <div class="tabs" id="tabs" role="tablist" aria-label="Áreas da conta">
+      <button class="key" type="button" role="tab" data-aba="perfil" aria-selected="false"><span class="led" aria-hidden="true"></span>Perfil</button>
+      <button class="key" type="button" role="tab" data-aba="licenca" aria-selected="false"><span class="led" aria-hidden="true"></span>Licença</button>
+      <button class="key" type="button" role="tab" data-aba="packs" aria-selected="false"><span class="led" aria-hidden="true"></span>Meus packs</button>
+      <button class="key" type="button" role="tab" data-aba="pedidos" aria-selected="false"><span class="led" aria-hidden="true"></span>Pedidos</button>
+      <button class="key" type="button" role="tab" data-aba="seguranca" aria-selected="false"><span class="led" aria-hidden="true"></span>Segurança</button>
+    </div>
+
+    <!-- ---------- perfil ---------- -->
+    <div class="pane two" id="pane-perfil" hidden>
+      <fieldset class="panel">
+        <legend>Perfil</legend>
+        <div class="status-row" style="gap:18px;margin-bottom:18px">
+          <span id="avatar-slot"></span>
+          <div class="form" style="gap:8px">
+            <div class="form-row tight">
+              <button class="key cream small" type="button" id="btn-foto">Escolher foto</button>
+              <button class="key small" type="button" id="btn-foto-rm" hidden>Remover</button>
+            </div>
+            <span class="legend">Quadrada, 256×256. PNG, JPG ou WEBP até 8 MB.</span>
+          </div>
+          <input type="file" id="file-foto" accept="image/png,image/jpeg,image/webp" hidden>
+        </div>
+        <form class="form" id="form-perfil" novalidate>
+          <label><span class="legend">Nome de exibição</span><input class="recess" type="text" name="display_name" maxlength="60" required placeholder="como você quer ser chamado"></label>
+          <label><span class="legend">E-mail (não muda)</span><input class="recess ro" type="email" id="perfil-email" readonly tabindex="-1"></label>
+          <p class="msg" id="msg-perfil" aria-live="polite"></p>
+          <button class="key orange" type="submit">Salvar perfil</button>
+        </form>
+      </fieldset>
+
+      <div class="pane">
+        <fieldset class="panel">
+          <legend>Download</legend>
+          <p class="dim" style="font-size:var(--t-small)">Instale, abra o BRDRUM no seu programa de música e entre com <b id="who"></b>.</p>
+          <div class="form" style="margin-top:14px">
+            <a class="key cream" href="https://github.com/dlimcontato-lab/drum-dealer-releases/releases/latest/download/BRDRUM-macOS.pkg">Baixar para Mac (.pkg)</a>
+            <a class="key cream" href="https://github.com/dlimcontato-lab/drum-dealer-releases/releases/latest/download/BRDRUM-Windows-Setup.exe">Baixar para Windows (.exe)</a>
+          </div>
+        </fieldset>
+        <fieldset class="panel">
+          <legend>Sessão</legend>
+          <div class="form-row">
+            <button class="key" id="btn-logout" type="button">Sair</button>
+          </div>
+        </fieldset>
+      </div>
+    </div>
+
+    <!-- ---------- licença ---------- -->
+    <div class="pane" id="pane-licenca" hidden>
       <fieldset class="panel">
         <legend>Licença</legend>
         <div class="status-row">
           <span class="seats" id="seats" aria-label="acessos"></span>
         </div>
         <p class="lead" id="lic-text" style="margin-top:12px"></p>
-        <p class="dim" id="lic-sub" style="font-size:var(--t-small);margin-top:6px"></p>
-        <ul class="machines" id="machines"></ul>
-        <p class="empty" id="machines-empty" hidden>Nenhum computador ativo ainda. Entre com esta conta dentro do plugin e ele aparece aqui.</p>
+        <p class="sub" id="lic-sub"></p>
+        <ul class="slots" id="slots"></ul>
+        <p class="empty" id="slots-empty" hidden>Nenhuma vaga ocupada. Entre com esta conta dentro do plugin, ou gere uma chave para outra pessoa ativar.</p>
+        <div class="form-row" id="lic-acts" style="margin-top:16px"></div>
+        <p class="msg" id="msg-lic" aria-live="polite" style="min-height:1.3em;font-size:var(--t-small);margin-top:8px"></p>
       </fieldset>
 
       <fieldset class="panel" id="panel-buy">
         <legend id="buy-title">Comprar</legend>
         <p class="dim" id="buy-text" style="font-size:var(--t-small)"></p>
         <div class="upgrade" id="upgrade"></div>
+        <div id="cupom-box" hidden>
+          <div class="cupom">
+            <label><span class="legend">Cupom (opcional)</span><input class="recess" type="text" id="cupom" maxlength="32" placeholder="tem um cupom? digite aqui" autocomplete="off"></label>
+            <button class="key small" type="button" id="btn-cupom">Aplicar</button>
+          </div>
+          <div class="valor" id="valor" hidden></div>
+        </div>
         <p class="msg" id="msg-buy" aria-live="polite" style="min-height:1.3em;font-size:var(--t-small);margin-top:8px"></p>
       </fieldset>
     </div>
 
-    <div style="display:grid;gap:var(--s4)">
+    <!-- ---------- meus packs ---------- -->
+    <div class="pane" id="pane-packs" hidden>
       <fieldset class="panel">
-        <legend>Download</legend>
-        <p class="dim" style="font-size:var(--t-small)">Instale, abra o BRDRUM no seu programa de música e entre com <b id="who"></b>.</p>
-        <div class="form" style="margin-top:14px">
-          <a class="key cream" href="https://github.com/dlimcontato-lab/drum-dealer-releases/releases/latest/download/BRDRUM-macOS.pkg">Baixar para Mac (.pkg)</a>
-          <a class="key cream" href="https://github.com/dlimcontato-lab/drum-dealer-releases/releases/latest/download/BRDRUM-Windows-Setup.exe">Baixar para Windows (.exe)</a>
+        <legend>Meus packs</legend>
+        <div class="packs" id="meus-packs"></div>
+        <div class="vazio" id="packs-empty" hidden>
+          <div class="band" aria-hidden="true"></div>
+          <h3>Você ainda não tem sample packs</h3>
+          <p>Os packs do BRDRUM são exclusivos para quem tem um plano. Veja o que está na loja.</p>
+          <a class="key cream" href="packs.html">Ver a loja de packs</a>
         </div>
       </fieldset>
+    </div>
 
+    <!-- ---------- pedidos ---------- -->
+    <div class="pane" id="pane-pedidos" hidden>
       <fieldset class="panel">
         <legend>Pedidos</legend>
-        <ul class="machines" id="orders"></ul>
-        <p class="empty" id="orders-empty" hidden>Nenhum pedido ainda.</p>
-      </fieldset>
-
-      <fieldset class="panel">
-        <legend>Sessão</legend>
-        <div class="form-row">
-          <button class="key" id="btn-logout" type="button">Sair</button>
+        <div class="tbl-wrap recess">
+          <table class="tbl" id="tbl-pedidos">
+            <thead><tr><th>Quando</th><th>Item</th><th>Valor</th><th>Desconto</th><th>Cupom</th><th>Status</th></tr></thead>
+            <tbody></tbody>
+          </table>
         </div>
+        <p class="empty" id="pedidos-empty" hidden>Nenhum pedido ainda.</p>
+      </fieldset>
+    </div>
+
+    <!-- ---------- segurança ---------- -->
+    <div class="pane two" id="pane-seguranca" hidden>
+      <fieldset class="panel">
+        <legend>Trocar senha</legend>
+        <form class="form" id="form-senha" novalidate>
+          <label><span class="legend">Senha atual</span><input class="recess" type="password" name="atual" autocomplete="current-password" required placeholder="a senha de agora"></label>
+          <label><span class="legend">Nova senha (8+ caracteres)</span><input class="recess" type="password" name="nova" autocomplete="new-password" required minlength="8" placeholder="a nova senha"></label>
+          <label><span class="legend">Repita a nova senha</span><input class="recess" type="password" name="confirm" autocomplete="new-password" required minlength="8" placeholder="a mesma senha"></label>
+          <p class="msg" id="msg-senha" aria-live="polite"></p>
+          <button class="key orange" type="submit">Trocar senha</button>
+        </form>
+      </fieldset>
+      <fieldset class="panel">
+        <legend>Dispositivos</legend>
+        <p class="dim" style="font-size:var(--t-small)">Sair de todos os dispositivos encerra a sessão em todo navegador e em todo plugin que entrou com esta conta. As licenças e as chaves continuam valendo: na próxima abertura o plugin pede a senha de novo.</p>
+        <div class="form-row" style="margin-top:16px">
+          <button class="key" type="button" id="btn-logout-all">Sair de todos os dispositivos</button>
+        </div>
+        <p class="msg" id="msg-dev" aria-live="polite" style="min-height:1.3em;font-size:var(--t-small)"></p>
       </fieldset>
     </div>
   </div>
@@ -118,6 +204,7 @@
   </div>
 </div>
 
-<script type="module" src="conta.js?v=20260911o"></script>
+<script type="module" src="dd-topo.js?v=20260911p"></script>
+<script type="module" src="conta.js?v=20260911p"></script>
 </body>
 </html>

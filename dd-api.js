@@ -122,10 +122,202 @@ export function formatBRL(cents) {
 }
 
 export async function loadPlans() {
-  return select('plans', 'select=id,name,seats,price_cents,badge,sort&active=eq.true&order=sort.asc', { auth: false });
+  // o banco pode ainda não ter as colunas de promoção (migração 0003): cai para o select antigo
+  try {
+    return await select('plans',
+      'select=id,name,seats,price_cents,promo_price_cents,promo_starts_at,promo_ends_at,badge,sort&active=eq.true&order=sort.asc',
+      { auth: false });
+  } catch {
+    return select('plans', 'select=id,name,seats,price_cents,badge,sort&active=eq.true&order=sort.asc', { auth: false });
+  }
 }
 
 export const DOWNLOADS = {
   mac: 'https://github.com/dlimcontato-lab/drum-dealer-releases/releases/latest/download/BRDRUM-macOS.pkg',
   win: 'https://github.com/dlimcontato-lab/drum-dealer-releases/releases/latest/download/BRDRUM-Windows-Setup.exe',
 };
+
+// ============================================================================
+// Conta, loja de packs e admin (contrato em
+// ~/Sistema AI/drum-dealer-backend/docs/SPEC-conta-loja-admin.md).
+// ============================================================================
+
+// ---------- sessão crua (upload direto no Storage precisa do token) ----------
+export async function accessToken() {
+  const s = await getSession();
+  return s ? s.access_token : null;
+}
+
+// ---------- perfil ----------
+export async function loadProfile(uid) {
+  try {
+    const rows = await select('profiles', `select=user_id,display_name,avatar_path,created_at&user_id=eq.${uid}&limit=1`);
+    return rows[0] || null;
+  } catch { return null; }   // migração 0003 ainda não aplicada
+}
+
+export async function saveProfile(body) {
+  return call('profile', body);
+}
+
+// caminho guardado é "avatars/<uid>/arquivo.webp" (com o bucket na frente)
+export function avatarUrl(path) {
+  if (!path) return '';
+  const rel = String(path).replace(/^\/+/, '');
+  return `${SUPABASE_URL}/storage/v1/object/public/${rel.startsWith('avatars/') ? rel : 'avatars/' + rel}`;
+}
+
+export function publicUrl(bucket, path) {
+  if (!path) return '';
+  const rel = String(path).replace(/^\/+/, '');
+  return `${SUPABASE_URL}/storage/v1/object/public/${rel.startsWith(bucket + '/') ? rel : bucket + '/' + rel}`;
+}
+
+// upload direto no bucket `avatars` com a sessão do usuário; depois grava o caminho no perfil
+export async function uploadAvatar(blob, uid) {
+  const s = await getSession();
+  if (!s) throw new ApiError('Você precisa entrar na conta.', 'no_session', 401);
+  const path = `avatars/${uid}/avatar-${Date.now()}.webp`;
+  const r = await fetch(`${SUPABASE_URL}/storage/v1/object/${path}`, {
+    method: 'POST',
+    headers: {
+      apikey: ANON_KEY, Authorization: `Bearer ${s.access_token}`,
+      'Content-Type': 'image/webp', 'x-upsert': 'true', 'cache-control': '3600',
+    },
+    body: blob,
+  });
+  if (!r.ok) {
+    const j = await r.json().catch(() => ({}));
+    throw new ApiError(j.message || 'Não consegui enviar a foto. Tente outra imagem.', j.error || 'storage_error', r.status);
+  }
+  await saveProfile({ avatar_path: path });
+  return path;
+}
+
+// ---------- senha e sessões ----------
+export async function changePassword(email, atual, nova) {
+  try { await signIn(email, atual); }
+  catch (e) {
+    if (e.status === 400 || e.code === 'invalid_credentials') throw new ApiError('A senha atual não confere.', 'wrong_password', 400);
+    throw e;
+  }
+  const s = await getSession();
+  const r = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+    method: 'PUT',
+    headers: { apikey: ANON_KEY, Authorization: `Bearer ${s.access_token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ password: nova }),
+  });
+  const json = await r.json().catch(() => ({}));
+  if (!r.ok) {
+    const razoes = json.weak_password?.reasons || [];
+    if (razoes.includes('pwned')) throw new ApiError('Essa senha já apareceu em vazamentos de dados. Escolha outra.', 'pwned', r.status);
+    if (razoes.includes('length')) throw new ApiError('A senha precisa ter pelo menos 8 caracteres.', 'short', r.status);
+    throw new ApiError(
+      traduzAuth(json.error_code || json.code || json.error || '', json.msg || json.message || '', r.status),
+      json.error_code || 'auth_error', r.status);
+  }
+  return true;
+}
+
+export async function logoutAll() {
+  const s = await getSession();
+  if (s) {
+    await fetch(`${SUPABASE_URL}/auth/v1/logout?scope=global`, {
+      method: 'POST', headers: { apikey: ANON_KEY, Authorization: `Bearer ${s.access_token}` },
+    }).catch(() => {});
+  }
+  save(null);
+}
+
+// ---------- vagas e chaves ----------
+export async function seats(action, extra = {}) {
+  return call('seats', { action, ...extra });
+}
+
+// ---------- preço, cupom e compra ----------
+export async function quote(body) {
+  return call('quote', body);
+}
+
+// preço efetivo no cliente é só para MOSTRAR: quem decide é o servidor
+export function precoEfetivo(item) {
+  if (!item) return 0;
+  const promo = item.promo_price_cents;
+  if (promo == null) return item.price_cents;
+  const agora = Date.now();
+  const de = item.promo_starts_at ? Date.parse(item.promo_starts_at) : null;
+  const ate = item.promo_ends_at ? Date.parse(item.promo_ends_at) : null;
+  if ((de && agora < de) || (ate && agora > ate)) return item.price_cents;
+  return promo;
+}
+export function emPromocao(item) {
+  return !!item && item.promo_price_cents != null && precoEfetivo(item) !== item.price_cents;
+}
+
+// ---------- packs ----------
+const PACK_COLS = 'id,slug,title,artist,description,kind,price_cents,promo_price_cents,promo_starts_at,promo_ends_at,cover_path,preview_path,file_size_bytes,contents,sort';
+
+export async function loadPacks() {
+  try {
+    return await select('packs', `select=${PACK_COLS}&active=eq.true&order=sort.asc,created_at.desc`, { auth: false });
+  } catch { return []; }   // tabela ainda não existe
+}
+
+export async function meusPacks() {
+  try {
+    return await select('pack_entitlements', 'select=pack_id,source,created_at&order=created_at.desc');
+  } catch { return []; }
+}
+
+export async function packDownload(pack_id) {
+  return call('pack-download', { pack_id });
+}
+
+// ---------- admin ----------
+export async function admin(action, extra = {}) {
+  return call('admin', { action, ...extra });
+}
+
+async function sondaAdmin() {
+  try {
+    const r = await call('admin', { action: 'whoami' });
+    return typeof r.is_admin === 'boolean' ? r.is_admin : true;
+  } catch (e) {
+    if (e.status === 403 || e.status === 401) return false;
+    try { await call('admin', { action: 'dashboard' }); return true; } catch { return false; }
+  }
+}
+
+// é admin? tenta a própria linha em `admins` (RLS); se não der, pergunta à função
+export async function ehAdmin(uid, { cache = true } = {}) {
+  const chave = 'dd.admin.' + uid;
+  if (cache) { try { const c = sessionStorage.getItem(chave); if (c !== null) return c === '1'; } catch {} }
+  let ok = false;
+  try {
+    const rows = await select('admins', `select=user_id&user_id=eq.${uid}&limit=1`);
+    ok = rows.length > 0 ? true : await sondaAdmin();
+  } catch {
+    ok = await sondaAdmin();
+  }
+  try { sessionStorage.setItem(chave, ok ? '1' : '0'); } catch {}
+  return ok;
+}
+
+// ---------- formatos ----------
+export function BRL(cents) {
+  return 'R$ ' + (cents / 100).toFixed(2).replace('.', ',');
+}
+
+export function primeiroNome(nome, email) {
+  const base = (nome || '').trim() || (email || '').split('@')[0] || '';
+  return base.split(/[\s.]+/)[0].replace(/^./, (c) => c.toUpperCase());
+}
+
+export function iniciais(nome, email) {
+  const base = (nome || '').trim() || (email || '').split('@')[0] || '?';
+  const partes = base.split(/[\s._-]+/).filter(Boolean);
+  const s = partes.length > 1 ? partes[0][0] + partes[1][0] : base.slice(0, 2);
+  return s.toUpperCase();
+}
+
+export const TIPOS_PACK = { drums: 'Bateria', midi: 'MIDI', 'drums+midi': 'Bateria + MIDI' };
