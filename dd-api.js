@@ -125,6 +125,6 @@ export async function loadPlans() {
 }
 
 export const DOWNLOADS = {
-  mac: 'https://github.com/dlimcontato-lab/drum-dealer-releases/releases/latest/download/Drumsfull-macOS.pkg',
-  win: 'https://github.com/dlimcontato-lab/drum-dealer-releases/releases/latest/download/Drumsfull-Windows-Setup.exe',
+  mac: 'https://github.com/dlimcontato-lab/drum-dealer-releases/releases/latest/download/BRDRUM-macOS.pkg',
+  win: 'https://github.com/dlimcontato-lab/drum-dealer-releases/releases/latest/download/BRDRUM-Windows-Setup.exe',
 };

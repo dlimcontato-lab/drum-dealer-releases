@@ -1,5 +1,5 @@
 ---
-name: Drum Dealer — o painel DRUMSFULL virou página
+name: Drum Dealer — o painel BRDRUM virou página
 description: O aparelho de aço pintado do plugin, estendido a uma página que também precisa vender. Skeuomorfismo lido do dd.css, herdado do painel; não inventado para a web.
 colors:
   steel: "#2a2a2c"
@@ -302,7 +302,7 @@ components:
     height: "70px"
 ---
 
-# Design System: Drum Dealer — o painel DRUMSFULL virou página
+# Design System: Drum Dealer — o painel BRDRUM virou página
 
 ## Overview
 
@@ -391,7 +391,7 @@ O aço do site é `{colors.steel}` com uma luz radial de `{colors.steel-light}` 
 - **Field** (Barlow 700, 12px, ls 0.03em, caixa alta, centrado): texto de `select.recess`. O `input.recess` não é serigrafia: é Barlow 600 a 15px, caixa baixa, alinhado à esquerda, porque recebe e-mail e senha.
 - **Screen** (Barlow 700, ls 0.02em, luz laranja): 22px no BPM (com "BPM" a 9,5px / 600 / 0.03em a 70%), 34px no preço (com "R$" a 14px / 0.04em e centavos a 16px).
 - **Knob Legend** (Barlow 600, 9,5px, ls 0.02em, caixa alta, apagada): legenda de knob, escala de dB. Números da régua de steps a 10px / 600, sem tracking.
-- **Brand** (Barlow 700, caixa alta): 19px / 0.06em na barra do topo; 30px / 0.03em na plaqueta DRUMSFULL dentro do aparelho.
+- **Brand** (Barlow 700, caixa alta): 19px / 0.06em na barra do topo; 30px / 0.03em na plaqueta BRDRUM dentro do aparelho.
 - **Nav** (Barlow 600, 11px, ls 0.06em, caixa alta, apagada; cheia em hover e na página atual).
 - **Script** (Yellowtail 400, sem caixa alta, apagada): só a designação "Rhythm Composer - DD 001" (15px na barra do topo e na plaqueta, `clamp(1.2rem, 2.6vw, 1.9rem)` no fecho), sempre logo abaixo ou ao lado do nome, sempre mais estreita que ele.
 
@@ -403,7 +403,7 @@ O aço do site é `{colors.steel}` com uma luz radial de `{colors.steel-light}` 
 
 **A Regra do Texto Gravado.** Herdada e aplicada a toda tecla: `text-shadow: 0 1px 0 rgba(14,14,16,.6)` sobre preto e laranja, `0 1px 0 rgba(255,255,255,.35)` sobre creme (e sobre a tecla laranja de "Baixar .mid", que leva tinta). Texto sobre aço não tem sombra; texto em rebaixo tem halo, não sombra.
 
-**A Regra da Plaqueta.** Herdada: o nome em Barlow Bold, a designação em Yellowtail, a designação nunca mais larga que o nome. O site escreve "Drum Dealer" na barra do topo e no fecho e "DRUMSFULL" na plaqueta dentro do aparelho, como o painel; as duas grafias coexistem até o Diogo decidir o nome.
+**A Regra da Plaqueta.** Herdada: o nome em Barlow Bold, a designação em Yellowtail, a designação nunca mais larga que o nome. O site escreve "Drum Dealer" na barra do topo e no fecho e "BRDRUM" na plaqueta dentro do aparelho, como o painel; as duas grafias coexistem até o Diogo decidir o nome.
 
 ## Layout
 
@@ -411,7 +411,7 @@ Duas larguras de página: `.wrap-wide` (1560px, recuo lateral `clamp(12px, 2.5vw
 
 **A escala de espaço** é a do site anterior, mantida porque é o que a prosa precisa: `{spacing.s1}` a `{spacing.s6}` (0.5 / 0.875 / 1.25 / 2 / 3.25 / 5rem). Dentro do aparelho não se usa a escala: usam-se os pixels do painel (`{spacing.key-gap}`, `{spacing.group-gap}`, 14px entre teclas da barra, 18px entre colunas, 22px entre painéis).
 
-**O aparelho** (`.unit`) é um bloco de duas colunas: a principal (`minmax(0, 1fr)`) com o sequencer e a prévia larga do MIDI GEN, e a lateral fixa de **236px** com a plaqueta DRUMSFULL e os quatro painéis (GAIN, GROOVE, FILL, MIDI GEN) a 22px um do outro. Acima das duas, a barra do topo (SAMPLER, PLAY, BPM, RAND, EXPORT) e a banda de identidade (21px, margem lateral de 30px); abaixo, o rodapé de estado em legenda. Parafusos a 16px dos cantos; recuo interno de 18px em cima, 20px nos lados, 16px embaixo.
+**O aparelho** (`.unit`) é um bloco de duas colunas: a principal (`minmax(0, 1fr)`) com o sequencer e a prévia larga do MIDI GEN, e a lateral fixa de **236px** com a plaqueta BRDRUM e os quatro painéis (GAIN, GROOVE, FILL, MIDI GEN) a 22px um do outro. Acima das duas, a barra do topo (SAMPLER, PLAY, BPM, RAND, EXPORT) e a banda de identidade (21px, margem lateral de 30px); abaixo, o rodapé de estado em legenda. Parafusos a 16px dos cantos; recuo interno de 18px em cima, 20px nos lados, 16px embaixo.
 
 **A grade do sequencer** é um `grid` de 28 colunas, com `{spacing.key-gap}` de `column-gap`: `56px` (MUTE/SOLO) · `5 × 38px` (knobs) · `68px` (instrumento) · quatro blocos de `4 × minmax(28px, 36px)` (steps) separados por três colunas de `{spacing.group-gap}` · `46px 46px` (REV, DEL). O vão de compasso é coluna do template, como manda o painel: 8 + 6 + 8 = 22px entre grupos, contra 8px dentro do grupo. Os steps usam `minmax(28px, 36px)` em vez dos 36px fixos do painel para que a grade caiba na coluna principal sem rolagem em 1180px e acima; abaixo disso, `.seq-scroll` rola na horizontal. Cada linha tem `margin-block: 10px` nas peças (42px de step + 20 = 62px de pista, contra 90 no painel: o site é mais denso porque a legenda de knob fica colada ao knob) e um filete de 1px em `{colors.lane-line}` ao pé de cada uma menos a última. A régua de números fica acima da primeira pista, em `{typography.knob-legend}` a 10px; a linha de ACCENT, abaixo da sexta, com o rótulo ocupando as sete primeiras colunas e 16 faders alinhados às colunas de step.
 

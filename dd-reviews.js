@@ -1,4 +1,4 @@
-// Vídeos de produtores usando o Drumsfull (seção REVIEW) e os links do rodapé.
+// Vídeos de produtores usando o BRDRUM (seção REVIEW) e os links do rodapé.
 // Para adicionar um vídeo: coloque o arquivo em video/ e acrescente uma entrada aqui.
 // { src: 'video/produtor-1.mp4', poster: 'img/produtor-1.jpg', who: '@usuario' }
 // Para embutir direto do Instagram: { embed: 'https://www.instagram.com/reel/XXXX/embed', who: '@usuario' }
