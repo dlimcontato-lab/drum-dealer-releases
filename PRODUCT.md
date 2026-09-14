@@ -29,7 +29,7 @@ A demo da própria página é o motor C++ do plugin compilado para WebAssembly, 
 - Dentro do plugin ele entra com a mesma conta; cada computador ocupa um acesso. Licença cheia = o plugin lista as máquinas e deixa desativar uma. A página da conta também lista e desativa.
 - Instala, manda o DAW reescanear os plugins, procura "Drum Dealer" nos instrumentos e arrasta para uma track MIDI.
 - O instalador já deixa a biblioteca de fábrica pronta; nada a configurar para ter som.
-- O botão SAMPLER dentro do plugin abre um menu: "Samples de fábrica" mostra a biblioteca instalada e "Meus samples" cria a pasta `BRDRUM` na área de trabalho, com subpastas por instrumento (a antiga `Vst Dealer` continua sendo lida). Os arquivos do usuário entram no sorteio **junto** com os de fábrica, nunca no lugar deles.
+- O botão SAMPLER dentro do plugin abre, com um clique, a pasta `BRDRUM` com os samples de fábrica, com subpastas por instrumento; o usuário joga os samples dele lá (a antiga `Vst Dealer` continua sendo lida). Os arquivos do usuário entram no sorteio **junto** com os de fábrica, nunca no lugar deles.
 - O plugin não é assinado: o macOS mostra "desenvolvedor não identificado" e o Windows dispara o SmartScreen. Contornar esses dois avisos é parte obrigatória do caminho até o primeiro som.
 
 ## Capabilities and Constraints
