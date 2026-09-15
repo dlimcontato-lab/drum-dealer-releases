@@ -545,6 +545,8 @@ footer{margin-top:var(--s5);padding-top:var(--s3);border-top:1px solid var(--lan
 .upgrade{display:grid;gap:10px;margin-top:14px}
 .upgrade .key{justify-content:space-between;padding:0 16px}
 .upgrade .key span{font-size:11px;letter-spacing:.03em;opacity:.85}
+.upgrade .key.sel{outline:2px solid var(--orange);outline-offset:2px}
+#btn-pagar{margin-top:12px;width:100%;justify-content:center}
 
 /* TONE ×20: a tecla de toggle da barra (plástico preto 110×44, LED de 7px a 12px
    da borda esquerda, texto centrado no que sobra à direita do LED). Mesmos três

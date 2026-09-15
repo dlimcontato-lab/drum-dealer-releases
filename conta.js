@@ -20,7 +20,7 @@ const baixarPedido = params.get('baixar');   // 'mac' | 'win': veio do botão de
 let plans = [];
 const est = {                 // estado da página
   session: null, perfil: null, lic: null, vagas: null, vagasErro: null,
-  orders: [], packs: [], cupom: '', cotacoes: new Map(),
+  orders: [], packs: [], cupom: '', cotacoes: new Map(), planoSel: null,
 };
 
 const aviso = (texto, tipo) => avisoUI($('aviso'), texto, tipo);
@@ -103,6 +103,8 @@ async function pintarCompra() {
       up.appendChild(b);
       continue;
     }
+    b.dataset.plano = p.id;
+    b.classList.toggle('sel', est.planoSel === p.id);
     up.appendChild(b);
     cotar(p.id).then((q) => {
       const valor = BRL(q.final_cents);
@@ -117,7 +119,7 @@ async function pintarCompra() {
       dir.textContent = BRL(precoEfetivo(p));
       if (e.code === 'invalid_coupon') msg($('msg-buy'), e.message, 'err');
     });
-    b.addEventListener('click', () => comprar(p.id));
+    b.addEventListener('click', () => selecionarPlano(p.id));
   }
 
   if (lic && !plans.some((p) => p.seats > seats)) {
@@ -125,29 +127,57 @@ async function pintarCompra() {
     $('buy-text').textContent = 'Você já tem o maior plano. Precisa de mais acessos? Escreva pra gente.';
     $('cupom-box').hidden = true;
   }
+  await mostrarValor();
 }
+
+// Escolher o plano é um passo: destaca, mostra o valor (com o cupom, se houver) e o botão
+// Pagar. Antes, clicar no plano já abria o Mercado Pago, sem valor nem cupom na frente.
+async function selecionarPlano(planId) {
+  est.planoSel = planId;
+  for (const b of $('upgrade').querySelectorAll('.key')) b.classList.toggle('sel', b.dataset.plano === planId);
+  msg($('msg-buy'), '');
+  await mostrarValor();
+}
+
+async function mostrarValor() {
+  const v = $('valor');
+  const pagar = $('btn-pagar');
+  const plano = plans.find((p) => p.id === est.planoSel);
+  if (!plano || $('cupom-box').hidden) { v.hidden = true; v.innerHTML = ''; pagar.hidden = true; return; }
+  try {
+    const q = await cotar(plano.id);
+    const valor = BRL(q.final_cents);
+    v.hidden = false;
+    v.innerHTML = q.discount_cents > 0
+      ? `<span class="legend">${plano.name} com o cupom ${q.coupon ? q.coupon.code : est.cupom}</span>
+         <span class="was">${BRL(q.list_price_cents)}</span><span class="agora">${valor}</span>`
+      : `<span class="legend">${plano.name} · ${plano.seats} acesso${plano.seats > 1 ? 's' : ''}</span><span class="agora">${valor}</span>`;
+    pagar.textContent = `Pagar ${valor}`;
+    pagar.hidden = false;
+  } catch (e) {
+    v.hidden = true; v.innerHTML = ''; pagar.hidden = true;
+    msg($('msg-buy'), e.message, 'err');
+  }
+}
+
+$('btn-pagar').addEventListener('click', () => { if (est.planoSel) comprar(est.planoSel); });
 
 $('btn-cupom').addEventListener('click', async () => {
   const code = $('cupom').value.trim().toUpperCase();
   est.cupom = code;
   est.cotacoes.clear();
   msg($('msg-buy'), code ? 'Conferindo o cupom…' : '');
-  const v = $('valor');
-  v.hidden = true; v.innerHTML = '';
-  await pintarCompra();
-  if (!code) return;
-  try {
+  if (!est.planoSel) {
     const alvo = plans.filter((p) => !est.lic || p.seats > est.lic.seats)[0];
-    if (!alvo) return;
-    const q = await cotar(alvo.id);
-    if (q.discount_cents > 0) {
-      v.hidden = false;
-      v.innerHTML = `<span class="legend">com o cupom ${q.coupon ? q.coupon.code : code}</span>
-        <span class="was">${BRL(q.list_price_cents)}</span><span class="agora">${BRL(q.final_cents)}</span>`;
-      msg($('msg-buy'), 'Cupom aplicado.', 'ok');
-    } else {
-      msg($('msg-buy'), 'Esse cupom não muda o valor deste plano.', '');
-    }
+    if (alvo) est.planoSel = alvo.id;
+  }
+  try {
+    if (code && est.planoSel) await cotar(est.planoSel); // valida o cupom antes de repintar
+    await pintarCompra();
+    if (!code) return;
+    const q = est.planoSel ? est.cotacoes.get(est.planoSel + '|' + code) : null;
+    if (q && q.discount_cents > 0) msg($('msg-buy'), 'Cupom aplicado.', 'ok');
+    else msg($('msg-buy'), 'Esse cupom não muda o valor deste plano.', '');
   } catch (e) {
     est.cupom = '';
     est.cotacoes.clear();
@@ -648,7 +678,8 @@ async function depoisDoLogin(session) {
   if (planoPedido && plans.some((p) => p.id === planoPedido)) {
     history.replaceState(null, '', 'conta.html#licenca');
     location.hash = '#licenca';
-    await comprar(planoPedido);
+    await selecionarPlano(planoPedido);   // só pré-seleciona: o pagamento sai pelo botão Pagar, depois do valor e do cupom
+    aviso('Confira o plano e o valor (e o cupom, se tiver) e aperte Pagar.', '');
   } else if (baixarPedido && DOWNLOADS[baixarPedido]) {
     history.replaceState(null, '', 'conta.html');
     const a = document.createElement('a');
