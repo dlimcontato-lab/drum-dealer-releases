@@ -16,7 +16,7 @@ Produtores de música eletrônica brasileiros trabalhando em casa, no Mac ou no 
 
 ## Product Purpose
 
-Vender o Drum Dealer: uma drum machine com sequencer de 16 steps e gerador de MIDI, em VST3, AU e standalone, para Mac e Windows. Licença por conta, pagamento único, em três planos por número de computadores ativos (1, 3 ou 5 acessos; o de 3 é o que a página empurra). Sucesso é o visitante comprar, baixar o instalador certo e destravar o plugin dentro do DAW entrando com a conta — não é tempo de permanência.
+Vender o Drum Dealer: uma drum machine com sequencer de 16 steps e gerador de MIDI, em VST3 e AU, para Mac e Windows. Licença por conta, pagamento único, em três planos por número de computadores ativos (1, 3 ou 5 acessos; o de 3 é o que a página empurra). Sucesso é o visitante comprar, baixar o instalador certo e destravar o plugin dentro do DAW entrando com a conta — não é tempo de permanência.
 
 ## Positioning
 
@@ -38,7 +38,7 @@ A demo da própria página é o motor C++ do plugin compilado para WebAssembly, 
 - Sampler com 232 samples de fábrica versionados; troca de sample por instrumento.
 - MIDI GEN de bass e lead seguindo o kick, na escala escolhida, com clipe arrastável para o DAW.
 - Fills automáticos por instrumento (rate, fase grid/contra, volume), reverb e delay por canal, export de stems separados + master em wav.
-- Formatos VST3 e AU. Pro Tools só aceita AAX, então lá o caminho é o app standalone.
+- Formatos VST3 e AU. Pro Tools só aceita AAX: fica de fora por enquanto.
 - Requisitos: macOS 10.15 ou mais novo (Intel e Apple Silicon, binário universal) e Windows 10/11 64 bits.
 - Site sem backend: qualquer captura de dado exige serviço externo.
 - O produto é pago desde 2026-09-09. Preços são placeholder (R$ 97 / 147 / 247) até o Diogo fixar; vivem na tabela `plans` e o site lê de lá, nunca hardcoded como verdade.
