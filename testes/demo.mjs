@@ -36,6 +36,63 @@ try {
   await s.esperar(2000);
   ok(await s.avaliar('typeof __dd.estado === "function"'), 'demo expõe __dd.estado');
 
+  // ---------- atalho de teclado: barra de espaço toca/pausa, como em qualquer DAW ----------
+  const espaco = (tipo) => s.cmd('Input.dispatchKeyEvent', { type: tipo, key: ' ', code: 'Space', windowsVirtualKeyCode: 32 });
+  const bateEspaco = async () => { await espaco('keyDown'); await espaco('keyUp'); };
+
+  // 1) antes de qualquer clique no aparelho, espaço não é o atalho: a página ainda rola normal
+  await s.avaliar('window.scrollTo(0, 0)');
+  const scrollAntes = await s.avaliar('scrollY');
+  await bateEspaco();
+  await s.esperar(200);
+  ok(!(await s.avaliar('__dd.estado()')).tocando, 'espaço antes de clicar no aparelho não liga o play');
+  // a rolagem padrão do espaço é comportamento nativo do Chrome, não algo que o nosso JS decide —
+  // só registra, não reprova o teste se o headless não rolar por algum motivo de ambiente.
+  const scrollDepois = await s.avaliar('scrollY');
+  console.log((scrollDepois > scrollAntes ? 'ok: ' : 'obs: ') + `espaço fora do atalho ainda rola a página (scrollY ${scrollAntes} -> ${scrollDepois})`);
+
+  // 2) clique no fundo do painel arma o atalho: espaço toca, espaço de novo para
+  await s.clicar('.p-stripe');
+  await bateEspaco();
+  await s.esperar(1500);
+  let eEsp = await s.avaliar('__dd.estado()');
+  ok(eEsp.pronto && eEsp.tocando, 'espaço depois de clicar no fundo do painel liga o play');
+  ok(await s.avaliar('document.querySelector(".p-status .rot").textContent') === 'Tocando', 'rodapé confirma TOCANDO pelo atalho de teclado');
+  await bateEspaco();
+  await s.esperar(300);
+  ok(!(await s.avaliar('__dd.estado()')).tocando, 'espaço de novo para o play');
+
+  // 3) focar um seletor do MIDI GEN desarma o atalho: espaço não deve tocar nem trocar a escala
+  await s.clicar('.p-stripe');
+  await s.avaliar(`${ctl('genScale')}.el.focus()`);
+  await bateEspaco();
+  await s.esperar(300);
+  ok(!(await s.avaliar('__dd.estado()')).tocando, 'espaço com o seletor MIDI GEN focado não liga o play');
+
+  // 4) clicar numa tecla de passo arma o atalho e foca o botão; espaço toca sem alternar o passo
+  const passoAntes = await s.avaliar(`document.querySelector('.step').classList.contains('on')`);
+  await s.clicar('.step');
+  const passoDepoisClique = await s.avaliar(`document.querySelector('.step').classList.contains('on')`);
+  ok(passoDepoisClique !== passoAntes, 'clicar no passo alterna o passo (clique normal, de controle)');
+  await bateEspaco();
+  await s.esperar(1500);
+  let eStep = await s.avaliar('__dd.estado()');
+  ok(eStep.pronto && eStep.tocando, 'espaço depois de clicar num passo ainda liga o play');
+  ok(await s.avaliar(`document.querySelector('.step').classList.contains('on')`) === passoDepoisClique,
+    'espaço não alterna o passo que ficou com foco (preventDefault no keyup)');
+  await bateEspaco();
+  await s.esperar(300);
+  ok(!(await s.avaliar('__dd.estado()')).tocando, 'espaço de novo para (com o passo ainda focado)');
+  await s.clicar('.step'); // devolve o passo ao estado original, pros testes seguintes
+  ok(await s.avaliar(`document.querySelector('.step').classList.contains('on')`) === passoAntes, 'passo restaurado ao estado original');
+
+  // 5) clicar fora da demo desarma o atalho
+  await s.clicar('.p-stripe');
+  await s.clicar('.compat-title');
+  await bateEspaco();
+  await s.esperar(300);
+  ok(!(await s.avaliar('__dd.estado()')).tocando, 'clicar fora da demo desarma o atalho: espaço não liga o play');
+
   await s.clicar('#play');
   await s.esperar(4000);
   let e = await s.avaliar('__dd.estado()');

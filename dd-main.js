@@ -153,7 +153,7 @@ async function comCarregando(btn, rotulo, fn) {
 }
 
 const playBtn = $('play');
-playBtn.addEventListener('click', async () => {
+async function alternarPlay() {
   // garantir() já tenta resume() de novo aqui (síncrono no boot, ou no AudioContext existente); se
   // depois do resume() assentar o contexto ainda não estiver 'running', não afirma que está tocando.
   if (!(await comCarregando(playBtn, 'Carregando…', audio.garantir))) return;
@@ -169,6 +169,33 @@ playBtn.addEventListener('click', async () => {
   audio.enviar({ type: 'playing', on: tocando });
   ao.pal(tocando ? 'play' : 'stop');
   if (!tocando) { passo = -1; painel.playhead(-1, false); painel.medir(0, 0); audio.pausar(); }
+}
+playBtn.addEventListener('click', alternarPlay);
+
+// ---------- atalho de teclado: barra de espaço toca/pausa, como em qualquer DAW ----------
+// Arma no pointerdown dentro da moldura do aparelho ou da barra de transporte; qualquer pointerdown
+// fora desarma. Assim o resto da página (compra, conta, digitação) nunca perde a barra de espaço.
+let atalhoArmado = false;
+const CAMPO_DE_TEXTO = 'input, textarea, select, [contenteditable], [contenteditable=""]';
+const ehCampoDeTexto = (el) => !!el && typeof el.matches === 'function' && el.matches(CAMPO_DE_TEXTO);
+document.addEventListener('pointerdown', (e) => {
+  atalhoArmado = !!e.target.closest?.('#aparelho, #transporte');
+});
+document.addEventListener('focusin', (e) => { if (ehCampoDeTexto(e.target)) atalhoArmado = false; });
+document.addEventListener('keydown', (e) => {
+  if (e.code !== 'Space' || e.repeat || !atalhoArmado) return;
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  if (ehCampoDeTexto(document.activeElement)) return;
+  e.preventDefault(); // não deixa a página rolar
+  alternarPlay();
+});
+document.addEventListener('keyup', (e) => {
+  // O navegador ativa um <button> focado no keyup do espaço (ex.: um passo focado após o clique
+  // que armou o atalho); sem isso o espaço tocaria E alternaria o passo/tecla que está com foco.
+  if (e.code !== 'Space' || !atalhoArmado) return;
+  if (e.ctrlKey || e.metaKey || e.altKey) return;
+  if (ehCampoDeTexto(document.activeElement)) return;
+  e.preventDefault();
 });
 
 const setBpm = (d) => {

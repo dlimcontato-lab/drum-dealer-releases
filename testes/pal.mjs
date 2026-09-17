@@ -37,10 +37,12 @@ try {
   await s.clicar('#play');
   await s.esperar(4000);
   ok(await s.avaliar('__dd.pal.estado()') === 8, 'dança no PLAY');
+  // quadros alternam a cada batida (476 ms a 126 BPM): uma única leitura 600 ms depois pode cair
+  // duas batidas à frente e repetir o quadro; amostra a cada 120 ms por 1,5 s e exige mudança
   const q1 = await s.avaliar('__dd.pal.quadro()');
-  await s.esperar(600);
-  const q2 = await s.avaliar('__dd.pal.quadro()');
-  ok(q1 !== q2, 'a dança muda no tempo do BPM');
+  let mudou = false;
+  for (let t = 0; t < 12 && !mudou; t++) { await s.esperar(120); mudou = (await s.avaliar('__dd.pal.quadro()')) !== q1; }
+  ok(mudou, 'a dança muda no tempo do BPM');
 
   await s.clicar('#play');
   await s.avaliar('__dd.pal.avancar(61)');
