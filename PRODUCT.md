@@ -8,7 +8,7 @@ web
 
 ## Stack
 
-Site estático de duas páginas (`index.html` e `conta.html`) com uma folha de estilo compartilhada (`dd.css`), mais `dd-main.js`, `dd-processor.js` (AudioWorklet), `url-shim.js` e o motor `engine.mjs` + `engine.wasm`. `dd-api.js` é o cliente mínimo (sem SDK) do backend de licenças; `dd-precos.js` lê os preços da tabela `plans`; `conta.js` é a página da conta. Sem framework, sem build step. Backend: projeto Supabase `bwzngjvjxrqbalvoadpu` (auth por e-mail e senha, tabelas de licença e Edge Functions) e checkout pelo Mercado Pago; contrato em `~/Sistema AI/drum-dealer-backend/API.md`. Publicado por GitHub Pages no repo público `dlimcontato-lab/drum-dealer-releases`; a fonte vive em `~/Sistema AI/drum-dealer-site`.
+Site estático de duas páginas (`index.html` e `conta.html`) com uma folha de estilo compartilhada (`dd.css`), mais a demo (`dd-main.js`, `dd-painel.js` e `dd-edit.js` montam o painel do plugin a partir de `painel/layout.json` e `painel/params.json`, gerados do código do plugin; `dd-audio.js` e `dd-processor.js` rodam o som num AudioWorklet; `dd-pal.js` desenha o Pal a partir de `painel/pal.json`), `url-shim.js` e o motor `engine.mjs` + `engine.wasm`, compilado do plugin (`MaschinDealer/web/build-wasm.sh`). `dd-api.js` é o cliente mínimo (sem SDK) do backend de licenças; `dd-precos.js` lê os preços da tabela `plans`; `conta.js` é a página da conta. Sem framework, sem build step. Backend: projeto Supabase `bwzngjvjxrqbalvoadpu` (auth por e-mail e senha, tabelas de licença e Edge Functions) e checkout pelo Mercado Pago; contrato em `~/Sistema AI/drum-dealer-backend/API.md`. Publicado por GitHub Pages no repo público `dlimcontato-lab/drum-dealer-releases`; a fonte vive em `~/Sistema AI/drum-dealer-site`.
 
 ## Users
 
@@ -37,7 +37,10 @@ A demo da própria página é o motor C++ do plugin compilado para WebAssembly, 
 - Sequencer de 16 steps, 6 instrumentos (kick, snare, clap, hat fechado, hat aberto, tom), accent por step, groove straight/swing com amount, mute/solo e ganho por canal, botão RAND que sorteia padrão e samples.
 - Sampler com 232 samples de fábrica versionados; troca de sample por instrumento.
 - MIDI GEN de bass e lead seguindo o kick, na escala escolhida, com clipe arrastável para o DAW.
-- Fills automáticos por instrumento (rate, fase grid/contra, volume), reverb e delay por canal, export de stems separados + master em wav.
+- Viradas por instrumento com RATE de 12 degraus (OFF, 1/16 a 2 compassos, com contratempo em 1/16, 1/8, 1/4 e 1/2) e volume; reverb e delay por canal; export de stems separados (kick, snare, clap, hat, tom) + FX + mix em wav.
+- MASTER FX: SATURATION com 8 formas (WAVE SHAPE), MULTIBAND de 3 bandas com preset OTT (no PRESET do EDIT) e ECHO com SYNC. O EDIT abre o painel completo de cada um.
+- TONE X: a tecla do topo amplia o TONE para até 20x; o LED de cada linha escolhe quais instrumentos entram.
+- O Pal: personagem na tela de pixels que segue o mouse, sorri no clique, dança no play, fica triste quando o volume é cortado e cochila depois de 1 minuto sem interação.
 - Formatos VST3 e AU. Pro Tools só aceita AAX: fica de fora por enquanto.
 - Requisitos: macOS 10.15 ou mais novo (Intel e Apple Silicon, binário universal) e Windows 10/11 64 bits.
 - Site sem backend: qualquer captura de dado exige serviço externo.
@@ -55,7 +58,7 @@ A demo da própria página é o motor C++ do plugin compilado para WebAssembly, 
 ## Evidence on Hand
 
 - **A demo WASM tocável é a única prova que existe** — e é forte, porque é o motor real.
-- Os 232 samples de fábrica e o print do painel atual do plugin (`img/og-brdrum.jpg`, 1200×630, recortado de `MaschinDealer/validation/ui-licenciado.png`; é a imagem de compartilhamento) estão no repo. O print antigo `drum-dealer-ui.png` saiu em 2026-09-11.
+- Os 232 samples de fábrica e o print do painel atual do plugin (`img/og-brdrum.jpg`, 1200×630, recortado em 2026-09-17 da captura do plugin licenciado com TONE X e o Pal, sem e-mail da licença na imagem; é a imagem de compartilhamento) estão no repo. O print antigo `drum-dealer-ui.png` saiu em 2026-09-11.
 - **Não existe** e não pode ser inventado: depoimento, nome de usuário, contagem de downloads, avaliação, logo de artista, menção de imprensa, selo de compatibilidade oficial, prêmio ou número de qualquer natureza. Nenhuma faixa de referência pronta feita com o plugin está disponível hoje.
 
 ## Product Principles
