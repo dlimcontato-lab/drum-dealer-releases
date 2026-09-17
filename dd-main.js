@@ -2,6 +2,7 @@
 import { montarPainel, escalar, desenharRolo, GRADE_INICIAL, INST_IDS } from './dd-painel.js';
 import { montarEdit } from './dd-edit.js';
 import { criarAudio, carregarEspelho, escreverMidi } from './dd-audio.js';
+import { criarPal } from './dd-pal.js';
 
 const V = '20260916c';
 const carregar = (u) => fetch(u + '?v=' + V).then((r) => {
@@ -214,3 +215,23 @@ window.__dd = {
   get pal() { return pal; },
   set pal(p) { pal = p; },
 };
+
+// ---------- o Pal ----------
+// Carrega o espelho sem esperar o primeiro clique: o Pal vive antes do som. Até ele chegar, a tela mostra
+// o quadro contente do pal.json.
+const lerEntradasPal = () => {
+  const v = (id) => valores.get(id);
+  return {
+    tocando,
+    beat: tocando && passo >= 0 ? Math.floor(passo / 4) : 0,
+    masterDb: v('masterGain'),
+    vols: INST_IDS.map((id) => v(id + 'Vol')),
+    // corte nos efeitos: DRY/WET da SATURATION e AMOUNT do MULTIBAND só contam ligados (igual ao editor)
+    fx: [v('satOn') > 0.5 ? Math.min(1, Math.max(0, v('satDryWet') / 100)) : 0,
+      v('mbOn') > 0.5 ? Math.min(1, Math.max(0, v('mbAmount') / 100)) : 0,
+      v('echoMix')],
+  };
+};
+carregarEspelho()
+  .then((M) => { pal = criarPal({ espelho: M, pixels: painel.pixels, aparelho: $('aparelho'), lerEntradas: lerEntradasPal }); })
+  .catch((err) => console.error('brdrum: Pal sem motor', err));

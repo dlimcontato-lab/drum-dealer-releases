@@ -1,6 +1,6 @@
 // Som da demo: o motor C++ do plugin em WASM num AudioWorklet (dd-processor.js), mais uma segunda
 // instância na thread principal (o "espelho") para o Pal e para a curva do EDIT.
-export const ENGINE_V = '5';
+export const ENGINE_V = '6';
 const FILES = ['kick', 'snare', 'clap', 'chat', 'ohat', 'tom'];
 const VARIANTS = 4;
 const TESTE = new URLSearchParams(location.search).get('teste') === '1';
