@@ -1,8 +1,9 @@
-// Demo do topo, etapa de tela: painel do plugin + EDIT do MASTER FX. Sem som até a Task 6.
-import { montarPainel, escalar, GRADE_INICIAL } from './dd-painel.js';
+// Demo do topo: o painel do plugin (dd-painel.js + dd-edit.js) tocando o motor C++ do plugin em WASM.
+import { montarPainel, escalar, desenharRolo, GRADE_INICIAL, INST_IDS } from './dd-painel.js';
 import { montarEdit } from './dd-edit.js';
+import { criarAudio, carregarEspelho, escreverMidi } from './dd-audio.js';
 
-const V = '20260916b';
+const V = '20260916c';
 const carregar = (u) => fetch(u + '?v=' + V).then((r) => {
   if (!r.ok) throw new Error(u + ': ' + r.status);
   return r.json();
@@ -11,20 +12,197 @@ const [layout, lista, palJson] = await Promise.all([
   carregar('painel/layout.json'), carregar('painel/params.json'), carregar('painel/pal.json'),
 ]);
 const params = new Map(lista.map((p) => [p.id, p]));
-const aparelho = document.getElementById('aparelho');
-const nada = () => {};
+const valores = new Map(lista.map((p) => [p.id, p.def]));
+const SO_NA_PAGINA = new Set(['genRoot', 'genScale', 'genBars']);   // o MIDI GEN recebe na hora de gerar
+const $ = (id) => document.getElementById(id);
+
+const grid = GRADE_INICIAL.map((l) => l.slice());
+const accents = Array(16).fill(0.5);
+const gerado = [null, null];
+const gr = [0, 0, 0];
+let bpm = 126;
+let tocando = false;
+let passo = -1;
+let pal = null;
 let edit = null;
+let painel = null;
+
+const falhaEl = $('falha');
+const mostrarFalha = (msg) => { falhaEl.textContent = msg; falhaEl.hidden = false; };
+const falhaMotor = (err) => { console.error('brdrum:', err); mostrarFalha('Não consegui carregar o motor de áudio. Recarregue a página.'); };
+
+const audio = criarAudio({
+  aoPasso(s) { passo = s; painel.playhead(s, tocando); },
+  aoPico(l, r, g) {
+    painel.medir(l, r);
+    g.forEach((x, i) => { gr[i] = x; });
+    if (edit.pagina() === 1) edit.setGr(gr);
+  },
+  aoGrade(g) {
+    for (let r = 0; r < 6; r++) for (let c = 0; c < 16; c++) grid[r][c] = g[r][c] ? 1 : 0;
+    painel.pintarGrade(grid);
+  },
+  aoGerado: receberGerado,
+  aoParams(vals) {
+    for (const [id, v] of Object.entries(vals)) {
+      valores.set(id, v);
+      const w = painel.controles.get(id);
+      if (w) w.set(v);
+    }
+    edit.atualizar();
+  },
+  aoFalha: mostrarFalha,
+  estadoInicial() {
+    const msgs = [{ type: 'bpm', value: bpm }];
+    for (const id of painel.controles.keys())
+      if (!SO_NA_PAGINA.has(id)) msgs.push({ type: 'param', id, value: valores.get(id) });
+    for (let r = 0; r < 6; r++) for (let c = 0; c < 16; c++) msgs.push({ type: 'step', inst: r, step: c, on: !!grid[r][c] });
+    accents.forEach((v, c) => msgs.push({ type: 'accent', step: c, value: v }));
+    msgs.push({ type: 'playing', on: tocando });
+    return msgs;
+  },
+});
+
 const ao = {
-  mudou(id) { if (id.startsWith('sat') && edit) edit.atualizar(); },
-  step: nada, accent: nada, pad: nada, rand: nada, gerar: nada, pal: nada, preset: nada,
+  mudou(id, v) {
+    valores.set(id, v);
+    if (!SO_NA_PAGINA.has(id)) audio.enviar({ type: 'param', id, value: v });
+    reagir(id);
+  },
+  step(r, c, on) {
+    grid[r][c] = on ? 1 : 0;
+    audio.enviar({ type: 'step', inst: r, step: c, on });
+    if (on) audio.garantir().then(() => audio.enviar({ type: 'trigger', inst: r })).catch(falhaMotor);
+  },
+  accent(c, v) { accents[c] = v; audio.enviar({ type: 'accent', step: c, value: v }); },
+  pad(r) { audio.garantir().then(() => { audio.trocarAmostra(r); audio.enviar({ type: 'trigger', inst: r }); }).catch(falhaMotor); },
+  rand() { audio.garantir().then(() => { audio.sortearAmostras(); audio.enviar({ type: 'rand' }); }).catch(falhaMotor); },
+  gerar(kind) {
+    comCarregando(painel.genKeys[kind], null, audio.garantir).then((ok) => {
+      if (!ok) return;
+      painel.statusGen('gerando…');
+      pedirGeracao(kind);
+    });
+  },
   edit(p) { edit.alternar(p); },
-  editMudou(p) { painel.editTeclas.forEach((t, i) => t.classList.toggle('on-sync', i === p)); },
+  editMudou(p) {
+    painel.editTeclas.forEach((t, i) => t.classList.toggle('on-sync', i === p));
+    if (p === 0) curvaAtual();
+    if (p === 1) edit.setGr(gr);
+  },
+  preset(p) { audio.garantir().then(() => audio.enviar({ type: 'preset', preset: p })).catch(falhaMotor); },
+  pal(evento) { if (pal) pal.evento(evento); },
   teclaEdit: (p) => painel.editTeclas[p],
 };
-const painel = montarPainel(aparelho, layout, params, palJson, ao);
-edit = montarEdit(aparelho, layout, params, painel.controles, ao);
-painel.pintarGrade(GRADE_INICIAL);
-escalar(document.getElementById('aparelho-rolo'), document.getElementById('aparelho-caixa'), aparelho);
+
+painel = montarPainel($('aparelho'), layout, params, palJson, ao);
+edit = montarEdit($('aparelho'), layout, params, painel.controles, ao);
+painel.pintarGrade(grid);
+escalar($('aparelho-rolo'), $('aparelho-caixa'), $('aparelho'));
+
+function nomeEscolha(id) {
+  return params.get(id).choices[Math.round(valores.get(id))];
+}
+
+function reagir(id) {
+  if (id === 'toneX20') painel.armarToneX(valores.get('toneX20') > 0.5);
+  if (id === 'fillRate') painel.legendas.rate.textContent = 'RATE ' + nomeEscolha('fillRate');
+  if (id === 'echoSync' || id === 'echoDiv') {
+    const sync = valores.get('echoSync') > 0.5;
+    painel.trocarTempoEcho(sync);
+    painel.legendas.tempo.textContent = sync ? 'TIME ' + nomeEscolha('echoDiv') : 'TIME';
+  }
+  if (id === 'echoMod') painel.legendas.mod.textContent = 'MOD ' + Math.round(Math.min(1, Math.max(0, valores.get('echoMod'))) * 100) + '%';
+  if (id.startsWith('sat')) { edit.atualizar(); curvaAtual(); }
+  if (SO_NA_PAGINA.has(id)) for (const k of [0, 1]) if (gerado[k]) pedirGeracao(k);
+}
+['toneX20', 'fillRate', 'echoSync', 'echoMod'].forEach(reagir);
+
+async function curvaAtual() {
+  if (edit.pagina() !== 0) return;
+  const M = await carregarEspelho().catch(() => null);
+  if (!M) { edit.setCurva(null); return; }
+  const n = 256;
+  const ptr = M._malloc(n * 4);
+  const v = (id) => valores.get(id);
+  M._web_sat_curve(Math.round(v('satType')), v('satDriveDb'), Math.round(v('satClip')),
+    v('satWsDrive') / 100, v('satWsLin') / 100, v('satWsCurve') / 100, v('satWsDamp') / 100,
+    v('satWsDepth') / 100, v('satWsPeriod') / 100, ptr, n);
+  const pts = Array.from(M.HEAPF32.subarray(ptr / 4, ptr / 4 + n));
+  M._free(ptr);
+  edit.setCurva(pts);
+}
+
+// ---------- transporte (fora da moldura) ----------
+async function comCarregando(btn, rotulo, fn) {
+  const alvo = btn.querySelector('.rot') || btn;
+  const antes = alvo.textContent;
+  const jaTem = audio.ativo();
+  if (!jaTem) { if (rotulo) alvo.textContent = rotulo; btn.disabled = true; }
+  try {
+    await fn();
+  } catch (err) {
+    falhaMotor(err);
+    return false;
+  } finally {
+    if (!jaTem) { alvo.textContent = antes; btn.disabled = false; }
+  }
+  return true;
+}
+
+const playBtn = $('play');
+playBtn.addEventListener('click', async () => {
+  if (!(await comCarregando(playBtn, 'Carregando…', audio.garantir))) return;
+  tocando = !tocando;
+  playBtn.classList.toggle('playing', tocando);
+  playBtn.querySelector('.rot').textContent = tocando ? 'Stop' : 'Play';
+  painel.tocando(tocando);
+  audio.enviar({ type: 'playing', on: tocando });
+  ao.pal(tocando ? 'play' : 'stop');
+  if (!tocando) { passo = -1; painel.playhead(-1, false); painel.medir(0, 0); }
+});
+
+const setBpm = (d) => {
+  bpm = Math.min(160, Math.max(90, bpm + d));
+  $('bpm').textContent = bpm;
+  audio.enviar({ type: 'bpm', value: bpm });
+};
+$('bpm-down').addEventListener('click', () => setBpm(-2));
+$('bpm-up').addEventListener('click', () => setBpm(2));
+
+// ---------- MIDI GEN ----------
+function pedirGeracao(kind) {
+  audio.enviar({
+    type: 'generate', kind,
+    root: Math.round(valores.get('genRoot')),
+    scale: Math.round(valores.get('genScale')),
+    bars: Number(nomeEscolha('genBars')),
+    seed: (Math.random() * 0xffffffff) >>> 0,
+  });
+}
+
+function receberGerado(m) {
+  const notas = [];
+  for (let i = 0; i < m.count; i++)
+    notas.push({ pitch: m.notes[i * 4], start: m.notes[i * 4 + 1], len: m.notes[i * 4 + 2], vel: m.notes[i * 4 + 3] });
+  gerado[m.kind] = { notes: notas, bars: m.bars };
+  requestAnimationFrame(() => desenharRolo(painel.rolos[m.kind], gerado[m.kind], m.kind));
+  const link = $(m.kind === 0 ? 'dl-bass' : 'dl-lead');
+  if (link.dataset.blob) URL.revokeObjectURL(link.href);
+  link.href = URL.createObjectURL(new Blob([escreverMidi(notas, bpm)], { type: 'audio/midi' }));
+  link.dataset.blob = '1';
+  link.removeAttribute('aria-disabled');
+  const texto = `${m.kind === 0 ? 'BASS' : 'LEAD'}: ${m.count} notas em ${m.bars} compassos`;
+  painel.statusGen(texto);
+}
+
 if (location.hash === '#edit-sat') edit.abrir(0);
 if (location.hash === '#edit-mb') edit.abrir(1);
-window.__dd = { painel, edit, layout, params };
+
+window.__dd = {
+  painel, edit, audio, layout, valores, params, INST_IDS,
+  estado: () => ({ pronto: audio.pronto(), tocando, passo, pico: painel.picoAtual(), gr: gr.slice() }),
+  curva: () => edit.pontosCurva(),
+  get pal() { return pal; },
+  set pal(p) { pal = p; },
+};
