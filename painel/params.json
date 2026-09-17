@@ -1,0 +1,1555 @@
+[
+  {
+    "id": "filterCutoff",
+    "min": 20.0,
+    "max": 20000.0,
+    "interval": 1.0,
+    "skew": 0.5,
+    "def": 20000.0,
+    "curve": "skew",
+    "type": "float"
+  },
+  {
+    "id": "reverbMix",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "delayTime",
+    "min": 10.0,
+    "max": 1000.0,
+    "interval": 1.0,
+    "skew": 0.5,
+    "def": 250.0,
+    "curve": "skew",
+    "type": "float"
+  },
+  {
+    "id": "groove",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "grooveType",
+    "min": 0.0,
+    "max": 23.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "choices": [
+      "Straight",
+      "Random",
+      "Ableton Swing 8",
+      "Ableton Swing 16",
+      "MPC 16 Swing 54%",
+      "MPC 16 Swing 58%",
+      "MPC 16 Swing 62%",
+      "MPC 16 Swing 66%",
+      "MPC 16 Swing 70%",
+      "MPC 16 Swing 75%",
+      "SP-1200 Swing 54%",
+      "SP-1200 Swing 58%",
+      "SP-1200 Swing 62%",
+      "SP-1200 Swing 66%",
+      "TR-909 Shuffle 2",
+      "TR-909 Shuffle 4",
+      "TR-909 Shuffle 6",
+      "FL Swing 25%",
+      "FL Swing 50%",
+      "FL Swing 75%",
+      "FL Swing 100%",
+      "MPC 16 Swing 80%",
+      "MPC 16 Swing 85%",
+      "HARD Swing 90%"
+    ],
+    "type": "choice"
+  },
+  {
+    "id": "snareVar",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "fillVol",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.8,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "masterGain",
+    "min": -24.0,
+    "max": 6.0,
+    "interval": 0.1,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "satDrive",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.001,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "satColor",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.001,
+    "skew": 1.0,
+    "def": 0.5,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "satMix",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.001,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "mbLow",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.001,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "mbMid",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.001,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "mbHigh",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.001,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "mbMix",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.001,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "satOn",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "bool"
+  },
+  {
+    "id": "satType",
+    "min": 0.0,
+    "max": 7.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "choices": [
+      "Analog Clip",
+      "Soft Sine",
+      "Bass Shaper",
+      "Medium Curve",
+      "Hard Curve",
+      "Sinoid Fold",
+      "Digital Clip",
+      "Waveshaper"
+    ],
+    "type": "choice"
+  },
+  {
+    "id": "satDriveDb",
+    "min": -36.0,
+    "max": 36.0,
+    "interval": 0.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "satOutDb",
+    "min": -36.0,
+    "max": 0.0,
+    "interval": 0.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "satDryWet",
+    "min": 0.0,
+    "max": 100.0,
+    "interval": 0.0,
+    "skew": 1.0,
+    "def": 100.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "satClip",
+    "min": 0.0,
+    "max": 2.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "choices": [
+      "No Clip",
+      "Soft Clip",
+      "Hard Clip"
+    ],
+    "type": "choice"
+  },
+  {
+    "id": "satColorOn",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "bool"
+  },
+  {
+    "id": "satAmtLo",
+    "min": -100.0,
+    "max": 100.0,
+    "interval": 0.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "satAmtHi",
+    "min": -100.0,
+    "max": 100.0,
+    "interval": 0.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "satColorFreq",
+    "min": 20.0,
+    "max": 20000.0,
+    "interval": 0.0,
+    "skew": 1.0,
+    "def": 1000.0,
+    "curve": "log",
+    "type": "float"
+  },
+  {
+    "id": "satColorWidth",
+    "min": 0.0,
+    "max": 100.0,
+    "interval": 0.0,
+    "skew": 1.0,
+    "def": 30.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "satWsDrive",
+    "min": 0.0,
+    "max": 100.0,
+    "interval": 0.0,
+    "skew": 1.0,
+    "def": 100.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "satWsLin",
+    "min": 0.0,
+    "max": 100.0,
+    "interval": 0.0,
+    "skew": 1.0,
+    "def": 50.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "satWsCurve",
+    "min": 0.0,
+    "max": 100.0,
+    "interval": 0.0,
+    "skew": 1.0,
+    "def": 5.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "satWsDamp",
+    "min": 0.0,
+    "max": 100.0,
+    "interval": 0.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "satWsDepth",
+    "min": 0.0,
+    "max": 100.0,
+    "interval": 0.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "satWsPeriod",
+    "min": 0.0,
+    "max": 100.0,
+    "interval": 0.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "mbOn",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "bool"
+  },
+  {
+    "id": "mbAmount",
+    "min": 0.0,
+    "max": 100.0,
+    "interval": 0.0,
+    "skew": 1.0,
+    "def": 100.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "mbTime",
+    "min": 10.0,
+    "max": 1000.0,
+    "interval": 0.0,
+    "skew": 1.0,
+    "def": 100.0,
+    "curve": "log",
+    "type": "float"
+  },
+  {
+    "id": "mbOutDb",
+    "min": -24.0,
+    "max": 24.0,
+    "interval": 0.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "mbSoftKnee",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "bool"
+  },
+  {
+    "id": "mbRms",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "bool"
+  },
+  {
+    "id": "mbXoLow",
+    "min": 50.0,
+    "max": 1000.0,
+    "interval": 0.0,
+    "skew": 1.0,
+    "def": 120.0,
+    "curve": "log",
+    "type": "float"
+  },
+  {
+    "id": "mbXoHigh",
+    "min": 500.0,
+    "max": 15000.0,
+    "interval": 0.0,
+    "skew": 1.0,
+    "def": 2500.0,
+    "curve": "log",
+    "type": "float"
+  },
+  {
+    "id": "mbLowOn",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 1.0,
+    "curve": "linear",
+    "type": "bool"
+  },
+  {
+    "id": "mbLowSolo",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "bool"
+  },
+  {
+    "id": "mbLowInDb",
+    "min": -24.0,
+    "max": 24.0,
+    "interval": 0.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "mbLowBelowThr",
+    "min": -80.0,
+    "max": 0.0,
+    "interval": 0.0,
+    "skew": 1.0,
+    "def": -60.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "mbLowBelowRatio",
+    "min": 0.2,
+    "max": 4.0,
+    "interval": 0.0,
+    "skew": 0.444854,
+    "def": 1.0,
+    "curve": "skew",
+    "type": "float"
+  },
+  {
+    "id": "mbLowAboveThr",
+    "min": -60.0,
+    "max": 0.0,
+    "interval": 0.0,
+    "skew": 1.0,
+    "def": -20.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "mbLowAboveRatio",
+    "min": 0.5,
+    "max": 100.0,
+    "interval": 0.0,
+    "skew": 0.165244,
+    "def": 1.0,
+    "curve": "skew",
+    "type": "float"
+  },
+  {
+    "id": "mbLowAttack",
+    "min": 0.01,
+    "max": 1000.0,
+    "interval": 0.0,
+    "skew": 1.0,
+    "def": 50.0,
+    "curve": "log",
+    "type": "float"
+  },
+  {
+    "id": "mbLowRelease",
+    "min": 1.0,
+    "max": 3000.0,
+    "interval": 0.0,
+    "skew": 1.0,
+    "def": 300.0,
+    "curve": "log",
+    "type": "float"
+  },
+  {
+    "id": "mbLowOutDb",
+    "min": -24.0,
+    "max": 24.0,
+    "interval": 0.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "mbMidOn",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 1.0,
+    "curve": "linear",
+    "type": "bool"
+  },
+  {
+    "id": "mbMidSolo",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "bool"
+  },
+  {
+    "id": "mbMidInDb",
+    "min": -24.0,
+    "max": 24.0,
+    "interval": 0.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "mbMidBelowThr",
+    "min": -80.0,
+    "max": 0.0,
+    "interval": 0.0,
+    "skew": 1.0,
+    "def": -60.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "mbMidBelowRatio",
+    "min": 0.2,
+    "max": 4.0,
+    "interval": 0.0,
+    "skew": 0.444854,
+    "def": 1.0,
+    "curve": "skew",
+    "type": "float"
+  },
+  {
+    "id": "mbMidAboveThr",
+    "min": -60.0,
+    "max": 0.0,
+    "interval": 0.0,
+    "skew": 1.0,
+    "def": -20.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "mbMidAboveRatio",
+    "min": 0.5,
+    "max": 100.0,
+    "interval": 0.0,
+    "skew": 0.165244,
+    "def": 1.0,
+    "curve": "skew",
+    "type": "float"
+  },
+  {
+    "id": "mbMidAttack",
+    "min": 0.01,
+    "max": 1000.0,
+    "interval": 0.0,
+    "skew": 1.0,
+    "def": 10.0,
+    "curve": "log",
+    "type": "float"
+  },
+  {
+    "id": "mbMidRelease",
+    "min": 1.0,
+    "max": 3000.0,
+    "interval": 0.0,
+    "skew": 1.0,
+    "def": 200.0,
+    "curve": "log",
+    "type": "float"
+  },
+  {
+    "id": "mbMidOutDb",
+    "min": -24.0,
+    "max": 24.0,
+    "interval": 0.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "mbHighOn",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 1.0,
+    "curve": "linear",
+    "type": "bool"
+  },
+  {
+    "id": "mbHighSolo",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "bool"
+  },
+  {
+    "id": "mbHighInDb",
+    "min": -24.0,
+    "max": 24.0,
+    "interval": 0.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "mbHighBelowThr",
+    "min": -80.0,
+    "max": 0.0,
+    "interval": 0.0,
+    "skew": 1.0,
+    "def": -60.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "mbHighBelowRatio",
+    "min": 0.2,
+    "max": 4.0,
+    "interval": 0.0,
+    "skew": 0.444854,
+    "def": 1.0,
+    "curve": "skew",
+    "type": "float"
+  },
+  {
+    "id": "mbHighAboveThr",
+    "min": -60.0,
+    "max": 0.0,
+    "interval": 0.0,
+    "skew": 1.0,
+    "def": -20.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "mbHighAboveRatio",
+    "min": 0.5,
+    "max": 100.0,
+    "interval": 0.0,
+    "skew": 0.165244,
+    "def": 1.0,
+    "curve": "skew",
+    "type": "float"
+  },
+  {
+    "id": "mbHighAttack",
+    "min": 0.01,
+    "max": 1000.0,
+    "interval": 0.0,
+    "skew": 1.0,
+    "def": 5.0,
+    "curve": "log",
+    "type": "float"
+  },
+  {
+    "id": "mbHighRelease",
+    "min": 1.0,
+    "max": 3000.0,
+    "interval": 0.0,
+    "skew": 1.0,
+    "def": 100.0,
+    "curve": "log",
+    "type": "float"
+  },
+  {
+    "id": "mbHighOutDb",
+    "min": -24.0,
+    "max": 24.0,
+    "interval": 0.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "echoTime",
+    "min": 1.0,
+    "max": 1000.0,
+    "interval": 0.01,
+    "skew": 0.198889,
+    "def": 250.0,
+    "curve": "skew",
+    "type": "float"
+  },
+  {
+    "id": "echoSync",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "bool"
+  },
+  {
+    "id": "echoDiv",
+    "min": 0.0,
+    "max": 7.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 4.0,
+    "curve": "linear",
+    "choices": [
+      "1/32",
+      "1/16T",
+      "1/16",
+      "1/8T",
+      "1/8",
+      "1/4T",
+      "1/4",
+      "1/2"
+    ],
+    "type": "choice"
+  },
+  {
+    "id": "echoFeedback",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.001,
+    "skew": 1.0,
+    "def": 0.35,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "echoInput",
+    "min": -24.0,
+    "max": 12.0,
+    "interval": 0.1,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "echoFilter",
+    "min": -1.0,
+    "max": 1.0,
+    "interval": 0.001,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "echoMod",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.001,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "echoMix",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.001,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "toneX20",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "bool"
+  },
+  {
+    "id": "kickToneX",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 1.0,
+    "curve": "linear",
+    "type": "bool"
+  },
+  {
+    "id": "snareToneX",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 1.0,
+    "curve": "linear",
+    "type": "bool"
+  },
+  {
+    "id": "clapToneX",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 1.0,
+    "curve": "linear",
+    "type": "bool"
+  },
+  {
+    "id": "chatToneX",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 1.0,
+    "curve": "linear",
+    "type": "bool"
+  },
+  {
+    "id": "ohatToneX",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 1.0,
+    "curve": "linear",
+    "type": "bool"
+  },
+  {
+    "id": "tomToneX",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 1.0,
+    "curve": "linear",
+    "type": "bool"
+  },
+  {
+    "id": "fillTarget",
+    "min": 0.0,
+    "max": 5.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 1.0,
+    "curve": "linear",
+    "choices": [
+      "KICK",
+      "SNARE",
+      "CLAP",
+      "CHAT",
+      "OHAT",
+      "TOM"
+    ],
+    "type": "choice"
+  },
+  {
+    "id": "fillPhase",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "choices": [
+      "GRID",
+      "CONTRA"
+    ],
+    "type": "choice"
+  },
+  {
+    "id": "fillRate",
+    "min": 0.0,
+    "max": 11.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "choices": [
+      "OFF",
+      "1/16",
+      "1/16·",
+      "1/8",
+      "1/8·",
+      "1/4",
+      "1/4·",
+      "1/2",
+      "1/2·",
+      "3/4",
+      "1",
+      "2"
+    ],
+    "type": "choice"
+  },
+  {
+    "id": "genRoot",
+    "min": 0.0,
+    "max": 11.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 9.0,
+    "curve": "linear",
+    "choices": [
+      "C",
+      "C#",
+      "D",
+      "D#",
+      "E",
+      "F",
+      "F#",
+      "G",
+      "G#",
+      "A",
+      "A#",
+      "B"
+    ],
+    "type": "choice"
+  },
+  {
+    "id": "genScale",
+    "min": 0.0,
+    "max": 5.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "choices": [
+      "MINOR",
+      "MAJOR",
+      "DORIAN",
+      "PHRYGIAN",
+      "HARM MIN",
+      "PENT MIN"
+    ],
+    "type": "choice"
+  },
+  {
+    "id": "genBars",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "choices": [
+      "8",
+      "16"
+    ],
+    "type": "choice"
+  },
+  {
+    "id": "kickMute",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "bool"
+  },
+  {
+    "id": "kickSolo",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "bool"
+  },
+  {
+    "id": "kickDecay",
+    "min": 0.01,
+    "max": 2.0,
+    "interval": 0.01,
+    "skew": 0.5,
+    "def": 0.5,
+    "curve": "skew",
+    "type": "float"
+  },
+  {
+    "id": "kickTone",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.5,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "kickVol",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.8,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "kickPan",
+    "min": -1.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "kickNoise",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "kickRevSend",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "kickDelSend",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "snareMute",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "bool"
+  },
+  {
+    "id": "snareSolo",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "bool"
+  },
+  {
+    "id": "snareDecay",
+    "min": 0.01,
+    "max": 2.0,
+    "interval": 0.01,
+    "skew": 0.5,
+    "def": 0.5,
+    "curve": "skew",
+    "type": "float"
+  },
+  {
+    "id": "snareTone",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.5,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "snareVol",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.8,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "snarePan",
+    "min": -1.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "snareNoise",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "snareRevSend",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "snareDelSend",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "clapMute",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "bool"
+  },
+  {
+    "id": "clapSolo",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "bool"
+  },
+  {
+    "id": "clapDecay",
+    "min": 0.01,
+    "max": 2.0,
+    "interval": 0.01,
+    "skew": 0.5,
+    "def": 0.5,
+    "curve": "skew",
+    "type": "float"
+  },
+  {
+    "id": "clapTone",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.5,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "clapVol",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.8,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "clapPan",
+    "min": -1.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "clapNoise",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "clapRevSend",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "clapDelSend",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "chatMute",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "bool"
+  },
+  {
+    "id": "chatSolo",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "bool"
+  },
+  {
+    "id": "chatDecay",
+    "min": 0.01,
+    "max": 2.0,
+    "interval": 0.01,
+    "skew": 0.5,
+    "def": 0.5,
+    "curve": "skew",
+    "type": "float"
+  },
+  {
+    "id": "chatTone",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.5,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "chatVol",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.8,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "chatPan",
+    "min": -1.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "chatNoise",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "chatRevSend",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "chatDelSend",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "ohatMute",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "bool"
+  },
+  {
+    "id": "ohatSolo",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "bool"
+  },
+  {
+    "id": "ohatDecay",
+    "min": 0.01,
+    "max": 2.0,
+    "interval": 0.01,
+    "skew": 0.5,
+    "def": 0.5,
+    "curve": "skew",
+    "type": "float"
+  },
+  {
+    "id": "ohatTone",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.5,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "ohatVol",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.8,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "ohatPan",
+    "min": -1.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "ohatNoise",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "ohatRevSend",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "ohatDelSend",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "tomMute",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "bool"
+  },
+  {
+    "id": "tomSolo",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 1.0,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "bool"
+  },
+  {
+    "id": "tomDecay",
+    "min": 0.01,
+    "max": 2.0,
+    "interval": 0.01,
+    "skew": 0.5,
+    "def": 0.5,
+    "curve": "skew",
+    "type": "float"
+  },
+  {
+    "id": "tomTone",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.5,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "tomVol",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.8,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "tomPan",
+    "min": -1.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "tomNoise",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "tomRevSend",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  },
+  {
+    "id": "tomDelSend",
+    "min": 0.0,
+    "max": 1.0,
+    "interval": 0.01,
+    "skew": 1.0,
+    "def": 0.0,
+    "curve": "linear",
+    "type": "float"
+  }
+]

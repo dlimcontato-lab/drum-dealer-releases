@@ -64,145 +64,36 @@ RISK: aço demais sem cor; a cor mora nas teclas e nos LEDs, nunca no fundo. -->
 </div>
 
 <div class="wrap-wide">
-  <!-- o aparelho -->
-  <div class="unit" id="unit">
-    <span class="screw tl" aria-hidden="true"></span><span class="screw tr" aria-hidden="true"></span>
-    <span class="screw bl" aria-hidden="true"></span><span class="screw br" aria-hidden="true"></span>
-
-    <div class="unit-top">
-      <button class="key cream" id="sampler" disabled title="Só no plugin instalado">Sampler</button>
-      <button class="key orange" id="play"><span class="led" aria-hidden="true"></span>Play</button>
+  <!-- a demo: o painel do plugin (posições de painel/layout.json, gerado de UiLayout.h) -->
+  <div class="demo" id="demo">
+    <div class="aparelho-rolo" id="aparelho-rolo">
+      <div class="aparelho-caixa" id="aparelho-caixa">
+        <div class="aparelho" id="aparelho" role="group" aria-label="Painel do BRDRUM, tocável"></div>
+      </div>
+    </div>
+    <!-- transporte: no DAW quem faz isso é o DAW, por isso fica fora da moldura -->
+    <div class="transporte" id="transporte" role="group" aria-label="Transporte da demo">
+      <button class="key orange" id="play" type="button"><span class="led" aria-hidden="true"></span><span class="rot">Play</span></button>
       <div class="bpm-box">
-        <button class="key small" id="bpm-down" aria-label="Diminuir BPM">&minus;</button>
+        <button class="key small" id="bpm-down" type="button" aria-label="Diminuir BPM">&minus;</button>
         <span class="screen bpm-val"><span id="bpm">126</span><small>BPM</small></span>
-        <button class="key small" id="bpm-up" aria-label="Aumentar BPM">+</button>
+        <button class="key small" id="bpm-up" type="button" aria-label="Aumentar BPM">+</button>
       </div>
-      <span class="spacer"></span>
-      <button class="key toggle" id="tone-x20" aria-pressed="false" title="Amplia o curso do TONE das seis pistas para 20× mais rápido / 20× mais lento"><span class="led" aria-hidden="true"></span>Tone&nbsp;×20</button>
-      <button class="key orange" id="rand">Rand</button>
-      <button class="key cream" id="export" disabled title="Só no plugin instalado">Export</button>
-    </div>
-    <div class="band" aria-hidden="true"></div>
-
-    <div class="unit-body">
-      <div class="unit-main">
-        <div class="seq-scroll">
-          <div class="seq seq-ruler" id="seq-ruler" aria-hidden="true"></div>
-          <div class="seq" id="seq"></div>
-        </div>
-
-        <!-- prévia do que o MIDI GEN acabou de escrever; os controles ficam na coluna da direita -->
-        <div class="gen-lanes">
-          <div class="gen-lane">
-            <span class="key orange" aria-hidden="true">Bass</span>
-            <div class="screen"><canvas class="roll" id="roll-bass" width="900" height="96" aria-label="Prévia da linha de bass gerada"></canvas></div>
-          </div>
-          <div class="gen-lane">
-            <span class="key orange" aria-hidden="true">Lead</span>
-            <div class="screen"><canvas class="roll" id="roll-lead" width="900" height="96" aria-label="Prévia da linha de lead gerada"></canvas></div>
-          </div>
-        </div>
-
-        <!-- MASTER FX: o mesmo painel do plugin (saturação, multibanda, echo). O motor
-             do site ainda não roda esse estágio, então os controles ficam à vista e
-             desabilitados, parados nos valores de fábrica do plugin. -->
-        <div class="mfx-wrap">
-          <fieldset class="panel mfx" aria-disabled="true" aria-describedby="mfx-note">
-            <legend>Master FX<small class="mfx-note" id="mfx-note">só no plugin</small></legend>
-            <div class="mfx-row">
-              <div class="mfx-group" role="group" aria-label="Saturation">
-                <span class="mfx-sub" aria-hidden="true">Saturation</span>
-                <div class="mfx-knobs" data-mfx="sat"></div>
-              </div>
-              <div class="mfx-group" role="group" aria-label="Multiband">
-                <span class="mfx-sub" aria-hidden="true">Multiband</span>
-                <div class="mfx-knobs" data-mfx="mb"></div>
-              </div>
-              <div class="mfx-group mfx-echo" role="group" aria-label="Echo">
-                <div class="mfx-echo-head">
-                  <span class="mfx-sub" aria-hidden="true">Echo</span>
-                  <button class="ms sync" id="echo-sync" disabled aria-disabled="true" aria-pressed="false" title="Só no plugin instalado">SYNC</button>
-                </div>
-                <div class="mfx-knobs" data-mfx="echo"></div>
-              </div>
-            </div>
-          </fieldset>
-        </div>
-      </div>
-
-      <aside class="unit-side">
-        <div class="brandplate">
-          <b>BRDRUM</b>
-          <i>Rhythm Composer&nbsp; - &nbsp;001</i>
-        </div>
-
-        <fieldset class="panel">
-          <legend>Gain</legend>
-          <div class="gain-row">
-            <span class="kcell"><span class="knob orange big" id="master-gain"></span><small>Master</small></span>
-            <div class="meters">
-              <div class="meter"><i id="meter-l"></i></div>
-              <div class="meter"><i id="meter-r"></i></div>
-            </div>
-            <div class="meter-caps" aria-hidden="true"><span>+6</span><span>0</span><span>-12</span><span>-24</span><span>-48</span></div>
-          </div>
-        </fieldset>
-
-        <fieldset class="panel">
-          <legend>Groove</legend>
-          <select class="recess" id="groove-type" aria-label="Tipo de groove"></select>
-          <div class="panel-row">
-            <span class="kcell"><span class="knob orange fx" id="groove-amt"></span><small>Amount</small></span>
-          </div>
-        </fieldset>
-
-        <fieldset class="panel">
-          <legend>Fill</legend>
-          <select class="recess" id="fill-target" aria-label="Instrumento da virada"></select>
-          <div class="panel-row spread">
-            <span class="kcell"><span class="knob orange fx" id="fill-rate"></span><small>Rate</small></span>
-            <select class="recess" id="fill-phase" aria-label="Fase da virada" style="width:96px;margin-top:8px">
-              <option value="0">GRID</option><option value="1">CONTRA</option>
-            </select>
-            <span class="kcell"><span class="knob orange fx" id="fill-vol"></span><small>Volume</small></span>
-          </div>
-        </fieldset>
-
-        <fieldset class="panel">
-          <legend>MIDI Gen</legend>
-          <div class="gen-grid">
-            <select class="recess" id="gen-root" aria-label="Tom"></select>
-            <select class="recess" id="gen-scale" aria-label="Escala"></select>
-            <select class="recess" id="gen-bars" aria-label="Compassos">
-              <option value="8">8</option><option value="16">16</option>
-            </select>
-          </div>
-          <div class="gen-line">
-            <button class="key orange" id="gen-bass">Bass</button>
-            <a class="key dl" id="dl-bass" aria-disabled="true" download="drum-dealer-bass.mid">Baixar .mid</a>
-          </div>
-          <div class="gen-line">
-            <button class="key orange" id="gen-lead">Lead</button>
-            <a class="key dl" id="dl-lead" aria-disabled="true" download="drum-dealer-lead.mid">Baixar .mid</a>
-          </div>
-        </fieldset>
-      </aside>
-    </div>
-
-    <div class="unit-foot legend">
-      <span class="tally" id="tally"><b></b> <span id="tally-label">Parado</span></span>
-      <span id="gen-status">MIDI GEN pronto</span>
+      <!-- status (tocando/parado, geração MIDI) já aparece no rodapé do painel; a barrinha não repete -->
       <span class="falha" id="falha" hidden></span>
+      <span class="spacer"></span>
+      <a class="key small dl" id="dl-bass" aria-disabled="true" download="brdrum-bass.mid">Baixar bass .mid</a>
+      <a class="key small dl" id="dl-lead" aria-disabled="true" download="brdrum-lead.mid">Baixar lead .mid</a>
     </div>
   </div>
 
   <p class="hero-note legend">
     <span>Motor C++ do plugin em WebAssembly · samples de fábrica · não é vídeo, é o instrumento</span>
-    <span>Arraste os knobs · duplo clique reseta · clique no nome do instrumento pra trocar o sample</span>
+    <span>Arraste os knobs · duplo clique volta ao padrão · clique no nome do instrumento pra trocar o som</span>
   </p>
 </div>
 
-<script type="module" src="dd-main.js?v=20260911o"></script>
+<script type="module" src="dd-main.js?v=20260916a"></script>
 
 <section class="wrap compat-row">
   <h2 class="compat-title"><b>compatível</b> com todas as DAWs</h2>

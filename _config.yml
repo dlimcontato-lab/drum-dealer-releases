@@ -9,3 +9,5 @@ exclude:
   - .impeccable
   - .gitignore
   - _config.yml
+  - docs
+  - testes

@@ -1015,3 +1015,102 @@ table.tbl .who b{color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ell
 @media (prefers-reduced-motion:reduce){
   .recado.on{transition:none}
 }
+/* ---------- demo: o painel do plugin (painel/layout.json, base 1600×1126, escala por transform) ---------- */
+.demo{margin-top:var(--s3,24px)}
+.aparelho-rolo{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+.aparelho-caixa{position:relative;margin:0 auto}
+.aparelho{position:absolute;left:0;top:0;width:1600px;height:1126px;transform-origin:0 0;overflow:hidden;
+  background:linear-gradient(180deg,#303032 0%,var(--steel) 45%,#252527 100%);
+  border:1px solid var(--ink);border-radius:6px;
+  box-shadow:inset 1px 1px 0 rgba(255,255,255,.10),inset -1px -1px 0 rgba(14,14,16,.6),4px 8px 18px rgba(14,14,16,.55)}
+.aparelho [hidden]{display:none!important}
+.aparelho :focus-visible{outline:2px solid var(--led-green);outline-offset:2px}
+.p-abs{position:absolute;box-sizing:border-box;margin:0}
+.p-screw{position:absolute;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:var(--tooth);
+  border:1px solid var(--skirt);box-shadow:inset 1px 1px 0 rgba(255,255,255,.25),0 1.5px 2px rgba(14,14,16,.6)}
+.p-screw::after{content:'';position:absolute;left:1px;right:1px;top:50%;height:1.8px;margin-top:-.9px;background:var(--ink)}
+.p-stripe{background:var(--ink)}
+.p-stripe i{position:absolute;left:1px;right:1px;height:4px}
+.p-logo{text-align:center;color:var(--silk);font:700 30px/32px var(--silk-font);letter-spacing:.03em}
+.p-logo i{display:block;font:400 15px/18px var(--script-font);color:var(--silk-dim);letter-spacing:0}
+.p-nota{display:flex;align-items:center;font:600 9.5px/12px var(--silk-font);letter-spacing:.03em;
+  text-transform:uppercase;color:var(--silk-dim)}
+.p-leg{font:600 9.5px/12px var(--silk-font);letter-spacing:.02em;text-transform:uppercase;color:var(--silk-dim);
+  text-align:center;white-space:nowrap;pointer-events:none}
+.p-leg.laranja{color:var(--orange)}
+.p-leg.clara{color:var(--silk)}
+.p-leg.esq{text-align:left}
+.p-leg.p-acc-leg{font:700 12px/14px var(--silk-font);letter-spacing:.06em;color:var(--silk);text-align:left}
+.p-num{font:600 10px/12px var(--silk-font);color:var(--silk-dim);text-align:center;pointer-events:none}
+.p-num.forte{color:var(--silk)}
+.p-linha{background:rgba(233,230,222,.20)}
+.p-moldura{border:1.5px solid rgba(233,230,222,.55);border-radius:8px;background:rgba(14,14,16,.25);pointer-events:none}
+.p-titulo{position:absolute;left:50%;top:0;transform:translate(-50%,-55%);padding:0 10px;background:var(--steel);
+  font:700 12px/1 var(--silk-font);letter-spacing:.08em;color:var(--silk);text-transform:uppercase;white-space:nowrap}
+.p-titulo.grande{font-size:18px}
+.key.p-abs{height:auto;padding:0;font-size:13px}
+.key.p-abs.ligada .led,.key.p-abs .led.on{background:var(--led-on);box-shadow:0 0 0 3px rgba(255,59,47,.28),0 0 9px 2px rgba(255,59,47,.55)}
+.lab.p-abs,.ms.p-abs,.step.p-abs,.acc.p-abs{height:auto;width:auto}
+.ms.p-abs{font-size:9px;padding:0 0 0 13px}
+/* LED centrado a 9px da borda esquerda, 5,5px de diâmetro (MaschinLookAndFeel: estilo mute/solo/sync) */
+.ms.p-abs::after{left:6.25px;width:5.5px;height:5.5px;margin-top:-2.75px}
+/* área de toque invisível ~40x40 (base), sem mudar a aparência da tecla */
+.ms.p-abs::before{content:'';position:absolute;left:50%;top:50%;width:40px;height:40px;transform:translate(-50%,-50%)}
+/* MUTE/SOLO ficam empilhados a 7px um do outro: a área de toque teria que se sobrepor,
+   então cada um fica com metade do espaço entre eles em vez dos 40px inteiros */
+.ms-pair.p-abs::before{height:28px}
+/* EDIT: estilo "sync" do plugin com "raised" (um tom acima), LED amarelo à esquerda */
+.ms.p-edit-tecla{--face-a:#5a5a5d;--face-b:#39393c;color:var(--silk)}
+.ms.p-edit-tecla.on-sync{--face-a:#77777b;--face-b:#505054}
+.knob.p-knob{margin:0}
+.acc.p-abs{background:
+  linear-gradient(0deg,var(--acc,var(--orange)) 0 calc(var(--v,.5) * 100%),transparent calc(var(--v,.5) * 100%)) center/5px calc(100% - 12px) no-repeat,
+  linear-gradient(var(--recess),var(--recess)) center/9px calc(100% - 8px) no-repeat}
+.p-ledx{background:none;border:0;padding:0;cursor:pointer}
+/* área de toque invisível ~40x40 (base), centrada, sem mudar a aparência do LED */
+.p-ledx::before{content:'';position:absolute;left:50%;top:50%;width:40px;height:40px;transform:translate(-50%,-50%)}
+.p-ledx::after{content:'';position:absolute;left:50%;top:50%;width:9px;height:9px;margin:-4.5px 0 0 -4.5px;border-radius:50%;
+  background:var(--led-off);border:1px solid rgba(14,14,16,.8)}
+/* marcado mas desarmado (tecla TONE X do topo desligada): apagado, com anel fraco 2px fora do LED,
+   pro clique não mudar o estado sem nenhum sinal (MaschinLookAndFeel style "led") */
+.p-ledx.on::after{background:var(--led-off);box-shadow:0 0 0 2px transparent,0 0 0 3px rgba(163,158,147,.35)}
+.p-ledx.on.armada::after{background:var(--led-on);box-shadow:0 0 0 2px rgba(255,59,47,.3),0 0 6px 1px rgba(255,59,47,.55)}
+select.recess.p-abs{font-size:11px;padding:0 20px 0 6px;background-position:right 7px center}
+.p-roll{background:var(--recess);border:1px solid var(--ink);border-radius:4px;box-shadow:inset 0 3px 6px -1px rgba(14,14,16,.7);overflow:hidden}
+.p-roll canvas{width:100%;height:100%;display:block}
+.p-pixels{display:grid;grid-template-columns:repeat(26,9px);grid-auto-rows:9px;align-content:center;justify-content:center;
+  background:#0c0c0d;border:1px solid var(--ink);border-radius:4px;box-shadow:inset 0 3px 6px -1px rgba(14,14,16,.7)}
+.p-pixels i{display:block;width:8px;height:8px;background:rgba(233,230,222,.04)}
+.p-pixels i.on{background:var(--silk)}
+.p-pixels i.furo{background:var(--recess)}
+.p-meter{background:#0c0c0d;border:1px solid var(--ink);border-radius:3px;overflow:hidden}
+/* LevelMeter: 32 segmentos (20 verdes, 7 amarelos, 5 vermelhos) de 6,28 px com vão de 2 px, apagados visíveis */
+.p-meter::before,.p-meter i{position:absolute;left:3px;right:3px;bottom:4px;
+  -webkit-mask:repeating-linear-gradient(0deg,#000 0 6.28125px,transparent 6.28125px 8.28125px);
+  mask:repeating-linear-gradient(0deg,#000 0 6.28125px,transparent 6.28125px 8.28125px)}
+.p-meter::before{content:'';top:4px;
+  background:linear-gradient(0deg,#0f3b21 0 62.5%,#3f3510 62.5% 84.375%,#47110d 84.375%)}
+.p-meter i{height:0;max-height:calc(100% - 8px);
+  background:linear-gradient(0deg,var(--led-green) 0 62.5%,var(--yellow) 62.5% 84.375%,var(--led-on) 84.375%) bottom/100% 263px no-repeat}
+.p-tick{background:var(--silk-dim)}
+.p-status{display:flex;align-items:center;gap:8px;font:600 10px/18px var(--silk-font);letter-spacing:.04em;
+  text-transform:uppercase;color:var(--silk-dim)}
+.p-status b{width:7px;height:7px;border-radius:50%;background:var(--led-off);border:1px solid rgba(14,14,16,.8)}
+.p-status.tocando b{background:var(--led-on);box-shadow:0 0 0 3px rgba(255,59,47,.28)}
+.p-status .gen{margin-left:12px}
+.transporte{display:flex;align-items:center;flex-wrap:wrap;gap:12px 16px;margin-top:14px;padding:10px 14px;
+  background:var(--steel-dark);border:1px solid var(--ink);border-radius:6px}
+.transporte .spacer{flex:1}
+.transporte .key.small{height:26px}
+.transporte a.key[aria-disabled="true"]{pointer-events:none;opacity:.5}
+@media (max-width:900px){
+  .transporte{position:sticky;bottom:0;z-index:5;box-shadow:0 -6px 14px rgba(14,14,16,.6);
+    flex-wrap:nowrap;padding:4px 10px;gap:8px}
+  .transporte .dl{display:none}
+  /* uma linha só, <=52px: PLAY e BPM compactos, mas com alvo de toque >=40px */
+  .transporte #play{height:40px;padding:0 12px;font-size:12px;gap:.3em}
+  .transporte .bpm-box{gap:4px}
+  .transporte .bpm-box .key.small{width:40px;height:40px;padding:0;font-size:15px}
+  .transporte .bpm-val{height:40px;min-width:58px;padding:0 2px}
+  .transporte .bpm-val small{display:none}
+}
