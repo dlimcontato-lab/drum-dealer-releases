@@ -1020,7 +1020,9 @@ table.tbl .who b{color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ell
 .aparelho-rolo{overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
 .aparelho-caixa{position:relative;margin:0 auto}
 .aparelho{position:absolute;left:0;top:0;width:1600px;height:1126px;transform-origin:0 0;overflow:hidden;
-  background:linear-gradient(180deg,#303032 0%,var(--steel) 45%,#252527 100%);
+  /* o aço do aparelho; a placa do EDIT reusa as mesmas paradas */
+  --aco-topo:#303032;--aco-meio:var(--steel);--aco-base:#252527;
+  background:linear-gradient(180deg,var(--aco-topo) 0%,var(--aco-meio) 45%,var(--aco-base) 100%);
   border:1px solid var(--ink);border-radius:6px;
   box-shadow:inset 1px 1px 0 rgba(255,255,255,.10),inset -1px -1px 0 rgba(14,14,16,.6),4px 8px 18px rgba(14,14,16,.55)}
 .aparelho [hidden]{display:none!important}
@@ -1114,3 +1116,41 @@ select.recess.p-abs{font-size:11px;padding:0 20px 0 6px;background-position:righ
   .transporte .bpm-val{height:40px;min-width:58px;padding:0 2px}
   .transporte .bpm-val small{display:none}
 }
+
+/* ---------- EDIT do MASTER FX (por cima do MIDI GEN) ---------- */
+.p-edit-camada,.p-edit-pagina{pointer-events:none;z-index:20}
+.p-edit-camada > .p-apanhador,.p-edit-camada > .p-edit-placa,.p-edit-camada > .p-fechar,
+.p-edit-pagina > :not(.p-leg){pointer-events:auto}
+.p-apanhador{background:transparent;z-index:0}
+.p-edit-placa{background:var(--steel);border:1.5px solid rgba(233,230,222,.55);border-radius:8px}
+.p-edit-pagina{position:absolute}
+.p-visor{background:var(--recess);border:1px solid var(--ink);border-radius:4px;box-shadow:inset 0 3px 6px -1px rgba(14,14,16,.7)}
+.p-visor canvas{width:100%;height:100%;display:block}
+.key.p-abs.p-fechar{font-size:11px;letter-spacing:.06em}
+.knob.apagado,.p-leg.apagado{opacity:.35}
+.knob.apagado{pointer-events:none}
+.knob.meio,.p-leg.meio{opacity:.6}
+.p-gr{display:flex;align-items:center;gap:6px;padding:0 10px 0 6px;background:var(--recess);border:1px solid var(--ink);
+  border-radius:4px;box-shadow:inset 0 3px 6px -1px rgba(14,14,16,.7)}
+.p-gr .trilho{position:relative;flex:1;height:10px;background:#0c0c0d;border-radius:1.5px}
+.p-gr .barra{position:absolute;top:0;bottom:0;left:50%;width:0;background:var(--orange);border-radius:1.5px}
+.p-gr .barra.sobe{background:var(--led-green)}
+.p-gr .zero{position:absolute;left:50%;top:-2px;bottom:-2px;width:1px;background:rgba(233,230,222,.35)}
+.p-gr b{width:54px;text-align:right;font:600 10px/1 var(--silk-font);color:var(--silk)}
+/* ajustes contra as capturas do plugin (MaschinLookAndFeel / MasterFxEditPanel) */
+/* placa: o mesmo aço do aparelho no ponto onde ela está (--edit-y, do layout.json pelo JS; 1.5px da borda)
+   + o véu ink .25 do drawSilkPanel */
+.p-edit-placa{background:linear-gradient(rgba(14,14,16,.25),rgba(14,14,16,.25)),
+  linear-gradient(180deg,var(--aco-topo) 0%,var(--aco-meio) 45%,var(--aco-base) 100%)
+  -1.5px calc(-1 * var(--edit-y,700px) - 1.5px)/1600px 1126px no-repeat}
+/* teclas mute/solo/sync: texto 10px centrado na área depois dos 14px do LED (drawButtonText, toggleKey) */
+.ms.p-abs{font-size:10px;text-align:center;padding:0 0 1px 13px}
+/* nomes das bandas: silkFont 10, espaçamento .04, cor silk */
+.p-edit-pagina .p-leg.clara{font:700 10px/16px var(--silk-font);letter-spacing:.04em}
+/* PRESET sem seleção: texto do ComboBox com alfa 0,5 (drawComboBoxTextWhenNothingSelected) */
+.p-edit-pagina .p-preset{color:rgba(233,230,222,.5)}
+.p-edit-pagina .p-preset option{color:var(--silk)}
+/* FECHAR: plastic-small, texto 10px espaçamento .03 */
+.key.p-abs.p-fechar{font-size:10px;letter-spacing:.03em}
+/* LED apagado das teclas mute/solo/sync: poço recess com borda ink .8 (MaschinLookAndFeel::led, on = false) */
+.ms.p-abs:not(.on-mute):not(.on-solo):not(.on-sync)::after{background:var(--recess)}
