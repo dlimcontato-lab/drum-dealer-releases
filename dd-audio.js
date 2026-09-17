@@ -3,6 +3,7 @@
 export const ENGINE_V = '5';
 const FILES = ['kick', 'snare', 'clap', 'chat', 'ohat', 'tom'];
 const VARIANTS = 4;
+const TESTE = new URLSearchParams(location.search).get('teste') === '1';
 
 let espelhoPromessa = null;
 export function carregarEspelho() {
@@ -25,17 +26,30 @@ export function criarAudio(cb) {
   let pronto = false;
   const amostras = {};
   const atual = [0, 0, 0, 0, 0, 0];
-  const esperando = new Map();
+  const esperando = new Map(); // id -> fila de resolve (FIFO): suporta leituras concorrentes do mesmo id
   const enviar = (m) => { if (node) node.port.postMessage(m); };
   const empurrarAmostra = (i) => {
     const d = amostras[i] && amostras[i][atual[i]];
     if (d) enviar({ type: 'sample', inst: i, data: d });
   };
 
+  // iOS só conta o AudioContext como criado "dentro do gesto do usuário" se resume() roda logo. Se
+  // ele só roda depois do wasm e das 24 amostras carregarem, o Safari já não garante o áudio.
+  async function tentarResumir() {
+    if (!ctx) return false;
+    if (ctx.state !== 'running') { // cobre 'suspended' e o 'interrupted' do iOS (ex.: depois de uma ligação)
+      try { await ctx.resume(); } catch { /* estado abaixo reporta a falha */ }
+    }
+    return ctx.state === 'running';
+  }
+
   async function subir() {
     ctx = new (window.AudioContext || window.webkitAudioContext)();
+    ctx.resume().catch(() => {}); // síncrono aqui dentro do handler do gesto (subir roda até o 1º await)
+    if (TESTE) window.__ddCtx = ctx;
+
     const [bytes] = await Promise.all([
-      fetch('engine.wasm?v=' + ENGINE_V).then((r) => r.arrayBuffer()),
+      fetch('engine.wasm?v=' + ENGINE_V).then((r) => { if (!r.ok) throw new Error('engine.wasm ' + r.status); return r.arrayBuffer(); }),
       ctx.audioWorklet.addModule('dd-processor.js?v=' + ENGINE_V),
     ]);
     node = new AudioWorkletNode(ctx, 'drum-dealer', { outputChannelCount: [2] });
@@ -49,8 +63,12 @@ export function criarAudio(cb) {
       else if (m.type === 'gen') cb.aoGerado(m);
       else if (m.type === 'params') cb.aoParams(m.values);
       else if (m.type === 'valor') {
-        const f = esperando.get(m.id);
-        if (f) { esperando.delete(m.id); f(m.value); }
+        const fila = esperando.get(m.id);
+        if (fila && fila.length) {
+          const f = fila.shift();
+          if (fila.length === 0) esperando.delete(m.id);
+          f(m.value);
+        }
       } else if (m.type === 'error') {
         console.error('engine:', m.message);
         cb.aoFalha('O motor de áudio falhou: ' + m.message);
@@ -58,26 +76,30 @@ export function criarAudio(cb) {
     };
     node.port.postMessage({ type: 'wasm', data: bytes }, [bytes]);
 
-    await Promise.all(FILES.flatMap((f, i) => {
+    // Amostra por amostra: uma falha não derruba as outras. Se um instrumento ficar sem nenhuma
+    // variante, o motor segue de pé (os outros tocam) e a falha só é reportada no rodapé.
+    const falhas = [];
+    await Promise.all(FILES.map((f, i) => {
       amostras[i] = [];
-      return Array.from({ length: VARIANTS }, (_, v) =>
+      return Promise.all(Array.from({ length: VARIANTS }, (_, v) =>
         fetch('audio/' + f + v + '.m4a')
-          .then((r) => r.arrayBuffer())
+          .then((r) => { if (!r.ok) throw new Error('audio/' + f + v + '.m4a ' + r.status); return r.arrayBuffer(); })
           .then((ab) => ctx.decodeAudioData(ab))
-          .then((buf) => { amostras[i][v] = buf.getChannelData(0).slice(); }));
+          .then((buf) => { amostras[i][v] = buf.getChannelData(0).slice(); })
+          .catch((err) => { console.error('amostra:', f, v, err); })
+      )).then(() => { if (!amostras[i].some(Boolean)) falhas.push(f.toUpperCase()); });
     }));
     for (let i = 0; i < 6; i++) empurrarAmostra(i);
-    ctx.resume().catch(() => {});
-    window.__ddCtx = ctx;
+    if (falhas.length) cb.aoAmostraFalha(falhas);
   }
 
   async function garantir() {
-    if (node) {
-      if (ctx.state === 'suspended') ctx.resume().catch(() => {});
-      return;
+    if (node) return tentarResumir();
+    if (!booting) {
+      booting = subir().catch((err) => { booting = null; node = null; throw err; }); // libera retry no próximo PLAY
     }
-    if (!booting) booting = subir();
-    return booting;
+    await booting;
+    return tentarResumir();
   }
 
   const sorteia = (i) => {
@@ -89,9 +111,15 @@ export function criarAudio(cb) {
     garantir, enviar,
     pronto: () => pronto,
     ativo: () => !!node,
+    estaRodando: () => !!ctx && ctx.state === 'running',
+    pausar: () => { if (ctx) ctx.suspend().catch(() => {}); },
     trocarAmostra: sorteia,
     sortearAmostras: () => { for (let i = 0; i < 6; i++) sorteia(i); },
-    lerParam: (id) => new Promise((ok) => { esperando.set(id, ok); enviar({ type: 'get', id }); }),
+    lerParam: (id) => new Promise((ok) => {
+      const fila = esperando.get(id);
+      if (fila) fila.push(ok); else esperando.set(id, [ok]);
+      enviar({ type: 'get', id });
+    }),
   };
 }
 

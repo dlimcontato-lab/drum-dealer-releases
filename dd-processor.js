@@ -12,6 +12,7 @@ class DrumDealerProcessor extends AudioWorkletProcessor {
     this.pending = [];
     this.lastStep = -1;
     this.meterTick = 0;
+    this.parado = true; // o main thread marca no STOP e limpa no PLAY; enquanto marcado, para de mandar peak
     this.indices = new Map();
     this.port.onmessage = (e) => {
       if (e.data.type === 'wasm') { this.boot(e.data.data); return; }
@@ -61,7 +62,7 @@ class DrumDealerProcessor extends AudioWorkletProcessor {
       case 'step': M._web_set_step(m.inst, m.step, m.on ? 1 : 0); break;
       case 'accent': M._web_set_accent(m.step, m.value); break;
       case 'bpm': M._web_set_bpm(m.value); break;
-      case 'playing': M._web_set_playing(m.on ? 1 : 0); this.lastStep = -1; break;
+      case 'playing': M._web_set_playing(m.on ? 1 : 0); this.lastStep = -1; this.parado = !m.on; break;
       case 'trigger': M._web_trigger(m.inst); break;
       case 'sample': {
         const arr = m.data;
@@ -116,11 +117,14 @@ class DrumDealerProcessor extends AudioWorkletProcessor {
     out[0].set(M.HEAPF32.subarray(this.outL / 4, this.outL / 4 + n));
     if (out.length > 1) out[1].set(M.HEAPF32.subarray(this.outR / 4, this.outR / 4 + n));
     // Clamp de segurança em ±1 (o preset OTT ainda passa de 0 dBFS). Abaixo de 1 o som não muda.
+    // NaN (parâmetro ou estado do motor inválido) vira silêncio, nunca passa adiante.
     for (let c = 0; c < out.length && c < 2; c++) {
       const ch = out[c];
       for (let i = 0; i < n; i++) {
         const x = ch[i];
-        if (x > 1) ch[i] = 1; else if (x < -1) ch[i] = -1;
+        if (Number.isNaN(x)) ch[i] = 0;
+        else if (x > 1) ch[i] = 1;
+        else if (x < -1) ch[i] = -1;
       }
     }
 
@@ -129,7 +133,7 @@ class DrumDealerProcessor extends AudioWorkletProcessor {
       this.lastStep = s;
       this.port.postMessage({ type: 'step', step: s });
     }
-    if (++this.meterTick >= 8) {   // ~45 quadros por segundo
+    if (!this.parado && ++this.meterTick >= 8) {   // ~45 quadros por segundo; parado no STOP
       this.meterTick = 0;
       this.port.postMessage({
         type: 'peak', l: M._web_read_peak(0), r: M._web_read_peak(1),

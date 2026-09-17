@@ -52,6 +52,7 @@ const audio = criarAudio({
     edit.atualizar();
   },
   aoFalha: mostrarFalha,
+  aoAmostraFalha(nomes) { painel.statusGen(nomes.join(', ') + (nomes.length > 1 ? ': mudos' : ': mudo')); },
   estadoInicial() {
     const msgs = [{ type: 'bpm', value: bpm }];
     for (const id of painel.controles.keys())
@@ -152,14 +153,21 @@ async function comCarregando(btn, rotulo, fn) {
 
 const playBtn = $('play');
 playBtn.addEventListener('click', async () => {
+  // garantir() já tenta resume() de novo aqui (síncrono no boot, ou no AudioContext existente); se
+  // depois do resume() assentar o contexto ainda não estiver 'running', não afirma que está tocando.
   if (!(await comCarregando(playBtn, 'Carregando…', audio.garantir))) return;
-  tocando = !tocando;
+  const vaiTocar = !tocando;
+  if (vaiTocar && !audio.estaRodando()) {
+    painel.statusGen('TOQUE PLAY DE NOVO PARA OUVIR');
+    return;
+  }
+  tocando = vaiTocar;
   playBtn.classList.toggle('playing', tocando);
   playBtn.querySelector('.rot').textContent = tocando ? 'Stop' : 'Play';
   painel.tocando(tocando);
   audio.enviar({ type: 'playing', on: tocando });
   ao.pal(tocando ? 'play' : 'stop');
-  if (!tocando) { passo = -1; painel.playhead(-1, false); painel.medir(0, 0); }
+  if (!tocando) { passo = -1; painel.playhead(-1, false); painel.medir(0, 0); audio.pausar(); }
 });
 
 const setBpm = (d) => {

@@ -199,6 +199,26 @@ export function montarEdit(aparelho, L, params, controles, ao) {
     legenda(pm, B.grLegends[r], 'GR');
     return gr;
   });
+  // Cache dos 6 elementos que o GR redesenha (3 bandas x barra + número): setGr chega a ~45x por
+  // segundo tocando, sem repetir querySelector. Threshold de 0.05 dB, igual GainMeter::setGainDb do
+  // plugin. As escritas no DOM ficam num único requestAnimationFrame por leva de mensagens.
+  const grEls = grs.map((gr) => ({ el: gr, barra: gr.querySelector('.barra'), num: gr.querySelector('b') }));
+  const grUltimo = [NaN, NaN, NaN];
+  let grPendente = null;
+  let grRaf = null;
+  function pintarGr(db) {
+    grEls.forEach(({ el, barra, num }, r) => {
+      const x = db[2 - r] || 0;
+      if (Math.abs(x - grUltimo[r]) < 0.05) return;
+      grUltimo[r] = x;
+      const f = Math.max(-1, Math.min(1, x / 24));
+      barra.style.left = (f < 0 ? 50 + f * 50 : 50) + '%';
+      barra.style.width = Math.abs(f) * 50 + '%';
+      barra.classList.toggle('sobe', f > 0);
+      num.textContent = textoValor('gainDb', Math.abs(x) < 0.05 ? 0 : x);
+      el.setAttribute('aria-valuenow', x.toFixed(1));
+    });
+  }
 
   const botaoFechar = peca(camada, 'button', 'key p-fechar', E.close, 'Fechar');
   botaoFechar.addEventListener('click', () => fechar());
@@ -252,15 +272,13 @@ export function montarEdit(aparelho, L, params, controles, ao) {
     setCurva(pts) { pontos = pts; desenharVisor(); },
     pontosCurva: () => pontos,
     setGr(db) {
-      grs.forEach((gr, r) => {
-        const x = db[2 - r] || 0;
-        const f = Math.max(-1, Math.min(1, x / 24));
-        const barra = gr.querySelector('.barra');
-        barra.style.left = (f < 0 ? 50 + f * 50 : 50) + '%';
-        barra.style.width = Math.abs(f) * 50 + '%';
-        barra.classList.toggle('sobe', f > 0);
-        gr.querySelector('b').textContent = textoValor('gainDb', Math.abs(x) < 0.05 ? 0 : x);
-        gr.setAttribute('aria-valuenow', x.toFixed(1));
+      grPendente = db;
+      if (grRaf) return;
+      grRaf = requestAnimationFrame(() => {
+        grRaf = null;
+        const vals = grPendente;
+        grPendente = null;
+        pintarGr(vals);
       });
     },
   };
