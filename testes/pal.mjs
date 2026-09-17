@@ -22,6 +22,14 @@ try {
   for (let t = 0; t < 10 && !olhou; t++) { olhou = (await s.avaliar('__dd.pal.quadro()')) === olhaDireita; if (!olhou) await new Promise(r => setTimeout(r, 100)); }
   ok(olhou, 'segue o mouse: olha para a direita');
 
+  // arrastar um knob da faixa (não do EDIT) manda Decision, igual ao PluginEditor.cpp:1101-1104
+  const kdecay = await s.avaliar(`(() => { const r = document.querySelector('[aria-label="DECAY do KICK"]').getBoundingClientRect();
+    return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; })()`);
+  await s.cmd('Input.dispatchMouseEvent', { type: 'mousePressed', x: kdecay.x, y: kdecay.y, button: 'left', buttons: 1, clickCount: 1 });
+  await s.esperar(150);
+  ok(await s.avaliar('__dd.pal.estado()') === 1, 'arrastar um knob da faixa (DECAY do KICK) manda Decision: Pal sorri');
+  await s.cmd('Input.dispatchMouseEvent', { type: 'mouseReleased', x: kdecay.x, y: kdecay.y, button: 'left', buttons: 0, clickCount: 1 });
+
   await s.clicar('[aria-label="Mute do KICK"]');
   await s.esperar(150);
   ok(await s.avaliar('__dd.pal.estado()') === 1, 'sorri no clique');

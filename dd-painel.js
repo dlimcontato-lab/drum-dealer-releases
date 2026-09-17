@@ -106,6 +106,7 @@ export function criarKnob(n, param, { rotulo, laranja = false, aoMudar, aoTocar 
     else if (e.key === 'Home') muda(f.from01(0));
     else if (e.key === 'End') muda(f.from01(1));
     else return;
+    if (aoTocar) aoTocar();
     e.preventDefault();
   });
   pinta();
@@ -250,7 +251,7 @@ export function montarPainel(raiz, L, params, palJson, ao) {
   };
   const controles = new Map();
   const liga = (id, w) => { controles.set(id, w); return w; };
-  const knob = (caixa, id, rotulo, laranja = false, aoTocar) =>
+  const knob = (caixa, id, rotulo, laranja = false, aoTocar = () => ao.pal('decision')) =>
     liga(id, criarKnob(peca(raiz, 'span', '', caixa), P(id), { rotulo, laranja, aoMudar: (v) => ao.mudou(id, v), aoTocar }));
   const tecla = (caixa, cls, texto, id, classeOn, rotulo) =>
     liga(id, criarTecla(peca(raiz, 'button', cls, caixa, texto), P(id), { classeOn, rotulo, aoMudar: (v) => { ao.pal('click'); ao.mudou(id, v); } }));

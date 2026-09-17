@@ -22,6 +22,17 @@ const nivel = async (ms) => {
   return Math.sqrt(amostras.reduce((a, x) => a + x * x, 0) / amostras.length);
 };
 try {
+  // A versão do engine vive em dois lugares (dd-processor.js não importa dd-audio.js: um worklet
+  // module não consegue importar fácil) — prova que os dois números não descasaram.
+  const baseUrl = urlBase.replace(/[^/]*$/, '');
+  const [procTxt, audioTxt] = await Promise.all([
+    fetch(baseUrl + 'dd-processor.js').then((r) => r.text()),
+    fetch(baseUrl + 'dd-audio.js').then((r) => r.text()),
+  ]);
+  const vProc = procTxt.match(/engine\.mjs\?v=(\w+)/)?.[1];
+  const vAudio = audioTxt.match(/ENGINE_V\s*=\s*'([^']+)'/)?.[1];
+  ok(vProc != null && vProc === vAudio, `dd-processor.js ?v=${vProc} bate com ENGINE_V='${vAudio}' de dd-audio.js`);
+
   await s.esperar(2000);
   ok(await s.avaliar('typeof __dd.estado === "function"'), 'demo expõe __dd.estado');
 
@@ -76,7 +87,6 @@ try {
     `SAT DRIVE muda o som de verdade (nível ${nivelDriveAntes.toFixed(3)} -> ${nivelDriveDepois.toFixed(3)})`);
 
   const legendas = new Set();
-  const nivelRateAntes = await nivel(700);
   await s.avaliar(`${ctl('fillRate')}.el.focus()`);
   await s.cmd('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Home', code: 'Home', windowsVirtualKeyCode: 36 });
   for (let i = 0; i < 12; i++) {
@@ -85,7 +95,22 @@ try {
   }
   ok(legendas.size === 12 && legendas.has('RATE 1/16·') && legendas.has('RATE 2'), `RATE percorre os 12 degraus (${[...legendas].join(', ')})`);
   ok(await s.avaliar('__dd.audio.lerParam("fillRate")') === 11, 'último degrau chega no motor');
-  const nivelRateDepois = await nivel(700);
+
+  // FILL RATE muda o som (determinístico): alvo KICK (padrão de base denso + amostra sempre
+  // audível), RATE 1/16 dispara a cada 1/16 (SequencerEngine::fillRateInterval32 = 2, ~119 ms a
+  // 126 BPM) — a janela de 1500 ms contém ~12 viradas, longe do 1 falha em 6 do RATE "2" antigo
+  // (1 nota a cada 2 compassos raramente cai na janela de 700 ms). Compara contra RATE OFF, mesmo
+  // alvo e mesmo padrão de base.
+  await s.avaliar(`(() => { const sel = ${ctl('fillTarget')}.el; sel.value = '0'; sel.dispatchEvent(new Event('change')); })()`);
+  await s.avaliar(`${ctl('fillRate')}.el.focus()`);
+  await s.cmd('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Home', code: 'Home', windowsVirtualKeyCode: 36 });
+  ok(await s.avaliar('__dd.audio.lerParam("fillRate")') === 0, 'RATE OFF chega no motor');
+  await s.esperar(200);
+  const nivelRateAntes = await nivel(1500);
+  await s.cmd('Input.dispatchKeyEvent', { type: 'keyDown', key: 'ArrowUp', code: 'ArrowUp', windowsVirtualKeyCode: 38 });
+  ok(await s.avaliar('__dd.audio.lerParam("fillRate")') === 1, 'RATE 1/16 chega no motor');
+  await s.esperar(200);
+  const nivelRateDepois = await nivel(1500);
   ok(Math.abs(nivelRateDepois - nivelRateAntes) > 0.01,
     `FILL RATE muda o som de verdade (nível ${nivelRateAntes.toFixed(3)} -> ${nivelRateDepois.toFixed(3)})`);
 
