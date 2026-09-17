@@ -1,7 +1,9 @@
 // Conta o painel da demo contra a referência do plugin. node testes/painel.mjs [url] [largura]
 import { abrir } from './cdp.mjs';
 
-const url = process.argv[2] || 'http://localhost:8123/index.html';
+const urlBase = process.argv[2] || 'http://localhost:8123/index.html';
+// ?teste=1: só assim window.__dd existe (gate de debug em produção)
+const url = urlBase + (urlBase.includes('?') ? '&' : '?') + 'teste=1';
 const largura = +(process.argv[3] || 1680);
 const movel = largura <= 400;
 const s = await abrir(url, { largura, altura: movel ? 844 : 1400, movel });

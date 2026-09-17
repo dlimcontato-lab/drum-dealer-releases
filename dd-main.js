@@ -1,9 +1,10 @@
 // Demo do topo: o painel do plugin (dd-painel.js + dd-edit.js) tocando o motor C++ do plugin em WASM.
-import { montarPainel, escalar, desenharRolo, GRADE_INICIAL, INST_IDS } from './dd-painel.js';
-import { montarEdit } from './dd-edit.js';
-import { criarAudio, carregarEspelho, escreverMidi } from './dd-audio.js';
-import { criarPal } from './dd-pal.js';
+import { montarPainel, escalar, desenharRolo, GRADE_INICIAL, INST_IDS } from './dd-painel.js?v=20260917c';
+import { montarEdit } from './dd-edit.js?v=20260917c';
+import { criarAudio, carregarEspelho, escreverMidi } from './dd-audio.js?v=20260917c';
+import { criarPal } from './dd-pal.js?v=20260917c';
 
+const TESTE = new URLSearchParams(location.search).get('teste') === '1'; // mesma flag de dd-audio.js
 const V = '20260916c';
 const carregar = (u) => fetch(u + '?v=' + V).then((r) => {
   if (!r.ok) throw new Error(u + ': ' + r.status);
@@ -181,11 +182,15 @@ const ehCampoDeTexto = (el) => !!el && typeof el.matches === 'function' && el.ma
 document.addEventListener('pointerdown', (e) => {
   atalhoArmado = !!e.target.closest?.('#aparelho, #transporte');
 });
-document.addEventListener('focusin', (e) => { if (ehCampoDeTexto(e.target)) atalhoArmado = false; });
+// focusin cobre o Tab: sair do aparelho/transporte por teclado desarma igual a um pointerdown fora.
+document.addEventListener('focusin', (e) => {
+  if (ehCampoDeTexto(e.target) || !e.target.closest?.('#aparelho, #transporte')) atalhoArmado = false;
+});
 document.addEventListener('keydown', (e) => {
   if (e.code !== 'Space' || e.repeat || !atalhoArmado) return;
   if (e.ctrlKey || e.metaKey || e.altKey) return;
   if (ehCampoDeTexto(document.activeElement)) return;
+  if (playBtn.disabled) return; // não passa por cima do "Carregando…"
   e.preventDefault(); // não deixa a página rolar
   alternarPlay();
 });
@@ -235,13 +240,15 @@ function receberGerado(m) {
 if (location.hash === '#edit-sat') edit.abrir(0);
 if (location.hash === '#edit-mb') edit.abrir(1);
 
-window.__dd = {
-  painel, edit, audio, layout, valores, params, INST_IDS,
-  estado: () => ({ pronto: audio.pronto(), tocando, passo, pico: painel.picoAtual(), gr: gr.slice() }),
-  curva: () => edit.pontosCurva(),
-  get pal() { return pal; },
-  set pal(p) { pal = p; },
-};
+if (TESTE) {
+  window.__dd = {
+    painel, edit, audio, layout, valores, params, INST_IDS,
+    estado: () => ({ pronto: audio.pronto(), tocando, passo, pico: painel.picoAtual(), gr: gr.slice() }),
+    curva: () => edit.pontosCurva(),
+    get pal() { return pal; },
+    set pal(p) { pal = p; },
+  };
+}
 
 // ---------- o Pal ----------
 // Carrega o espelho sem esperar o primeiro clique: o Pal vive antes do som. Até ele chegar, a tela mostra

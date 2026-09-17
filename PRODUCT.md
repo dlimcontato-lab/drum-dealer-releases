@@ -37,7 +37,7 @@ A demo da própria página é o motor C++ do plugin compilado para WebAssembly, 
 - Sequencer de 16 steps, 6 instrumentos (kick, snare, clap, hat fechado, hat aberto, tom), accent por step, groove straight/swing com amount, mute/solo e ganho por canal, botão RAND que sorteia padrão e samples.
 - Sampler com 232 samples de fábrica versionados; troca de sample por instrumento.
 - MIDI GEN de bass e lead seguindo o kick, na escala escolhida, com clipe arrastável para o DAW.
-- Viradas por instrumento com RATE de 12 degraus (OFF, 1/16 a 2 compassos, com contratempo em 1/16, 1/8, 1/4 e 1/2) e volume; reverb e delay por canal; export de stems separados (kick, snare, clap, hat, tom) + FX + mix em wav.
+- Viradas por instrumento com RATE de 12 degraus (OFF, 1/16 a 2 compassos, com contratempo em 1/16, 1/8, 1/4 e 1/2) e volume; envio de reverb e delay por canal (reverb e delay compartilhados no MASTER FX, cada canal manda mais ou menos); export de stems separados (kick, snare, clap, hat, tom) + FX + mix em wav.
 - MASTER FX: SATURATION com 8 formas (WAVE SHAPE), MULTIBAND de 3 bandas com preset OTT (no PRESET do EDIT) e ECHO com SYNC. O EDIT abre o painel completo de cada um.
 - TONE X: a tecla do topo amplia o TONE para até 20x; o LED de cada linha escolhe quais instrumentos entram.
 - O Pal: personagem na tela de pixels que segue o mouse, sorri no clique, dança no play, fica triste quando o volume é cortado e cochila depois de 1 minuto sem interação.

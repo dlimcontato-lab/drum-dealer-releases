@@ -10,17 +10,47 @@ const s = await abrir(url, movel ? { largura: 390, altura: 844, movel: true } : 
 let falhas = 0;
 const ok = (c, m) => { console.log((c ? 'ok: ' : 'FAIL: ') + m); if (!c) falhas++; };
 const ctl = (id) => `__dd.painel.controles.get(${JSON.stringify(id)})`;
-// Nível do motor (pico retido do medidor real, não o valor do parâmetro) sobre uma janela fixa —
-// prova que o som mudou de verdade, não só que o parâmetro foi lido de volta.
-const nivel = async (ms) => {
-  const fim = Date.now() + ms;
-  const amostras = [];
-  while (Date.now() < fim) {
-    amostras.push(await s.avaliar('__dd.estado().pico'));
-    await s.esperar(25);
+// Nível do motor (pico retido do medidor real, não o valor do parâmetro) — prova que o som mudou de
+// verdade, não só que o parâmetro foi lido de volta. Duas armadilhas no jeito antigo:
+// 1) uma janela solta de tempo cai numa fase qualquer do padrão rítmico — com nada mudando, dois
+//    "antes" já variavam 0,04–0,12 (o próprio ritmo é maior que qualquer diferença real), contra um
+//    limiar de 0,01 que nunca reprovava nada. Fix: sincroniza no início de um compasso (passo 0) e
+//    mede por pelo menos 2 compassos inteiros — "antes" e "depois" sempre começam na mesma fase.
+// 2) __dd.estado().pico é o pico da MISTURA INTEIRA (todos os 6 instrumentos), não só do instrumento
+//    testado — o padrão dos outros 5 é ruído de sobra maior que a mudança real num só. Fix: dá SOLO
+//    no instrumento testado antes de medir (ver `soloKick`), isolando o canal.
+// Métrica: o maior pico batido nas N compassos (não a média/RMS) — o TONE, por exemplo, muda o
+// timbre do ataque sem mudar a energia sustentada por igual, e a média lava a diferença; o pico não.
+const esperaInicioDeCompasso = async () => {
+  let anterior = await s.avaliar('__dd.estado().passo');
+  for (let guarda = 0; guarda < 400; guarda++) {
+    await s.esperar(8);
+    const p = await s.avaliar('__dd.estado().passo');
+    if (p === 0 && anterior !== 0) return;
+    anterior = p;
   }
-  return Math.sqrt(amostras.reduce((a, x) => a + x * x, 0) / amostras.length);
+  throw new Error('não sincronizou no início do compasso (passo nunca voltou a 0 — o motor está tocando?)');
 };
+const nivelBarras = async (compassos = 2) => {
+  await esperaInicioDeCompasso();
+  let maximo = 0;
+  let ultimo = 0;
+  let feitos = 0;
+  while (feitos < compassos) {
+    const st = await s.avaliar('__dd.estado()');
+    if (st.pico > maximo) maximo = st.pico;
+    if (st.passo < ultimo) feitos++;
+    ultimo = st.passo;
+    await s.esperar(10);
+  }
+  return maximo;
+};
+// Ruído do próprio medidor: duas leituras de nivelBarras() de volta a volta, sem mudar nada entre
+// elas, viram o "antes"/"antes de novo" de cada checagem abaixo. A diferença real (depois da
+// mudança de parâmetro) tem que ser bem maior que esse ruído.
+const LIMIAR_MINIMO = 0.01; // piso absoluto: guarda contra um ruído medido como ~0 por coincidência
+const mudouDeVerdade = (delta, ruido) => delta > Math.max(LIMIAR_MINIMO, ruido * 3);
+const soloKick = () => s.clicar('[aria-label="Solo do KICK"]'); // liga/desliga: é um toggle
 try {
   // A versão do engine vive em dois lugares (dd-processor.js não importa dd-audio.js: um worklet
   // module não consegue importar fácil) — prova que os dois números não descasaram.
@@ -54,8 +84,9 @@ try {
   // 2) clique no fundo do painel arma o atalho: espaço toca, espaço de novo para
   await s.clicar('.p-stripe');
   await bateEspaco();
-  await s.esperar(1500);
+  // o primeiro play carrega o motor e os samples: espera até 10 s (a frio pode passar de 1,5 s)
   let eEsp = await s.avaliar('__dd.estado()');
+  for (let t = 0; t < 40 && !(eEsp.pronto && eEsp.tocando); t++) { await s.esperar(250); eEsp = await s.avaliar('__dd.estado()'); }
   ok(eEsp.pronto && eEsp.tocando, 'espaço depois de clicar no fundo do painel liga o play');
   ok(await s.avaliar('document.querySelector(".p-status .rot").textContent') === 'Tocando', 'rodapé confirma TOCANDO pelo atalho de teclado');
   await bateEspaco();
@@ -92,6 +123,23 @@ try {
   await bateEspaco();
   await s.esperar(300);
   ok(!(await s.avaliar('__dd.estado()')).tocando, 'clicar fora da demo desarma o atalho: espaço não liga o play');
+
+  // 6) Tab (foco por teclado) pra fora do aparelho/transporte desarma o atalho, igual a um clique fora
+  await s.clicar('.p-stripe');
+  await s.avaliar(`document.getElementById('nav-conta').focus()`);
+  await bateEspaco();
+  await s.esperar(300);
+  ok(!(await s.avaliar('__dd.estado()')).tocando, 'Tab pra fora da demo desarma o atalho: espaço não liga o play');
+
+  // 7) espaço não passa por cima do "Carregando…": com o PLAY desabilitado, a barra de espaço não faz nada
+  await s.clicar('.p-stripe');
+  const tocandoAntesDoGuard = (await s.avaliar('__dd.estado()')).tocando;
+  await s.avaliar(`document.getElementById('play').disabled = true`);
+  await bateEspaco();
+  await s.esperar(300);
+  ok((await s.avaliar('__dd.estado()')).tocando === tocandoAntesDoGuard,
+    'espaço não faz nada com o PLAY desabilitado (ex.: "Carregando…")');
+  await s.avaliar(`document.getElementById('play').disabled = false`);
 
   await s.clicar('#play');
   await s.esperar(4000);
@@ -131,17 +179,21 @@ try {
   ok(await s.avaliar(`[...document.querySelectorAll('.p-gr b')].some((b) => b.textContent !== '0.0 dB')`), 'medidor GR mostra o valor');
   await s.avaliar('__dd.edit.fechar()');
 
-  // SAT DRIVE: sobe de 0 dB pro máximo (36 dB) e mede o motor de verdade, não só o parâmetro
+  // SAT DRIVE: sobe de 0 dB pro máximo (36 dB) e mede o motor de verdade, não só o parâmetro — em
+  // compassos inteiros alinhados ao passo, contra o ruído do próprio medidor medido no ato.
   await s.avaliar(`${ctl('satDriveDb')}.el.focus()`);
   await s.cmd('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Home', code: 'Home', windowsVirtualKeyCode: 36 });
   await s.esperar(150);
-  const nivelDriveAntes = await nivel(700);
+  const satAntes1 = await nivelBarras(2);
+  const satAntes2 = await nivelBarras(2);
+  const ruidoSat = Math.abs(satAntes2 - satAntes1);
   await s.cmd('Input.dispatchKeyEvent', { type: 'keyDown', key: 'End', code: 'End', windowsVirtualKeyCode: 35 });
   await s.esperar(150);
-  const nivelDriveDepois = await nivel(700);
+  const nivelDriveDepois = await nivelBarras(2);
+  const deltaSat = Math.abs(nivelDriveDepois - satAntes2);
   ok(await s.avaliar('__dd.audio.lerParam("satDriveDb")') === 36, 'SAT DRIVE no máximo chega no motor');
-  ok(Math.abs(nivelDriveDepois - nivelDriveAntes) > 0.01,
-    `SAT DRIVE muda o som de verdade (nível ${nivelDriveAntes.toFixed(3)} -> ${nivelDriveDepois.toFixed(3)})`);
+  ok(mudouDeVerdade(deltaSat, ruidoSat),
+    `SAT DRIVE muda o som de verdade (ruído ${ruidoSat.toFixed(4)}, delta ${deltaSat.toFixed(4)}, nível ${satAntes2.toFixed(3)} -> ${nivelDriveDepois.toFixed(3)})`);
 
   const legendas = new Set();
   await s.avaliar(`${ctl('fillRate')}.el.focus()`);
@@ -153,35 +205,69 @@ try {
   ok(legendas.size === 12 && legendas.has('RATE 1/16·') && legendas.has('RATE 2'), `RATE percorre os 12 degraus (${[...legendas].join(', ')})`);
   ok(await s.avaliar('__dd.audio.lerParam("fillRate")') === 11, 'último degrau chega no motor');
 
-  // FILL RATE muda o som (determinístico): alvo KICK (padrão de base denso + amostra sempre
-  // audível), RATE 1/16 dispara a cada 1/16 (SequencerEngine::fillRateInterval32 = 2, ~119 ms a
-  // 126 BPM) — a janela de 1500 ms contém ~12 viradas, longe do 1 falha em 6 do RATE "2" antigo
-  // (1 nota a cada 2 compassos raramente cai na janela de 700 ms). Compara contra RATE OFF, mesmo
-  // alvo e mesmo padrão de base.
+  // FILL RATE e TONE X (abaixo) só mexem no KICK: dá SOLO nele antes de medir, senão o pico lido é
+  // o da mistura inteira (6 instrumentos) e o padrão dos outros 5 é ruído bem maior que a mudança
+  // real num só — foi isso que fazia os dois "antes" (sem trocar nada) variarem sozinhos.
+  await soloKick();
+  await s.esperar(300);
+  ok(await s.avaliar('__dd.audio.lerParam("kickSolo")') === 1, 'SOLO do KICK chega no motor antes de medir');
+
+  // FILL RATE muda o som (determinístico): alvo KICK, RATE 1/16 (a mais rápida) contra OFF — mas
+  // com o KICK esparso (só o passo 1 aceso). Com a base cheia (4 batidas por compasso) a virada soma
+  // pouca energia relativa e a diferença real fica perto do ruído do medidor; esparso, a virada é a
+  // maior parte da energia do compasso e a diferença fica gritante.
+  const kickOnAntes = await s.avaliar(`[...document.querySelectorAll('[aria-label^="KICK, passo"]')].map((b) => b.classList.contains('on'))`);
+  await s.avaliar(`(() => { const els = [...document.querySelectorAll('[aria-label^="KICK, passo"]')];
+    els.forEach((el, i) => { const alvoOn = i === 0; if (el.classList.contains('on') !== alvoOn) el.click(); }); })()`);
   await s.avaliar(`(() => { const sel = ${ctl('fillTarget')}.el; sel.value = '0'; sel.dispatchEvent(new Event('change')); })()`);
   await s.avaliar(`${ctl('fillRate')}.el.focus()`);
   await s.cmd('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Home', code: 'Home', windowsVirtualKeyCode: 36 });
   ok(await s.avaliar('__dd.audio.lerParam("fillRate")') === 0, 'RATE OFF chega no motor');
   await s.esperar(200);
-  const nivelRateAntes = await nivel(1500);
+  const rateAntes1 = await nivelBarras(2);
+  const rateAntes2 = await nivelBarras(2);
+  const ruidoRate = Math.abs(rateAntes2 - rateAntes1);
   await s.cmd('Input.dispatchKeyEvent', { type: 'keyDown', key: 'ArrowUp', code: 'ArrowUp', windowsVirtualKeyCode: 38 });
   ok(await s.avaliar('__dd.audio.lerParam("fillRate")') === 1, 'RATE 1/16 chega no motor');
   await s.esperar(200);
-  const nivelRateDepois = await nivel(1500);
-  ok(Math.abs(nivelRateDepois - nivelRateAntes) > 0.01,
-    `FILL RATE muda o som de verdade (nível ${nivelRateAntes.toFixed(3)} -> ${nivelRateDepois.toFixed(3)})`);
+  const nivelRateDepois = await nivelBarras(2);
+  const deltaRate = Math.abs(nivelRateDepois - rateAntes2);
+  ok(mudouDeVerdade(deltaRate, ruidoRate),
+    `FILL RATE muda o som de verdade (ruído ${ruidoRate.toFixed(4)}, delta ${deltaRate.toFixed(4)}, nível ${rateAntes2.toFixed(3)} -> ${nivelRateDepois.toFixed(3)})`);
+  // devolve o padrão original do KICK pros testes seguintes (e pra quem olhar a demo depois)
+  await s.avaliar(`(() => { const els = [...document.querySelectorAll('[aria-label^="KICK, passo"]')]; const antes = ${JSON.stringify(kickOnAntes)};
+    els.forEach((el, i) => { if (el.classList.contains('on') !== antes[i]) el.click(); }); })()`);
 
   await s.avaliar(`${ctl('toneX20')}.el.click()`);
   await s.esperar(200);
   ok(await s.avaliar('document.querySelectorAll(".p-ledx.on.armada").length') === 6, 'TONE X ligado acende os 6 LEDs');
-  const nivelToneXAntes = await nivel(700);
   await s.avaliar(`${ctl('kickToneX')}.el.click()`);
-  await s.esperar(300);
+  await s.esperar(200);
   ok(await s.avaliar('__dd.audio.lerParam("kickToneX")') === 0 && await s.avaliar('__dd.audio.lerParam("snareToneX")') === 1,
     'LED do KICK apaga só o KICK no motor');
-  const nivelToneXDepois = await nivel(700);
-  ok(Math.abs(nivelToneXDepois - nivelToneXAntes) > 0.01,
-    `armar/desarmar TONE X do KICK muda o som de verdade (nível ${nivelToneXAntes.toFixed(3)} -> ${nivelToneXDepois.toFixed(3)})`);
+  await s.avaliar(`${ctl('kickToneX')}.el.click()`); // re-arma: o teste de som abaixo precisa do TONE X ativo no KICK
+  await s.esperar(200);
+  ok(await s.avaliar('__dd.audio.lerParam("kickToneX")') === 1, 'KICK TONE X re-armado antes do teste de som');
+
+  // TONE X muda o som (determinístico): com TONE X ligado e o KICK armado, joga o KICK TONE de um
+  // extremo a outro do knob — bem mais confiável do que medir a diferença sutil de ligar/desligar
+  // um LED, que pode não se mover nada se o TONE já estiver perto do repouso.
+  await s.avaliar(`${ctl('kickTone')}.el.focus()`);
+  await s.cmd('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Home', code: 'Home', windowsVirtualKeyCode: 36 });
+  await s.esperar(150);
+  const toneAntes1 = await nivelBarras(2);
+  const toneAntes2 = await nivelBarras(2);
+  const ruidoTone = Math.abs(toneAntes2 - toneAntes1);
+  await s.cmd('Input.dispatchKeyEvent', { type: 'keyDown', key: 'End', code: 'End', windowsVirtualKeyCode: 35 });
+  await s.esperar(150);
+  const nivelToneXDepois = await nivelBarras(2);
+  const deltaTone = Math.abs(nivelToneXDepois - toneAntes2);
+  ok(await s.avaliar('__dd.audio.lerParam("kickTone")') === 1, 'KICK TONE no extremo chega no motor');
+  ok(mudouDeVerdade(deltaTone, ruidoTone),
+    `TONE X do KICK muda o som de verdade (ruído ${ruidoTone.toFixed(4)}, delta ${deltaTone.toFixed(4)}, nível ${toneAntes2.toFixed(3)} -> ${nivelToneXDepois.toFixed(3)})`);
+  await soloKick(); // desliga o SOLO: devolve a mistura normal pro resto da demo
+  await s.esperar(200);
+  ok(await s.avaliar('__dd.audio.lerParam("kickSolo")') === 0, 'SOLO do KICK desligado no fim');
 
   await s.clicar('#play');
   await s.esperar(500);

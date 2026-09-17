@@ -2,7 +2,9 @@
 // e com reduced-motion não dança.
 import { abrir } from './cdp.mjs';
 
-const url = process.argv[2] || 'http://localhost:8123/index.html';
+const urlBase = process.argv[2] || 'http://localhost:8123/index.html';
+// ?teste=1: só assim window.__dd existe (gate de debug em produção)
+const url = urlBase + (urlBase.includes('?') ? '&' : '?') + 'teste=1';
 let falhas = 0;
 const ok = (c, m) => { console.log((c ? 'ok: ' : 'FAIL: ') + m); if (!c) falhas++; };
 

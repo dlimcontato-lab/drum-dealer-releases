@@ -1,6 +1,6 @@
 // Painel da demo = painel do plugin. Todas as posições vêm de painel/layout.json, gerado de
 // Source/UiLayout.h pelo MaschinTests (MASCHIN_WEB_DUMP). Aqui mora só a aparência e o clique.
-import { faixa, textoValor, fracaoDb } from './dd-norm.js';
+import { faixa, textoValor, fracaoDb } from './dd-norm.js?v=20260917c';
 
 export const INSTS = ['KICK', 'SNARE', 'CLAP', 'CHAT', 'OHAT', 'TOM'];
 export const INST_IDS = ['kick', 'snare', 'clap', 'chat', 'ohat', 'tom'];
