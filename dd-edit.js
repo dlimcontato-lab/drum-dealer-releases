@@ -1,7 +1,7 @@
 // Painel EDIT do MASTER FX: abre por cima do MIDI GEN, como o MasterFxEditPanel do plugin.
 // Fecha pela tecla EDIT, por FECHAR, por Escape ou por toque/clique fora da faixa MASTER FX; o toque fora SÓ fecha
 // (quatro apanhadores em volta da faixa engolem o gesto). Posições: layout.edit.
-import { peca, legenda, criarKnob, criarTecla, criarSeletor } from './dd-painel.js?v=20260923a';
+import { peca, legenda, criarKnob, criarTecla, criarSeletor } from './dd-painel.js?v=20260923c';
 import { textoValor } from './dd-norm.js?v=20260917c';
 import { t } from './dd-i18n.js';
 

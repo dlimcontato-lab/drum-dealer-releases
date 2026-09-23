@@ -8,7 +8,7 @@ const STORAGE_KEY = 'dd-lang';
 // ---------------------------------------------------------------------------------------------
 export const DICT = {
   pt: {
-    'brand.wordmark-html': '<b>BRDRUM</b><i>Rhythm Composer&nbsp; - &nbsp;001</i>',
+    'brand.wordmark-html': '<img src="img/brdrum-logo-oficial.png" alt="BRDRUM Rhythm Composer - 001">',
     'daw.ableton': 'Ableton Live',
     'daw.fl-studio': 'FL Studio',
     'daw.logic': 'Logic Pro',
@@ -550,7 +550,7 @@ export const DICT = {
   },
 
   en: {
-    'brand.wordmark-html': '<b>BRDRUM</b><i>Rhythm Composer&nbsp; - &nbsp;001</i>',
+    'brand.wordmark-html': '<img src="img/brdrum-logo-oficial.png" alt="BRDRUM Rhythm Composer - 001">',
     'daw.ableton': 'Ableton Live',
     'daw.fl-studio': 'FL Studio',
     'daw.logic': 'Logic Pro',

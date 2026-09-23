@@ -393,7 +393,8 @@ input.recess:focus{outline:2px solid var(--led-green);outline-offset:1px}
 /* ---------- página ---------- */
 .topbar{display:flex;align-items:center;justify-content:space-between;gap:var(--s3);flex-wrap:wrap;
      padding:18px 0 14px}
-.topbar .brand{display:flex;align-items:baseline;gap:12px;text-decoration:none}
+.topbar .brand{display:flex;align-items:center;gap:12px;text-decoration:none}
+.topbar .brand img{height:30px;width:auto;display:block}   /* LOGO OFICIAL (23/09) */
 .topbar .brand b{font-size:19px;letter-spacing:.06em;text-transform:uppercase;color:var(--silk)}
 .topbar .brand i{font-family:var(--script-font);font-style:normal;font-size:15px;color:var(--silk-dim)}
 .topbar nav{display:flex;gap:22px;flex-wrap:wrap}
@@ -732,6 +733,7 @@ footer{margin-top:var(--s5);padding-top:var(--s3);border-top:1px solid var(--lan
 .statement2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:var(--s5);align-items:center;
      padding:var(--s5) 0 var(--s6)}
 .logo-slot{display:inline-grid;gap:2px;margin-bottom:var(--s3)}
+.logo-slot img{height:64px;width:auto;display:block}
 .logo-slot b{font-size:26px;letter-spacing:.06em;text-transform:uppercase;color:var(--silk);font-weight:700}
 .logo-slot i{font-family:var(--script-font);font-style:normal;font-size:14px;color:var(--silk-dim)}
 .punch{font-family:var(--silk-font);font-weight:500;text-transform:none;letter-spacing:.01em;
@@ -1036,6 +1038,7 @@ table.tbl .who b{color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ell
 .p-stripe{background:var(--ink)}
 .p-stripe i{position:absolute;left:1px;right:1px;height:4px}
 .p-logo{text-align:center;color:var(--silk);font:700 30px/32px var(--silk-font);letter-spacing:.03em}
+.p-logo img{display:block;height:100%;width:auto;max-width:100%;margin:0 auto}
 .p-logo i{display:block;font:400 15px/18px var(--script-font);color:var(--silk-dim);letter-spacing:0}
 .p-nota{display:flex;align-items:center;font:600 9.5px/12px var(--silk-font);letter-spacing:.03em;
   text-transform:uppercase;color:var(--silk-dim)}

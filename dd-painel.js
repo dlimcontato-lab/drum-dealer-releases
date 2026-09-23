@@ -278,7 +278,7 @@ export function montarPainel(raiz, L, params, palJson, ao) {
     i.style.background = cor;
   });
   const logo = peca(raiz, 'div', 'p-logo', L.top.logo);
-  logo.innerHTML = 'BRDRUM<i>Rhythm Composer&nbsp; - &nbsp;001</i>';
+  logo.innerHTML = '<img src="img/brdrum-logo-oficial.png" alt="BRDRUM Rhythm Composer - 001">';   // LOGO OFICIAL (23/09), a mesma do aparelho
   logo.setAttribute('aria-hidden', 'true');
 
   // topo: SAMPLER e EXPORT só no plugin
