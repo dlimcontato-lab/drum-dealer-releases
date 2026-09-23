@@ -1191,12 +1191,35 @@ export function montarSeletorIdioma() {
   box.setAttribute('data-i18n-attr', 'aria-label:lang.switch-aria');
   box.setAttribute('aria-label', t('lang.switch-aria'));
 
+  // Bandeiras (23/09, pedido do Diogo): Brasil ao lado do PT, Estados Unidos ao lado do EN. SVG inline
+  // simplificado (emoji de bandeira nao renderiza no Windows). O texto fica num <span> proprio para o
+  // applyI18n trocar so ele e nao apagar a bandeira.
+  const bandeira = (qual) => {
+    const ns = 'http://www.w3.org/2000/svg';
+    const svg = document.createElementNS(ns, 'svg');
+    svg.setAttribute('class', 'flag');
+    svg.setAttribute('viewBox', '0 0 14 10');
+    svg.setAttribute('aria-hidden', 'true');
+    const el = (tag, attrs) => { const e = document.createElementNS(ns, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); svg.appendChild(e); return e; };
+    if (qual === 'br') {
+      el('rect', { width: 14, height: 10, fill: '#009c3b' });
+      el('polygon', { points: '7,1.2 12.6,5 7,8.8 1.4,5', fill: '#ffdf00' });
+      el('circle', { cx: 7, cy: 5, r: 2.1, fill: '#002776' });
+    } else {
+      el('rect', { width: 14, height: 10, fill: '#fff' });
+      for (let i = 0; i < 7; i++) if (i % 2 === 0) el('rect', { y: i * 10 / 7, width: 14, height: 10 / 7, fill: '#b22234' });
+      el('rect', { width: 6, height: 5.7, fill: '#3c3b6e' });
+    }
+    return svg;
+  };
+  const rotulo = (chave) => { const sp = document.createElement('span'); sp.setAttribute('data-i18n', chave); sp.textContent = t(chave); return sp; };
+
   const bPt = document.createElement('button');
   bPt.type = 'button';
   bPt.dataset.lang = 'pt';
-  bPt.setAttribute('data-i18n', 'lang.pt');
   bPt.setAttribute('data-i18n-attr', 'aria-label:lang.pt-aria');
-  bPt.textContent = t('lang.pt');
+  bPt.appendChild(bandeira('br'));
+  bPt.appendChild(rotulo('lang.pt'));
   bPt.setAttribute('aria-label', t('lang.pt-aria'));
 
   const sep = document.createElement('i');
@@ -1206,9 +1229,9 @@ export function montarSeletorIdioma() {
   const bEn = document.createElement('button');
   bEn.type = 'button';
   bEn.dataset.lang = 'en';
-  bEn.setAttribute('data-i18n', 'lang.en');
   bEn.setAttribute('data-i18n-attr', 'aria-label:lang.en-aria');
-  bEn.textContent = t('lang.en');
+  bEn.appendChild(bandeira('us'));
+  bEn.appendChild(rotulo('lang.en'));
   bEn.setAttribute('aria-label', t('lang.en-aria'));
 
   const pinta = () => {
