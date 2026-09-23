@@ -1192,7 +1192,7 @@ select.recess.p-abs{font-size:11px;padding:0 20px 0 6px;background-position:righ
      background-image:url("img/daw-e-vst.png");background-repeat:no-repeat;
      background-size:cover;background-position:center 62%;background-attachment:fixed}
 .daw-parallax::before{content:'';position:absolute;inset:0;
-     background:linear-gradient(90deg,transparent 45%,rgba(42,42,44,.92) 100%)}
+     background:linear-gradient(90deg,rgba(42,42,44,.45) 0%,rgba(42,42,44,.72) 40%,rgba(42,42,44,.97) 100%)}   /* degradê mais forte (23/09, Diogo) */
 /* iOS/Safari mobile não faz background-attachment:fixed: cai pra scroll, mesma imagem */
 @supports (-webkit-touch-callout:none){
   .daw-parallax{background-attachment:scroll}
@@ -1216,3 +1216,6 @@ select.recess.p-abs{font-size:11px;padding:0 20px 0 6px;background-position:righ
 @media (max-width:600px){
   .packs-desligado{justify-content:center;text-align:center}
 }
+
+/* Título da marca em imagem (fonte Nulshock, 23/09) */
+.punch-img img{display:block;width:100%;max-width:560px;height:auto}

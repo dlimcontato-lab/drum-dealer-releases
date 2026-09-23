@@ -74,7 +74,8 @@ export const DICT = {
     'compat.title-small-html': '<b>compatível</b> com todas as DAWs',
 
     // ---------- afirmação / statement ----------
-    'statement.h1-html': 'Sua <b class="c-cream">bateria</b><br>e <b class="c-orange">baixo</b> em<br><b class="c-yellow">1 clique</b>',
+    // Título em imagem: fonte Nulshock (licença desktop da Typodermic permite imagem estática, não @font-face)
+    'statement.h1-html': '<img src="img/headline-pt.png" alt="Drums infinitas com um clique" width="931" height="730">',
     'statement.lead': 'Milhares de possibilidades com os seus samples e MIDIs, além dos pacotes que já vêm dentro. Aperta RAND e sai uma batida pronta; aperta BASS e ele sorteia um baixo da sua pasta de MIDIs, no tom certo.',
 
     // ---------- tabela de especificações ----------
@@ -621,7 +622,7 @@ export const DICT = {
     'compat.aria': 'Compatible DAWs',
     'compat.title-small-html': '<b>compatible</b> with every DAW',
 
-    'statement.h1-html': 'Your <b class="c-cream">drums</b><br>and <b class="c-orange">bass</b> in<br><b class="c-yellow">1 click</b>',
+    'statement.h1-html': '<img src="img/headline-en.png" alt="Infinite drums in one click" width="810" height="730">',
     'statement.lead': "Thousands of possibilities with your own samples and MIDIs, plus the packs that come built in. Hit RAND and a ready beat comes out; hit BASS and it draws a bassline from your MIDI folder, in the right key.",
 
     'spec.formatos-th': 'Formats',
