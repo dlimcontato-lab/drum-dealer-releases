@@ -100,6 +100,10 @@ export const DICT = {
     'spec.licenca-td': 'por conta · 1, 3 ou 5 computadores',
 
     // ---------- download ----------
+    // download.title/legend/step1-3/manual-* ficaram sem uso na home 23/09 (a seção #download
+    // "Baixe o instalador" saiu pelo bloco novo "DAW + download" + a tecla TUTORIAL); mantidas
+    // porque nada é apagado do i18n sem precisar.
+    'download.daw-shot-alt': 'O BRDRUM aberto no Ableton Live, com o gerador de MIDI de bass e lead e os clipes de áudio ao lado',
     'download.title': 'Baixe o instalador',
     'download.legend': 'VST3 · AU · precisa de conta',
     'download.mac-cta': 'Baixar para Mac',
@@ -194,6 +198,10 @@ export const DICT = {
     'install.win-li4-html': 'Procure <b>BRDRUM</b> nos instrumentos, arraste pra uma track MIDI e entre com sua conta.',
     'install.win-warn-html': 'No FL Studio: Options → Manage plugins → Find more plugins.\n        No Ableton: Preferences → Plug-Ins → Rescan.',
 
+    // ---------- tutorial (23/09: baixa manual/BRDRUM-Manual-PT-EN.zip, PT e EN no mesmo arquivo) ----------
+    'tutorial.cta': 'TUTORIAL',
+    'tutorial.aria': 'Baixar o manual do BRDRUM em PDF, português e inglês',
+
     // ---------- samples ----------
     'samples.title': 'Seus próprios samples entram junto',
     'samples.legend': 'Soma, não substitui',
@@ -225,6 +233,10 @@ export const DICT = {
     'footer.payment-only': 'Pagamento único pelo Mercado Pago',
 
     // ---------- packs.html ----------
+    // desligado 23/09 a pedido do Diogo: aviso estático no topo da página, sem link nenhum do site
+    // apontando mais pra cá (nav e rodapé sem o item, aba "Meus packs" oculta na conta)
+    'packs.desligado-titulo': 'A loja de packs volta em breve',
+    'packs.desligado-voltar': 'Voltar para a home',
     'packs.title': 'Sample Packs',
     'packs.status-loading': 'Carregando…',
     'packs.det-legend-default': 'Pack',
@@ -633,6 +645,7 @@ export const DICT = {
     'spec.licenca-th': 'License',
     'spec.licenca-td': 'per account · 1, 3 or 5 computers',
 
+    'download.daw-shot-alt': 'BRDRUM open in Ableton Live, with the bass and lead MIDI generator and the audio clips beside it',
     'download.title': 'Download the installer',
     'download.legend': 'VST3 · AU · needs an account',
     'download.mac-cta': 'Download for Mac',
@@ -723,6 +736,9 @@ export const DICT = {
     'install.win-li4-html': 'Look for <b>BRDRUM</b> in the instruments, drag it onto a MIDI track and sign in with your account.',
     'install.win-warn-html': 'In FL Studio: Options → Manage plugins → Find more plugins.\n        In Ableton: Preferences → Plug-Ins → Rescan.',
 
+    'tutorial.cta': 'TUTORIAL',
+    'tutorial.aria': 'Download the BRDRUM manual as PDF, Portuguese and English',
+
     'samples.title': 'Your own samples join right in',
     'samples.legend': 'Adds, never replaces',
     'samples.panel-legend': 'Sampler',
@@ -750,6 +766,8 @@ export const DICT = {
     'footer.chat-aria': 'Talk to us',
     'footer.payment-only': 'One-time payment through Mercado Pago',
 
+    'packs.desligado-titulo': 'The packs store is coming back soon',
+    'packs.desligado-voltar': 'Back to the homepage',
     'packs.title': 'Sample Packs',
     'packs.status-loading': 'Loading…',
     'packs.det-legend-default': 'Pack',

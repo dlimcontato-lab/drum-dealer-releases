@@ -6,11 +6,13 @@
 <title data-i18n="packs.head-title">Sample Packs — BRDRUM</title>
 <meta name="description" content="Sample packs do BRDRUM: bateria e MIDI prontos para o seu set. Exclusivos para quem tem um plano do BRDRUM." data-i18n-attr="content:packs.head-description">
 <meta name="theme-color" content="#2a2a2c">
+<!-- Sample Packs desligado 23/09 a pedido do Diogo: fora do índice enquanto a loja não volta -->
+<meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Yellowtail&family=Montserrat:wght@300;500;700;800&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='4' y='4' width='92' height='92' rx='10' fill='%232a2a2c' stroke='%230e0e10' stroke-width='3'/><rect x='22' y='16' width='56' height='68' rx='6' fill='%23e0702a' stroke='%23844219' stroke-width='3'/><circle cx='50' cy='34' r='8' fill='%23ff3b2f'/><circle cx='50' cy='34' r='14' fill='%23ff3b2f' opacity='.3'/></svg>">
-<link rel="stylesheet" href="dd.css?v=20260923c">
+<link rel="stylesheet" href="dd.css?v=20260923d">
 </head>
 <body>
 
@@ -36,6 +38,12 @@
   </div>
 
   <div class="recess warn" id="aviso" hidden></div>
+
+  <!-- Sample Packs desligado 23/09 a pedido do Diogo: aviso estático, nada apagado do código abaixo -->
+  <div class="recess warn packs-desligado">
+    <p data-i18n="packs.desligado-titulo">A loja de packs volta em breve</p>
+    <a class="key cream small" href="./" data-i18n="packs.desligado-voltar">Voltar para a home</a>
+  </div>
 
   <!-- detalhe do pack: painel dentro da própria página -->
   <fieldset class="panel" id="detalhe" hidden style="margin-bottom:var(--s4)">

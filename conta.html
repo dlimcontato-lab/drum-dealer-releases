@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Yellowtail&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='4' y='4' width='92' height='92' rx='10' fill='%232a2a2c' stroke='%230e0e10' stroke-width='3'/><rect x='22' y='16' width='56' height='68' rx='6' fill='%23e0702a' stroke='%23844219' stroke-width='3'/><circle cx='50' cy='34' r='8' fill='%23ff3b2f'/><circle cx='50' cy='34' r='14' fill='%23ff3b2f' opacity='.3'/></svg>">
-<link rel="stylesheet" href="dd.css?v=20260923c">
+<link rel="stylesheet" href="dd.css?v=20260923d">
 </head>
 <body>
 
@@ -22,7 +22,7 @@
     </a>
     <nav aria-label="Seções" data-i18n-attr="aria-label:nav.aria">
       <a href="./#precos" data-i18n="nav.precos">Preços</a>
-      <a href="packs.html" data-i18n="nav.packs">Sample Packs</a>
+      <!-- Sample Packs desligado 23/09 a pedido do Diogo: item de nav removido, nada apagado do i18n -->
       <a href="./#download" data-i18n="nav.download">Download</a>
       <a href="./#instalacao" data-i18n="nav.instalacao">Instalação</a>
       <a href="conta.html" id="nav-conta" aria-current="page" data-i18n="nav.conta">Conta</a>
@@ -67,7 +67,8 @@
     <div class="tabs" id="tabs" role="tablist" aria-label="Áreas da conta" data-i18n-attr="aria-label:conta.tabs-aria">
       <button class="key" type="button" role="tab" data-aba="perfil" aria-selected="false"><span class="led" aria-hidden="true"></span><span data-i18n="conta.tab-perfil">Perfil</span></button>
       <button class="key" type="button" role="tab" data-aba="licenca" aria-selected="false"><span class="led" aria-hidden="true"></span><span data-i18n="conta.tab-licenca">Licença</span></button>
-      <button class="key" type="button" role="tab" data-aba="packs" aria-selected="false"><span class="led" aria-hidden="true"></span><span data-i18n="conta.tab-packs">Meus packs</span></button>
+      <!-- Sample Packs desligado 23/09 a pedido do Diogo: nada apagado, só oculto -->
+      <button class="key" type="button" role="tab" data-aba="packs" aria-selected="false" hidden><span class="led" aria-hidden="true"></span><span data-i18n="conta.tab-packs">Meus packs</span></button>
       <button class="key" type="button" role="tab" data-aba="pedidos" aria-selected="false"><span class="led" aria-hidden="true"></span><span data-i18n="conta.tab-pedidos">Pedidos</span></button>
       <button class="key" type="button" role="tab" data-aba="seguranca" aria-selected="false"><span class="led" aria-hidden="true"></span><span data-i18n="conta.tab-seguranca">Segurança</span></button>
     </div>
@@ -103,7 +104,11 @@
             <a class="key cream" href="https://github.com/dlimcontato-lab/drum-dealer-releases/releases/latest/download/BRDRUM-macOS.pkg" data-i18n="conta.baixar-mac">Baixar para Mac (.pkg)</a>
             <a class="key cream" href="https://github.com/dlimcontato-lab/drum-dealer-releases/releases/latest/download/BRDRUM-Windows-Setup.exe" data-i18n="conta.baixar-win">Baixar para Windows (.exe)</a>
           </div>
-          <p class="legend" style="margin-top:10px"><span data-i18n="download.manual-label">Manual do BRDRUM</span>: <a href="manual/BRDRUM-Manual-PT.pdf" target="_blank" rel="noopener" data-i18n="download.manual-pt">Português</a> · <a href="manual/BRDRUM-Manual-EN.pdf" target="_blank" rel="noopener" data-i18n="download.manual-en">English</a></p>
+          <!-- tecla TUTORIAL pequena (23/09): baixa o zip com os dois PDFs, substitui a linha "Manual do BRDRUM" (8f2c403) -->
+          <a class="key cream small tutorial" style="margin-top:10px" href="manual/BRDRUM-Manual-PT-EN.zip" download data-i18n-attr="aria-label:tutorial.aria">
+            <span data-i18n="tutorial.cta">TUTORIAL</span>
+            <svg class="tutorial-ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v11m0 0l-3.5-3.5M12 14l3.5-3.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M5 16v2a2 2 0 002 2h10a2 2 0 002-2v-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
         </fieldset>
         <fieldset class="panel">
           <legend data-i18n="conta.sessao-legend">Sessão</legend>
@@ -146,6 +151,7 @@
     </div>
 
     <!-- ---------- meus packs ---------- -->
+    <!-- Sample Packs desligado 23/09 a pedido do Diogo: pane oculta (a aba que abriria já está hidden) -->
     <div class="pane" id="pane-packs" hidden>
       <fieldset class="panel">
         <legend data-i18n="conta.meus-packs-legend">Meus packs</legend>
@@ -154,7 +160,8 @@
           <div class="band" aria-hidden="true"></div>
           <h3 data-i18n="conta.packs-vazio-title">Você ainda não tem sample packs</h3>
           <p data-i18n="conta.packs-vazio-text">Os packs do BRDRUM são exclusivos para quem tem um plano. Veja o que está na loja.</p>
-          <a class="key cream" href="packs.html" data-i18n="conta.packs-vazio-cta">Ver a loja de packs</a>
+          <!-- Sample Packs desligado 23/09 a pedido do Diogo: CTA para a loja saiu, nenhum link do site aponta mais para packs.html -->
+          <a class="key cream" href="packs.html" data-i18n="conta.packs-vazio-cta" hidden>Ver a loja de packs</a>
         </div>
       </fieldset>
     </div>
