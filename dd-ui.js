@@ -1,6 +1,7 @@
 // Peças de interface compartilhadas por conta.html, packs.html e admin.html.
 // Nada de widget do navegador: confirmação é um painel na própria página, aviso é
 // uma placa de aço, campo é rebaixo e botão é tecla de plástico.
+import { t, getLang, fmtRelative, fmtDateTime } from './dd-i18n.js';
 
 export const $ = (id) => document.getElementById(id);
 export const el = (tag, cls, txt) => {
@@ -27,7 +28,7 @@ export function aviso(node, texto, tipo = '') {
 
 // ---------- confirmação dentro da página ----------
 // confirmar({ titulo, texto, ok, cancelar, perigo }) -> Promise<boolean>
-export function confirmar({ titulo = 'Confirmar', texto = '', ok = 'Confirmar', cancelar = 'Cancelar', perigo = false } = {}) {
+export function confirmar({ titulo = t('ui.confirmar-titulo'), texto = '', ok = t('ui.confirmar-ok'), cancelar = t('ui.cancelar'), perigo = false } = {}) {
   return new Promise((resolve) => {
     const back = el('div', 'dlg-back');
     const fs = document.createElement('fieldset');
@@ -56,7 +57,7 @@ export function confirmar({ titulo = 'Confirmar', texto = '', ok = 'Confirmar', 
 }
 
 // perguntar({ titulo, texto, rotulo, valor, ok }) -> Promise<string|null>
-export function perguntar({ titulo = 'Escrever', texto = '', rotulo = 'Valor', valor = '', ok = 'Salvar', max = 60 } = {}) {
+export function perguntar({ titulo = t('ui.perguntar-titulo'), texto = '', rotulo = t('ui.perguntar-rotulo'), valor = '', ok = t('ui.perguntar-ok'), max = 60 } = {}) {
   return new Promise((resolve) => {
     const back = el('div', 'dlg-back');
     const fs = document.createElement('fieldset');
@@ -73,7 +74,7 @@ export function perguntar({ titulo = 'Escrever', texto = '', rotulo = 'Valor', v
     lab.appendChild(inp);
     fs.appendChild(lab);
     const row = el('div', 'dlg-row');
-    const bNo = el('button', 'key', 'Cancelar'); bNo.type = 'button';
+    const bNo = el('button', 'key', t('ui.cancelar')); bNo.type = 'button';
     const bYes = el('button', 'key green', ok); bYes.type = 'button';
     row.append(bNo, bYes);
     fs.appendChild(row);
@@ -139,23 +140,27 @@ export function abas(seletor, paineis, padrao) {
 
 // ---------- datas e rótulos ----------
 export function quando(iso) {
-  if (!iso) return '—';
-  const d = new Date(iso);
-  const diff = (Date.now() - d.getTime()) / 1000;
-  if (diff < 90) return 'agora';
-  if (diff < 3600) return `há ${Math.round(diff / 60)} min`;
-  if (diff < 86400) return `há ${Math.round(diff / 3600)} h`;
-  return d.toLocaleDateString('pt-BR');
+  return fmtRelative(iso);
 }
 
 export function dataHora(iso) {
-  return iso ? new Date(iso).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }) : '—';
+  return fmtDateTime(iso);
 }
 
+// mantido em português: usado por admin.html/dd-admin.js (interno, não traduzido)
 export const STATUS_PEDIDO = {
   pending: 'aguardando pagamento', approved: 'pago', rejected: 'recusado',
   refunded: 'estornado', cancelled: 'cancelado',
 };
+
+const STATUS_PEDIDO_KEYS = {
+  pending: 'conta.status-pedido-pending', approved: 'conta.status-pedido-approved', rejected: 'conta.status-pedido-rejected',
+  refunded: 'conta.status-pedido-refunded', cancelled: 'conta.status-pedido-cancelled',
+};
+// versão traduzida, para o site público (conta.js)
+export function statusPedidoLabel(status) {
+  return STATUS_PEDIDO_KEYS[status] ? t(STATUS_PEDIDO_KEYS[status]) : status;
+}
 
 export function corStatus(s) {
   return s === 'approved' ? 'var(--led-green)' : s === 'rejected' || s === 'refunded' ? 'var(--led-on)' : '';
@@ -164,7 +169,7 @@ export function corStatus(s) {
 export function tamanho(bytes) {
   if (!bytes) return '';
   const mb = bytes / 1048576;
-  return mb >= 1024 ? (mb / 1024).toFixed(1).replace('.', ',') + ' GB' : Math.round(mb) + ' MB';
+  return mb >= 1024 ? t('ui.tamanho-gb', { n: (mb / 1024).toFixed(1).replace('.', getLang() === 'pt' ? ',' : '.') }) : t('ui.tamanho-mb', { n: Math.round(mb) });
 }
 
 // ---------- copiar ----------
@@ -184,8 +189,8 @@ export async function copiar(texto) {
 // ---------- recorte quadrado no navegador -> webp 256x256 ----------
 // Retorna { blob, url } ou lança com mensagem pronta.
 export async function recortarQuadrado(file, lado = 256) {
-  if (!file.type.startsWith('image/')) throw new Error('Escolha uma imagem (png, jpg ou webp).');
-  if (file.size > 8 * 1024 * 1024) throw new Error('Imagem grande demais. Use um arquivo de até 8 MB.');
+  if (!file.type.startsWith('image/')) throw new Error(t('ui.imagem-invalida'));
+  if (file.size > 8 * 1024 * 1024) throw new Error(t('ui.imagem-grande'));
   const bitmap = await (window.createImageBitmap ? createImageBitmap(file) : carregarImg(file));
   const lado0 = Math.min(bitmap.width, bitmap.height);
   const sx = (bitmap.width - lado0) / 2, sy = (bitmap.height - lado0) / 2;
@@ -194,8 +199,8 @@ export async function recortarQuadrado(file, lado = 256) {
   const ctx = c.getContext('2d');
   ctx.imageSmoothingQuality = 'high';
   ctx.drawImage(bitmap, sx, sy, lado0, lado0, 0, 0, lado, lado);
-  const blob = await new Promise((res, rej) => c.toBlob((b) => b ? res(b) : rej(new Error('Não consegui preparar a imagem.')), 'image/webp', 0.88));
-  if (blob.size > 2 * 1024 * 1024) throw new Error('A foto ficou grande demais. Tente outra imagem.');
+  const blob = await new Promise((res, rej) => c.toBlob((b) => b ? res(b) : rej(new Error(t('ui.imagem-falhou-preparar'))), 'image/webp', 0.88));
+  if (blob.size > 2 * 1024 * 1024) throw new Error(t('ui.foto-grande-demais'));
   return { blob, url: c.toDataURL('image/webp', 0.88) };
 }
 
@@ -204,7 +209,7 @@ function carregarImg(file) {
     const url = URL.createObjectURL(file);
     const img = new Image();
     img.onload = () => { res(img); };
-    img.onerror = () => { URL.revokeObjectURL(url); rej(new Error('Não consegui abrir essa imagem.')); };
+    img.onerror = () => { URL.revokeObjectURL(url); rej(new Error(t('ui.nao-consegui-abrir-imagem'))); };
     img.src = url;
   });
 }
@@ -220,8 +225,8 @@ export function previa(botao, src) {
   pararPrevia();
   const a = new Audio(src);
   a.addEventListener('ended', () => { botao.classList.remove('playing'); });
-  a.addEventListener('error', () => { botao.classList.remove('playing'); recado('Não consegui tocar a prévia.', 'err'); });
-  a.play().then(() => botao.classList.add('playing')).catch(() => recado('Não consegui tocar a prévia.', 'err'));
+  a.addEventListener('error', () => { botao.classList.remove('playing'); recado(t('ui.previa-falhou'), 'err'); });
+  a.play().then(() => botao.classList.add('playing')).catch(() => recado(t('ui.previa-falhou'), 'err'));
   tocando.audio = a; tocando.botao = botao;
 }
 

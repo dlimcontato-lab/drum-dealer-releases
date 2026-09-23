@@ -1,8 +1,9 @@
 // Painel EDIT do MASTER FX: abre por cima do MIDI GEN, como o MasterFxEditPanel do plugin.
 // Fecha pela tecla EDIT, por FECHAR, por Escape ou por toque/clique fora da faixa MASTER FX; o toque fora SÓ fecha
 // (quatro apanhadores em volta da faixa engolem o gesto). Posições: layout.edit.
-import { peca, legenda, criarKnob, criarTecla, criarSeletor } from './dd-painel.js?v=20260917c';
+import { peca, legenda, criarKnob, criarTecla, criarSeletor } from './dd-painel.js?v=20260923a';
 import { textoValor } from './dd-norm.js?v=20260917c';
+import { t } from './dd-i18n.js';
 
 const PAG_SAT = 0;
 const PAG_MB = 1;
@@ -152,17 +153,17 @@ export function montarEdit(aparelho, L, params, controles, ao) {
   const ps = paginas[PAG_SAT];
   const visor = peca(ps, 'div', 'p-visor', S.display);
   const curva = document.createElement('canvas');
-  curva.setAttribute('aria-label', 'Curva da SATURATION');
+  curva.setAttribute('aria-label', t('panel.curva-sat-aria'));
   visor.appendChild(curva);
   peca(ps, 'i', 'p-linha', S.displayLine);
   legenda(ps, S.colorTitle, 'COLOR', 'esq');
-  tecla(ps, 'satColorOn', 'ON', S.colorOn, 'Ligar o COLOR');
+  tecla(ps, 'satColorOn', 'ON', S.colorOn, t('panel.ligar-color'));
   const cor = [['satAmtLo', 'AMT LO'], ['satAmtHi', 'AMT HI'], ['satColorFreq', 'FREQ'], ['satColorWidth', 'WIDTH']]
     .map(([id, nome], k) => knob(ps, id, nome, S.colorKnobs[k], S.colorLegends[k]));
   peca(ps, 'i', 'p-linha', S.rowALine);
   legenda(ps, S.clipTitle, 'CLIP', 'esq');
   controles.set('satClip', criarSeletor(peca(ps, 'select', 'recess', S.clip), P('satClip'), {
-    rotulo: 'CLIP da SATURATION', aoMudar: (x) => { ao.pal('decision'); ao.mudou('satClip', x); },
+    rotulo: t('panel.clip-sat'), aoMudar: (x) => { ao.pal('decision'); ao.mudou('satClip', x); },
   }));
   peca(ps, 'i', 'p-linha', S.rowsLine);
   const tituloWs = legenda(ps, S.wsTitle, 'WAVESHAPER', 'esq');
@@ -172,11 +173,15 @@ export function montarEdit(aparelho, L, params, controles, ao) {
   // ---- MULTIBAND
   const B = E.mb;
   const pm = paginas[PAG_MB];
-  tecla(pm, 'mbSoftKnee', 'SOFT KNEE', B.softKnee, 'SOFT KNEE do MULTIBAND');
-  tecla(pm, 'mbRms', 'RMS', B.rms, 'RMS do MULTIBAND');
+  tecla(pm, 'mbSoftKnee', 'SOFT KNEE', B.softKnee, t('panel.soft-knee-mb'));
+  tecla(pm, 'mbRms', 'RMS', B.rms, t('panel.rms-mb'));
   const preset = peca(pm, 'select', 'recess p-preset', B.preset);
-  preset.setAttribute('aria-label', 'Preset do MULTIBAND');
-  preset.innerHTML = '<option value="" selected>PRESET</option><option value="0">Padrão</option><option value="1">OTT</option>';
+  preset.setAttribute('aria-label', t('panel.preset-mb-aria'));
+  const pintarPreset = () => {
+    preset.innerHTML = `<option value="" selected>${t('panel.preset-label')}</option><option value="0">${t('panel.preset-padrao')}</option><option value="1">OTT</option>`;
+  };
+  pintarPreset();
+  document.addEventListener('dd-lang-changed', pintarPreset);
   preset.addEventListener('change', () => {
     if (preset.value === '') return;
     ao.pal('decision');
@@ -189,12 +194,12 @@ export function montarEdit(aparelho, L, params, controles, ao) {
   peca(pm, 'i', 'p-linha', B.grLine);
   const grs = BANDAS.map(([banda, nome], r) => {
     legenda(pm, B.bandNames[r], nome, 'clara esq');
-    tecla(pm, `mb${banda}On`, 'ON', B.bandOn[r], `Banda ${nome} ligada`);
-    tecla(pm, `mb${banda}Solo`, 'S', B.bandSolo[r], `Solo da banda ${nome}`);
+    tecla(pm, `mb${banda}On`, 'ON', B.bandOn[r], t('panel.banda-nome-ligada', { banda: nome }));
+    tecla(pm, `mb${banda}Solo`, 'S', B.bandSolo[r], t('panel.solo-da-banda', { banda: nome }));
     MB_SUF.forEach((suf, k) => knob(pm, `mb${banda}${suf}`, MB_NOMES[k], B.knobs[r][k], B.legends[r][k]));
     const gr = peca(pm, 'div', 'p-gr', B.gr[r]);
     gr.setAttribute('role', 'meter');
-    gr.setAttribute('aria-label', 'Redução de ganho da banda ' + nome);
+    gr.setAttribute('aria-label', t('panel.gr-aria', { banda: nome }));
     gr.innerHTML = '<span class="trilho"><i class="barra"></i><i class="zero"></i></span><b>0.0 dB</b>';
     legenda(pm, B.grLegends[r], 'GR');
     return gr;
@@ -220,7 +225,8 @@ export function montarEdit(aparelho, L, params, controles, ao) {
     });
   }
 
-  const botaoFechar = peca(camada, 'button', 'key p-fechar', E.close, 'Fechar');
+  const botaoFechar = peca(camada, 'button', 'key p-fechar', E.close, t('panel.fechar'));
+  botaoFechar.setAttribute('data-i18n', 'panel.fechar');
   botaoFechar.addEventListener('click', () => fechar());
 
   function desenharVisor() {

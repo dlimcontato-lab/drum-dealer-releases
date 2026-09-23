@@ -3,37 +3,37 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Conta — BRDRUM</title>
-<meta name="description" content="Entre na sua conta do BRDRUM: licença, chaves de ativação, computadores, sample packs e pedidos.">
+<title data-i18n="conta.head-title">Conta — BRDRUM</title>
+<meta name="description" content="Entre na sua conta do BRDRUM: licença, chaves de ativação, computadores, sample packs e pedidos." data-i18n-attr="content:conta.head-description">
 <meta name="theme-color" content="#2a2a2c">
 <meta name="robots" content="noindex">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Yellowtail&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='4' y='4' width='92' height='92' rx='10' fill='%232a2a2c' stroke='%230e0e10' stroke-width='3'/><rect x='22' y='16' width='56' height='68' rx='6' fill='%23e0702a' stroke='%23844219' stroke-width='3'/><circle cx='50' cy='34' r='8' fill='%23ff3b2f'/><circle cx='50' cy='34' r='14' fill='%23ff3b2f' opacity='.3'/></svg>">
-<link rel="stylesheet" href="dd.css?v=20260915a">
+<link rel="stylesheet" href="dd.css?v=20260923a">
 </head>
 <body>
 
 <div class="wrap-wide">
   <header class="topbar">
-    <a class="brand" href="./">
+    <a class="brand" href="./" data-i18n-html="brand.wordmark-html">
       <b>BRDRUM</b><i>Rhythm Composer&nbsp; - &nbsp;001</i>
     </a>
-    <nav aria-label="Seções">
-      <a href="./#precos">Preços</a>
-      <a href="packs.html">Sample Packs</a>
-      <a href="./#download">Download</a>
-      <a href="./#instalacao">Instalação</a>
-      <a href="conta.html" id="nav-conta" aria-current="page">Conta</a>
+    <nav aria-label="Seções" data-i18n-attr="aria-label:nav.aria">
+      <a href="./#precos" data-i18n="nav.precos">Preços</a>
+      <a href="packs.html" data-i18n="nav.packs">Sample Packs</a>
+      <a href="./#download" data-i18n="nav.download">Download</a>
+      <a href="./#instalacao" data-i18n="nav.instalacao">Instalação</a>
+      <a href="conta.html" id="nav-conta" aria-current="page" data-i18n="nav.conta">Conta</a>
     </nav>
   </header>
 </div>
 
 <div class="wrap">
   <div class="sec-head" style="margin-top:var(--s3)">
-    <h2 id="titulo">Sua conta</h2>
-    <span class="legend status-row"><span class="led-dot green" id="status-led" aria-hidden="true"></span><span id="status-text">Verificando…</span></span>
+    <h2 id="titulo" data-i18n="conta.titulo">Sua conta</h2>
+    <span class="legend status-row"><span class="led-dot green" id="status-led" aria-hidden="true"></span><span id="status-text" data-i18n="conta.status-verificando">Verificando…</span></span>
   </div>
 
   <div class="recess warn" id="aviso" hidden></div>
@@ -41,73 +41,73 @@
   <!-- deslogado: entrar / criar conta -->
   <div class="account" id="view-auth" hidden>
     <fieldset class="panel">
-      <legend>Entrar</legend>
+      <legend data-i18n="conta.entrar-legend">Entrar</legend>
       <form class="form" id="form-login" novalidate>
-        <label><span class="legend">E-mail</span><input class="recess" type="email" name="email" autocomplete="email" required placeholder="voce@exemplo.com"></label>
-        <label><span class="legend">Senha</span><input class="recess" type="password" name="password" autocomplete="current-password" required minlength="8" placeholder="sua senha"></label>
+        <label><span class="legend" data-i18n="conta.email-label">E-mail</span><input class="recess" type="email" name="email" autocomplete="email" required placeholder="voce@exemplo.com" data-i18n-attr="placeholder:conta.email-placeholder"></label>
+        <label><span class="legend" data-i18n="conta.senha-label">Senha</span><input class="recess" type="password" name="password" autocomplete="current-password" required minlength="8" placeholder="sua senha" data-i18n-attr="placeholder:conta.senha-placeholder"></label>
         <p class="msg" id="msg-login" aria-live="polite"></p>
-        <button class="key orange" type="submit">Entrar</button>
+        <button class="key orange" type="submit" data-i18n="conta.entrar-cta">Entrar</button>
       </form>
     </fieldset>
     <fieldset class="panel">
-      <legend>Criar conta</legend>
+      <legend data-i18n="conta.criar-legend">Criar conta</legend>
       <form class="form" id="form-signup" novalidate>
-        <p class="dim" style="font-size:var(--t-small)">É a conta que você vai usar dentro do plugin. Guarde a senha: é ela que destrava a máquina.</p>
-        <label><span class="legend">E-mail</span><input class="recess" type="email" name="email" autocomplete="email" required placeholder="voce@exemplo.com"></label>
-        <label><span class="legend">Senha (8+ caracteres)</span><input class="recess" type="password" name="password" autocomplete="new-password" required minlength="8" placeholder="crie uma senha"></label>
-        <label><span class="legend">Repita a senha</span><input class="recess" type="password" name="confirm" autocomplete="new-password" required minlength="8" placeholder="a mesma senha"></label>
+        <p class="dim" style="font-size:var(--t-small)" data-i18n="conta.criar-aviso">É a conta que você vai usar dentro do plugin. Guarde a senha: é ela que destrava a máquina.</p>
+        <label><span class="legend" data-i18n="conta.email-label">E-mail</span><input class="recess" type="email" name="email" autocomplete="email" required placeholder="voce@exemplo.com" data-i18n-attr="placeholder:conta.email-placeholder"></label>
+        <label><span class="legend" data-i18n="conta.senha8-label">Senha (8+ caracteres)</span><input class="recess" type="password" name="password" autocomplete="new-password" required minlength="8" placeholder="crie uma senha" data-i18n-attr="placeholder:conta.senha8-placeholder"></label>
+        <label><span class="legend" data-i18n="conta.repita-senha-label">Repita a senha</span><input class="recess" type="password" name="confirm" autocomplete="new-password" required minlength="8" placeholder="a mesma senha" data-i18n-attr="placeholder:conta.repita-senha-placeholder"></label>
         <p class="msg" id="msg-signup" aria-live="polite"></p>
-        <button class="key cream" type="submit">Criar conta</button>
+        <button class="key cream" type="submit" data-i18n="conta.criar-cta">Criar conta</button>
       </form>
     </fieldset>
   </div>
 
   <!-- logado -->
   <div id="view-account" hidden>
-    <div class="tabs" id="tabs" role="tablist" aria-label="Áreas da conta">
-      <button class="key" type="button" role="tab" data-aba="perfil" aria-selected="false"><span class="led" aria-hidden="true"></span>Perfil</button>
-      <button class="key" type="button" role="tab" data-aba="licenca" aria-selected="false"><span class="led" aria-hidden="true"></span>Licença</button>
-      <button class="key" type="button" role="tab" data-aba="packs" aria-selected="false"><span class="led" aria-hidden="true"></span>Meus packs</button>
-      <button class="key" type="button" role="tab" data-aba="pedidos" aria-selected="false"><span class="led" aria-hidden="true"></span>Pedidos</button>
-      <button class="key" type="button" role="tab" data-aba="seguranca" aria-selected="false"><span class="led" aria-hidden="true"></span>Segurança</button>
+    <div class="tabs" id="tabs" role="tablist" aria-label="Áreas da conta" data-i18n-attr="aria-label:conta.tabs-aria">
+      <button class="key" type="button" role="tab" data-aba="perfil" aria-selected="false"><span class="led" aria-hidden="true"></span><span data-i18n="conta.tab-perfil">Perfil</span></button>
+      <button class="key" type="button" role="tab" data-aba="licenca" aria-selected="false"><span class="led" aria-hidden="true"></span><span data-i18n="conta.tab-licenca">Licença</span></button>
+      <button class="key" type="button" role="tab" data-aba="packs" aria-selected="false"><span class="led" aria-hidden="true"></span><span data-i18n="conta.tab-packs">Meus packs</span></button>
+      <button class="key" type="button" role="tab" data-aba="pedidos" aria-selected="false"><span class="led" aria-hidden="true"></span><span data-i18n="conta.tab-pedidos">Pedidos</span></button>
+      <button class="key" type="button" role="tab" data-aba="seguranca" aria-selected="false"><span class="led" aria-hidden="true"></span><span data-i18n="conta.tab-seguranca">Segurança</span></button>
     </div>
 
     <!-- ---------- perfil ---------- -->
     <div class="pane two" id="pane-perfil" hidden>
       <fieldset class="panel">
-        <legend>Perfil</legend>
+        <legend data-i18n="conta.perfil-legend">Perfil</legend>
         <div class="status-row" style="gap:18px;margin-bottom:18px">
           <span id="avatar-slot"></span>
           <div class="form" style="gap:8px">
             <div class="form-row tight">
-              <button class="key cream small" type="button" id="btn-foto">Escolher foto</button>
-              <button class="key small" type="button" id="btn-foto-rm" hidden>Remover</button>
+              <button class="key cream small" type="button" id="btn-foto" data-i18n="conta.escolher-foto">Escolher foto</button>
+              <button class="key small" type="button" id="btn-foto-rm" hidden data-i18n="conta.remover-foto">Remover</button>
             </div>
-            <span class="legend">Quadrada, 256×256. PNG, JPG ou WEBP até 8 MB.</span>
+            <span class="legend" data-i18n="conta.foto-ajuda">Quadrada, 256×256. PNG, JPG ou WEBP até 8 MB.</span>
           </div>
           <input type="file" id="file-foto" accept="image/png,image/jpeg,image/webp" hidden>
         </div>
         <form class="form" id="form-perfil" novalidate>
-          <label><span class="legend">Nome de exibição</span><input class="recess" type="text" name="display_name" maxlength="60" required placeholder="como você quer ser chamado"></label>
-          <label><span class="legend">E-mail (não muda)</span><input class="recess ro" type="email" id="perfil-email" readonly tabindex="-1"></label>
+          <label><span class="legend" data-i18n="conta.nome-exibicao-label">Nome de exibição</span><input class="recess" type="text" name="display_name" maxlength="60" required placeholder="como você quer ser chamado" data-i18n-attr="placeholder:conta.nome-exibicao-placeholder"></label>
+          <label><span class="legend" data-i18n="conta.email-nao-muda-label">E-mail (não muda)</span><input class="recess ro" type="email" id="perfil-email" readonly tabindex="-1"></label>
           <p class="msg" id="msg-perfil" aria-live="polite"></p>
-          <button class="key orange" type="submit">Salvar perfil</button>
+          <button class="key orange" type="submit" data-i18n="conta.salvar-perfil">Salvar perfil</button>
         </form>
       </fieldset>
 
       <div class="pane">
         <fieldset class="panel">
-          <legend>Download</legend>
-          <p class="dim" style="font-size:var(--t-small)">Instale, abra o BRDRUM no seu programa de música e entre com <b id="who"></b>.</p>
+          <legend data-i18n="conta.download-legend">Download</legend>
+          <p class="dim" style="font-size:var(--t-small)" data-i18n-html="conta.download-ajuda-html">Instale, abra o BRDRUM no seu programa de música e entre com <b id="who"></b>.</p>
           <div class="form" style="margin-top:14px">
-            <a class="key cream" href="https://github.com/dlimcontato-lab/drum-dealer-releases/releases/latest/download/BRDRUM-macOS.pkg">Baixar para Mac (.pkg)</a>
-            <a class="key cream" href="https://github.com/dlimcontato-lab/drum-dealer-releases/releases/latest/download/BRDRUM-Windows-Setup.exe">Baixar para Windows (.exe)</a>
+            <a class="key cream" href="https://github.com/dlimcontato-lab/drum-dealer-releases/releases/latest/download/BRDRUM-macOS.pkg" data-i18n="conta.baixar-mac">Baixar para Mac (.pkg)</a>
+            <a class="key cream" href="https://github.com/dlimcontato-lab/drum-dealer-releases/releases/latest/download/BRDRUM-Windows-Setup.exe" data-i18n="conta.baixar-win">Baixar para Windows (.exe)</a>
           </div>
         </fieldset>
         <fieldset class="panel">
-          <legend>Sessão</legend>
+          <legend data-i18n="conta.sessao-legend">Sessão</legend>
           <div class="form-row">
-            <button class="key" id="btn-logout" type="button">Sair</button>
+            <button class="key" id="btn-logout" type="button" data-i18n="conta.sair">Sair</button>
           </div>
         </fieldset>
       </div>
@@ -116,29 +116,29 @@
     <!-- ---------- licença ---------- -->
     <div class="pane" id="pane-licenca" hidden>
       <fieldset class="panel">
-        <legend>Licença</legend>
+        <legend data-i18n="conta.licenca-legend">Licença</legend>
         <div class="status-row">
-          <span class="seats" id="seats" aria-label="acessos"></span>
+          <span class="seats" id="seats" aria-label="acessos" data-i18n-attr="aria-label:packs.status-row"></span>
         </div>
         <p class="lead" id="lic-text" style="margin-top:12px"></p>
         <p class="sub" id="lic-sub"></p>
         <ul class="slots" id="slots"></ul>
-        <p class="empty" id="slots-empty" hidden>Nenhuma vaga ocupada. Entre com esta conta dentro do plugin, ou gere uma chave para outra pessoa ativar.</p>
+        <p class="empty" id="slots-empty" hidden data-i18n="conta.slots-empty">Nenhuma vaga ocupada. Entre com esta conta dentro do plugin, ou gere uma chave para outra pessoa ativar.</p>
         <div class="form-row" id="lic-acts" style="margin-top:16px"></div>
         <p class="msg" id="msg-lic" aria-live="polite" style="min-height:1.3em;font-size:var(--t-small);margin-top:8px"></p>
       </fieldset>
 
       <fieldset class="panel" id="panel-buy">
-        <legend id="buy-title">Comprar</legend>
+        <legend id="buy-title" data-i18n="conta.comprar-legend">Comprar</legend>
         <p class="dim" id="buy-text" style="font-size:var(--t-small)"></p>
         <div class="upgrade" id="upgrade"></div>
         <div id="cupom-box" hidden>
           <div class="cupom">
-            <label><span class="legend">Cupom (opcional)</span><input class="recess" type="text" id="cupom" maxlength="32" placeholder="tem um cupom? digite aqui" autocomplete="off"></label>
-            <button class="key small" type="button" id="btn-cupom">Aplicar</button>
+            <label><span class="legend" data-i18n="packs.cupom-label">Cupom (opcional)</span><input class="recess" type="text" id="cupom" maxlength="32" placeholder="tem um cupom? digite aqui" autocomplete="off" data-i18n-attr="placeholder:packs.cupom-placeholder"></label>
+            <button class="key small" type="button" id="btn-cupom" data-i18n="packs.cupom-aplicar">Aplicar</button>
           </div>
           <div class="valor" id="valor" hidden></div>
-          <button class="key orange big" type="button" id="btn-pagar" hidden>Pagar</button>
+          <button class="key orange big" type="button" id="btn-pagar" hidden data-i18n="conta.pagar-fallback">Pagar</button>
         </div>
         <p class="msg" id="msg-buy" aria-live="polite" style="min-height:1.3em;font-size:var(--t-small);margin-top:8px"></p>
       </fieldset>
@@ -147,13 +147,13 @@
     <!-- ---------- meus packs ---------- -->
     <div class="pane" id="pane-packs" hidden>
       <fieldset class="panel">
-        <legend>Meus packs</legend>
+        <legend data-i18n="conta.meus-packs-legend">Meus packs</legend>
         <div class="packs" id="meus-packs"></div>
         <div class="vazio" id="packs-empty" hidden>
           <div class="band" aria-hidden="true"></div>
-          <h3>Você ainda não tem sample packs</h3>
-          <p>Os packs do BRDRUM são exclusivos para quem tem um plano. Veja o que está na loja.</p>
-          <a class="key cream" href="packs.html">Ver a loja de packs</a>
+          <h3 data-i18n="conta.packs-vazio-title">Você ainda não tem sample packs</h3>
+          <p data-i18n="conta.packs-vazio-text">Os packs do BRDRUM são exclusivos para quem tem um plano. Veja o que está na loja.</p>
+          <a class="key cream" href="packs.html" data-i18n="conta.packs-vazio-cta">Ver a loja de packs</a>
         </div>
       </fieldset>
     </div>
@@ -161,34 +161,34 @@
     <!-- ---------- pedidos ---------- -->
     <div class="pane" id="pane-pedidos" hidden>
       <fieldset class="panel">
-        <legend>Pedidos</legend>
+        <legend data-i18n="conta.pedidos-legend">Pedidos</legend>
         <div class="tbl-wrap recess">
           <table class="tbl" id="tbl-pedidos">
-            <thead><tr><th>Quando</th><th>Item</th><th>Valor</th><th>Desconto</th><th>Cupom</th><th>Status</th></tr></thead>
+            <thead><tr><th data-i18n="conta.pedidos-th-quando">Quando</th><th data-i18n="conta.pedidos-th-item">Item</th><th data-i18n="conta.pedidos-th-valor">Valor</th><th data-i18n="conta.pedidos-th-desconto">Desconto</th><th data-i18n="conta.pedidos-th-cupom">Cupom</th><th data-i18n="conta.pedidos-th-status">Status</th></tr></thead>
             <tbody></tbody>
           </table>
         </div>
-        <p class="empty" id="pedidos-empty" hidden>Nenhum pedido ainda.</p>
+        <p class="empty" id="pedidos-empty" hidden data-i18n="conta.pedidos-empty">Nenhum pedido ainda.</p>
       </fieldset>
     </div>
 
     <!-- ---------- segurança ---------- -->
     <div class="pane two" id="pane-seguranca" hidden>
       <fieldset class="panel">
-        <legend>Trocar senha</legend>
+        <legend data-i18n="conta.trocar-senha-legend">Trocar senha</legend>
         <form class="form" id="form-senha" novalidate>
-          <label><span class="legend">Senha atual</span><input class="recess" type="password" name="atual" autocomplete="current-password" required placeholder="a senha de agora"></label>
-          <label><span class="legend">Nova senha (8+ caracteres)</span><input class="recess" type="password" name="nova" autocomplete="new-password" required minlength="8" placeholder="a nova senha"></label>
-          <label><span class="legend">Repita a nova senha</span><input class="recess" type="password" name="confirm" autocomplete="new-password" required minlength="8" placeholder="a mesma senha"></label>
+          <label><span class="legend" data-i18n="conta.senha-atual-label">Senha atual</span><input class="recess" type="password" name="atual" autocomplete="current-password" required placeholder="a senha de agora" data-i18n-attr="placeholder:conta.senha-atual-placeholder"></label>
+          <label><span class="legend" data-i18n="conta.nova-senha-label">Nova senha (8+ caracteres)</span><input class="recess" type="password" name="nova" autocomplete="new-password" required minlength="8" placeholder="a nova senha" data-i18n-attr="placeholder:conta.nova-senha-placeholder"></label>
+          <label><span class="legend" data-i18n="conta.repita-nova-senha-label">Repita a nova senha</span><input class="recess" type="password" name="confirm" autocomplete="new-password" required minlength="8" placeholder="a mesma senha" data-i18n-attr="placeholder:conta.repita-senha-placeholder"></label>
           <p class="msg" id="msg-senha" aria-live="polite"></p>
-          <button class="key orange" type="submit">Trocar senha</button>
+          <button class="key orange" type="submit" data-i18n="conta.trocar-senha-cta">Trocar senha</button>
         </form>
       </fieldset>
       <fieldset class="panel">
-        <legend>Dispositivos</legend>
-        <p class="dim" style="font-size:var(--t-small)">Sair de todos os dispositivos encerra a sessão em todo navegador e em todo plugin que entrou com esta conta. As licenças e as chaves continuam valendo: na próxima abertura o plugin pede a senha de novo.</p>
+        <legend data-i18n="conta.dispositivos-legend">Dispositivos</legend>
+        <p class="dim" style="font-size:var(--t-small)" data-i18n="conta.dispositivos-ajuda">Sair de todos os dispositivos encerra a sessão em todo navegador e em todo plugin que entrou com esta conta. As licenças e as chaves continuam valendo: na próxima abertura o plugin pede a senha de novo.</p>
         <div class="form-row" style="margin-top:16px">
-          <button class="key" type="button" id="btn-logout-all">Sair de todos os dispositivos</button>
+          <button class="key" type="button" id="btn-logout-all" data-i18n="conta.sair-de-tudo">Sair de todos os dispositivos</button>
         </div>
         <p class="msg" id="msg-dev" aria-live="polite" style="min-height:1.3em;font-size:var(--t-small)"></p>
       </fieldset>
@@ -199,13 +199,13 @@
 <div class="close">
   <div class="wrap">
     <footer class="legend">
-      <span>BRDRUM · Rhythm Composer - 001 · criado por Brazilian Waves</span>
-      <span>Pagamento único pelo Mercado Pago</span>
+      <span data-i18n="footer.signature">BRDRUM · Rhythm Composer - 001 · criado por Brazilian Waves</span>
+      <span data-i18n="footer.payment-only">Pagamento único pelo Mercado Pago</span>
     </footer>
   </div>
 </div>
 
-<script type="module" src="dd-topo.js?v=20260911p"></script>
-<script type="module" src="conta.js?v=20260915a"></script>
+<script type="module" src="dd-topo.js?v=20260923a"></script>
+<script type="module" src="conta.js?v=20260923a"></script>
 </body>
 </html>

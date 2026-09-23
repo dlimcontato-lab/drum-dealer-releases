@@ -1,6 +1,9 @@
 // Painel da demo = painel do plugin. Todas as posições vêm de painel/layout.json, gerado de
 // Source/UiLayout.h pelo MaschinTests (MASCHIN_WEB_DUMP). Aqui mora só a aparência e o clique.
+// Os nomes das teclas/controles (SAMPLER, RAND, EXPORT, FILL, GROOVE, MASTER FX, ECHO, TONE X...)
+// ficam iguais nos dois idiomas; só o texto ao redor (rótulos, aria-label, status) traduz.
 import { faixa, textoValor, fracaoDb } from './dd-norm.js?v=20260917c';
+import { t } from './dd-i18n.js';
 
 export const INSTS = ['KICK', 'SNARE', 'CLAP', 'CHAT', 'OHAT', 'TOM'];
 export const INST_IDS = ['kick', 'snare', 'clap', 'chat', 'ohat', 'tom'];
@@ -153,7 +156,7 @@ export function criarSeletor(n, param, { rotulo, aoMudar }) {
 function criarAccent(n, c, aoMudar) {
   let v = 0.5;
   n.setAttribute('role', 'slider');
-  n.setAttribute('aria-label', 'Volume do accent no passo ' + (c + 1));
+  n.setAttribute('aria-label', t('panel.accent-aria', { n: c + 1 }));
   n.setAttribute('aria-valuemin', '0');
   n.setAttribute('aria-valuemax', '1');
   const pinta = () => {
@@ -202,7 +205,7 @@ export function desenharRolo(canvas, g, kind) {
     ctx.font = '600 11px Barlow, "Arial Narrow", sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText(kind === 0 ? 'APERTE BASS PARA GERAR' : 'APERTE LEAD PARA GERAR', W / 2, H / 2);
+    ctx.fillText(t('panel.aperte-para-gerar', { kind: kind === 0 ? 'BASS' : 'LEAD' }), W / 2, H / 2);
     return;
   }
   const total = g.bars * 4;
@@ -279,18 +282,18 @@ export function montarPainel(raiz, L, params, palJson, ao) {
   logo.setAttribute('aria-hidden', 'true');
 
   // topo: SAMPLER e EXPORT só no plugin
-  const nota = peca(raiz, 'span', 'p-nota', L.top.license, 'Sampler e Export: só no plugin');
+  const nota = peca(raiz, 'span', 'p-nota', L.top.license, t('panel.only-plugin-note'));
   nota.id = 'p-so-plugin';
   for (const [caixa, texto] of [[L.top.sampler, 'Sampler'], [L.top.export, 'Export']]) {
     const b = peca(raiz, 'button', 'key cream', caixa, texto);
     b.disabled = true;
-    b.title = 'Só no plugin instalado';
+    b.title = t('panel.only-plugin-title');
     b.setAttribute('aria-describedby', 'p-so-plugin');
   }
   const toneX = peca(raiz, 'button', 'key', L.top.toneX);
   toneX.innerHTML = '<span class="led" aria-hidden="true"></span>Tone X';
   liga('toneX20', criarTecla(toneX, P('toneX20'), {
-    classeOn: 'ligada', led: toneX.firstChild, rotulo: 'TONE X: amplia o TONE das linhas com o LED aceso',
+    classeOn: 'ligada', led: toneX.firstChild, rotulo: t('panel.tonex-rotulo'),
     aoMudar: (v) => { ao.pal('click'); ao.mudou('toneX20', v); },
   }));
   const rand = peca(raiz, 'button', 'key orange', L.top.rand, 'Rand');
@@ -309,22 +312,22 @@ export function montarPainel(raiz, L, params, palJson, ao) {
   L.rows.forEach((row, r) => {
     const id = INST_IDS[r];
     const nome = INSTS[r];
-    tecla(row.mute, 'ms ms-pair', 'MUTE', id + 'Mute', 'on-mute', 'Mute do ' + nome);
-    tecla(row.solo, 'ms ms-pair', 'SOLO', id + 'Solo', 'on-solo', 'Solo do ' + nome);
+    tecla(row.mute, 'ms ms-pair', 'MUTE', id + 'Mute', 'on-mute', t('panel.label-of', { label: 'Mute', inst: nome }));
+    tecla(row.solo, 'ms ms-pair', 'SOLO', id + 'Solo', 'on-solo', t('panel.label-of', { label: 'Solo', inst: nome }));
     CANAL.forEach(([suf, leg], k) => {
-      knob(row.knobs[k], id + suf, leg + ' do ' + nome);
+      knob(row.knobs[k], id + suf, t('panel.label-of', { label: leg, inst: nome }));
       legenda(raiz, row.knobLegends[k], leg);
     });
     const led = peca(raiz, 'button', 'p-ledx', row.toneXLed);
     toneXLeds[r] = led;
-    liga(id + 'ToneX', criarTecla(led, P(id + 'ToneX'), { classeOn: 'on', rotulo: 'TONE X do ' + nome, aoMudar: (v) => { ao.pal('click'); ao.mudou(id + 'ToneX', v); } }));
+    liga(id + 'ToneX', criarTecla(led, P(id + 'ToneX'), { classeOn: 'on', rotulo: t('panel.label-of', { label: 'TONE X', inst: nome }), aoMudar: (v) => { ao.pal('click'); ao.mudou(id + 'ToneX', v); } }));
     const pad = peca(raiz, 'button', 'lab', row.pad, nome);
-    pad.title = 'Tocar e trocar o som do ' + nome;
+    pad.title = t('panel.pad-title', { inst: nome });
     pad.addEventListener('click', () => { ao.pal('decision'); ao.pad(r); });
     pads[r] = pad;
     steps[r] = row.steps.map((b, c) => {
       const st = peca(raiz, 'button', 'step g' + (Math.floor(c / 4) + 1), b);
-      st.setAttribute('aria-label', `${nome}, passo ${c + 1}`);
+      st.setAttribute('aria-label', t('panel.step-aria', { inst: nome, n: c + 1 }));
       st.setAttribute('aria-pressed', 'false');
       st.addEventListener('click', () => {
         const on = !st.classList.contains('on');
@@ -335,9 +338,9 @@ export function montarPainel(raiz, L, params, palJson, ao) {
       });
       return st;
     });
-    knob(row.rev, id + 'RevSend', 'REV do ' + nome, true);
+    knob(row.rev, id + 'RevSend', t('panel.label-of', { label: 'REV', inst: nome }), true);
     legenda(raiz, row.revLegend, 'REV', 'laranja');
-    knob(row.del, id + 'DelSend', 'DEL do ' + nome, true);
+    knob(row.del, id + 'DelSend', t('panel.label-of', { label: 'DEL', inst: nome }), true);
     legenda(raiz, row.delLegend, 'DEL', 'laranja');
   });
 
@@ -353,19 +356,19 @@ export function montarPainel(raiz, L, params, palJson, ao) {
 
   // MIDI GEN
   moldura(raiz, L.midiGen.panel, 'MIDI Gen');
-  ['TOM', 'ESCALA', 'COMPASSOS'].forEach((t, k) => legenda(raiz, L.midiGen.legends[k], t));
-  seletor(L.midiGen.selectors[0], 'genRoot', 'Tom');
-  seletor(L.midiGen.selectors[1], 'genScale', 'Escala');
-  seletor(L.midiGen.selectors[2], 'genBars', 'Compassos');
+  [t('panel.tom'), t('panel.escala'), t('panel.compassos')].forEach((leg, k) => legenda(raiz, L.midiGen.legends[k], leg));
+  seletor(L.midiGen.selectors[0], 'genRoot', t('panel.tom-rotulo'));
+  seletor(L.midiGen.selectors[1], 'genScale', t('panel.escala-rotulo'));
+  seletor(L.midiGen.selectors[2], 'genBars', t('panel.compassos-rotulo'));
   const genKeys = [];
   const rolos = [];
   [['bass', 'Bass'], ['lead', 'Lead']].forEach(([k, nome], kind) => {
-    const t = peca(raiz, 'button', 'key orange', L.midiGen[k + 'Key'], nome);
-    t.addEventListener('click', () => { ao.pal('decision'); ao.gerar(kind); });
-    genKeys[kind] = t;
+    const tk = peca(raiz, 'button', 'key orange', L.midiGen[k + 'Key'], nome);
+    tk.addEventListener('click', () => { ao.pal('decision'); ao.gerar(kind); });
+    genKeys[kind] = tk;
     const tela = peca(raiz, 'div', 'p-roll', L.midiGen[k + 'Roll']);
     const cv = document.createElement('canvas');
-    cv.setAttribute('aria-label', 'Prévia da linha de ' + k + ' gerada');
+    cv.setAttribute('aria-label', t('panel.rolo-aria', { kind: nome.toUpperCase() }));
     tela.appendChild(cv);
     rolos[kind] = cv;
   });
@@ -375,33 +378,33 @@ export function montarPainel(raiz, L, params, palJson, ao) {
   moldura(raiz, M.panel, 'Master FX');
   M.lines.forEach((b) => peca(raiz, 'i', 'p-linha', b));
   legenda(raiz, M.sat.title, 'SATURATION', 'esq');
-  tecla(M.sat.on, 'ms', 'ON', 'satOn', 'on-sync', 'Ligar a SATURATION');
-  seletor(M.sat.type, 'satType', 'Wave shape da SATURATION');
+  tecla(M.sat.on, 'ms', 'ON', 'satOn', 'on-sync', t('panel.ligar-saturation'));
+  seletor(M.sat.type, 'satType', t('panel.wave-shape-sat'));
   legenda(raiz, M.sat.typeLegend, 'WAVE SHAPE');
   [['satDriveDb', 'DRIVE'], ['satOutDb', 'OUTPUT'], ['satDryWet', 'DRY/WET']].forEach(([id, leg], k) => {
-    knob(M.sat.knobs[k], id, leg + ' da SATURATION', true);
+    knob(M.sat.knobs[k], id, t('panel.knob-sat', { leg }), true);
     legenda(raiz, M.sat.legends[k], leg);
   });
   const editSat = peca(raiz, 'button', 'ms p-edit-tecla', M.sat.edit, 'EDIT');
-  editSat.setAttribute('aria-label', 'Abrir o EDIT da SATURATION');
+  editSat.setAttribute('aria-label', t('panel.abrir-edit-sat'));
   editSat.addEventListener('click', () => { ao.pal('click'); ao.edit(0); });
   legenda(raiz, M.mb.title, 'MULTIBAND', 'esq');
-  tecla(M.mb.on, 'ms', 'ON', 'mbOn', 'on-sync', 'Ligar o MULTIBAND');
+  tecla(M.mb.on, 'ms', 'ON', 'mbOn', 'on-sync', t('panel.ligar-multiband'));
   [['mbAmount', 'AMOUNT'], ['mbTime', 'TIME'], ['mbOutDb', 'OUTPUT'], ['mbLowOutDb', 'LOW'], ['mbMidOutDb', 'MID'], ['mbHighOutDb', 'HIGH']].forEach(([id, leg], k) => {
-    knob(M.mb.knobs[k], id, leg + ' do MULTIBAND', true);
+    knob(M.mb.knobs[k], id, t('panel.knob-mb', { leg }), true);
     legenda(raiz, M.mb.legends[k], leg);
   });
   const editMb = peca(raiz, 'button', 'ms p-edit-tecla', M.mb.edit, 'EDIT');
-  editMb.setAttribute('aria-label', 'Abrir o EDIT do MULTIBAND');
+  editMb.setAttribute('aria-label', t('panel.abrir-edit-mb'));
   editMb.addEventListener('click', () => { ao.pal('click'); ao.edit(1); });
   legenda(raiz, M.echo.title, 'ECHO', 'esq');
-  tecla(M.echo.sync, 'ms', 'SYNC', 'echoSync', 'on-sync', 'SYNC do ECHO');
-  const tempo = knob(M.echo.knobs[0], 'echoTime', 'TIME do ECHO', true);
-  const divisao = knob(M.echo.knobs[0], 'echoDiv', 'TIME do ECHO em divisão do BPM', true);
+  tecla(M.echo.sync, 'ms', 'SYNC', 'echoSync', 'on-sync', t('panel.sync-echo'));
+  const tempo = knob(M.echo.knobs[0], 'echoTime', t('panel.knob-echo', { leg: 'TIME' }), true);
+  const divisao = knob(M.echo.knobs[0], 'echoDiv', t('panel.echo-time-divisao'), true);
   divisao.el.hidden = true;
   const legTempo = legenda(raiz, M.echo.legends[0], 'TIME');
   [['echoFeedback', 'FEEDBACK'], ['echoInput', 'INPUT'], ['echoFilter', 'FILTER'], ['echoMod', 'MOD'], ['echoMix', 'DRY/WET']].forEach(([id, leg], j) => {
-    knob(M.echo.knobs[j + 1], id, leg + ' do ECHO', true);
+    knob(M.echo.knobs[j + 1], id, t('panel.knob-echo', { leg }), true);
   });
   legenda(raiz, M.echo.legends[1], 'FEEDBACK');
   legenda(raiz, M.echo.legends[2], 'INPUT');
@@ -411,7 +414,8 @@ export function montarPainel(raiz, L, params, palJson, ao) {
 
   // rodapé do aparelho (LED PARADO/TOCANDO e a última linha gerada)
   const status = peca(raiz, 'div', 'p-status', L.status);
-  status.innerHTML = '<b aria-hidden="true"></b><span class="rot">Parado</span><span class="gen"></span>';
+  status.innerHTML = '<b aria-hidden="true"></b><span class="rot"></span><span class="gen"></span>';
+  status.querySelector('.rot').textContent = t('panel.parado');
 
   // GAIN
   moldura(raiz, L.gain.panel, 'Gain', true);
@@ -423,21 +427,21 @@ export function montarPainel(raiz, L, params, palJson, ao) {
   // tela de pixels com o Pal
   const tela = peca(raiz, 'div', 'p-pixels', L.pixelScreen);
   tela.setAttribute('role', 'img');
-  tela.setAttribute('aria-label', 'O Pal, o personagem do BRDRUM');
+  tela.setAttribute('aria-label', t('panel.pal-aria'));
   const pixels = [];
   for (let k = 0; k < palJson.cols * palJson.rows; k++) pixels.push(peca(tela, 'i', ''));
   pintarPal(pixels, palJson.sheet[0].join(''));
 
   // GROOVE e FILL
   moldura(raiz, L.groove.panel, 'Groove');
-  seletor(L.groove.type, 'grooveType', 'Tipo de groove');
-  knob(L.groove.knob, 'groove', 'AMOUNT do GROOVE', true);
+  seletor(L.groove.type, 'grooveType', t('panel.groove-tipo'));
+  knob(L.groove.knob, 'groove', t('panel.knob-groove', { leg: 'AMOUNT' }), true);
   legenda(raiz, L.groove.legend, 'AMOUNT');
   moldura(raiz, L.fill.panel, 'Fill');
-  seletor(L.fill.target, 'fillTarget', 'Instrumento da virada');
-  knob(L.fill.rate, 'fillRate', 'RATE da virada', true);
+  seletor(L.fill.target, 'fillTarget', t('panel.fill-instrumento'));
+  knob(L.fill.rate, 'fillRate', t('panel.fill-rate-rotulo'), true);
   const legRate = legenda(raiz, L.fill.rateLegend, 'RATE OFF');
-  knob(L.fill.vol, 'fillVol', 'VOLUME da virada', true);
+  knob(L.fill.vol, 'fillVol', t('panel.fill-vol-rotulo'), true);
   legenda(raiz, L.fill.volLegend, 'VOLUME');
 
   rolos.forEach((cv, kind) => desenharRolo(cv, null, kind));
@@ -469,7 +473,7 @@ export function montarPainel(raiz, L, params, palJson, ao) {
     picoAtual: () => Math.max(retido[0], retido[1]),
     tocando(on) {
       status.classList.toggle('tocando', on);
-      status.querySelector('.rot').textContent = on ? 'Tocando' : 'Parado';
+      status.querySelector('.rot').textContent = t(on ? 'panel.tocando' : 'panel.parado');
     },
     statusGen(texto) { status.querySelector('.gen').textContent = texto; },
   };

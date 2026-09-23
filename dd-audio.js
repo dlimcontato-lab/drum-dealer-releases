@@ -1,5 +1,7 @@
 // Som da demo: o motor C++ do plugin em WASM num AudioWorklet (dd-processor.js), mais uma segunda
 // instância na thread principal (o "espelho") para o Pal e para a curva do EDIT.
+import { t } from './dd-i18n.js';
+
 export const ENGINE_V = '6';
 const FILES = ['kick', 'snare', 'clap', 'chat', 'ohat', 'tom'];
 const VARIANTS = 4;
@@ -71,7 +73,7 @@ export function criarAudio(cb) {
         }
       } else if (m.type === 'error') {
         console.error('engine:', m.message);
-        cb.aoFalha('O motor de áudio falhou: ' + m.message);
+        cb.aoFalha(t('panel.motor-falhou-prefixo') + m.message);
       }
     };
     node.port.postMessage({ type: 'wasm', data: bytes }, [bytes]);

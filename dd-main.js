@@ -1,8 +1,9 @@
 // Demo do topo: o painel do plugin (dd-painel.js + dd-edit.js) tocando o motor C++ do plugin em WASM.
-import { montarPainel, escalar, desenharRolo, GRADE_INICIAL, INST_IDS } from './dd-painel.js?v=20260917c';
-import { montarEdit } from './dd-edit.js?v=20260917c';
-import { criarAudio, carregarEspelho, escreverMidi } from './dd-audio.js?v=20260917c';
+import { montarPainel, escalar, desenharRolo, GRADE_INICIAL, INST_IDS } from './dd-painel.js?v=20260923a';
+import { montarEdit } from './dd-edit.js?v=20260923a';
+import { criarAudio, carregarEspelho, escreverMidi } from './dd-audio.js?v=20260923a';
 import { criarPal } from './dd-pal.js?v=20260917c';
+import { t } from './dd-i18n.js';
 
 const TESTE = new URLSearchParams(location.search).get('teste') === '1'; // mesma flag de dd-audio.js
 const V = '20260916c';
@@ -31,7 +32,7 @@ let painel = null;
 
 const falhaEl = $('falha');
 const mostrarFalha = (msg) => { falhaEl.textContent = msg; falhaEl.hidden = false; };
-const falhaMotor = (err) => { console.error('brdrum:', err); mostrarFalha('Não consegui carregar o motor de áudio. Recarregue a página.'); };
+const falhaMotor = (err) => { console.error('brdrum:', err); mostrarFalha(t('panel.motor-falha')); };
 
 const audio = criarAudio({
   aoPasso(s) { passo = s; painel.playhead(s, tocando); },
@@ -54,7 +55,7 @@ const audio = criarAudio({
     edit.atualizar();
   },
   aoFalha: mostrarFalha,
-  aoAmostraFalha(nomes) { painel.statusGen(nomes.join(', ') + (nomes.length > 1 ? ': mudos' : ': mudo')); },
+  aoAmostraFalha(nomes) { painel.statusGen(nomes.join(', ') + t(nomes.length > 1 ? 'panel.amostra-suffix-many' : 'panel.amostra-suffix-one')); },
   estadoInicial() {
     const msgs = [{ type: 'bpm', value: bpm }];
     for (const id of painel.controles.keys())
@@ -83,7 +84,7 @@ const ao = {
   gerar(kind) {
     comCarregando(painel.genKeys[kind], null, audio.garantir).then((ok) => {
       if (!ok) return;
-      painel.statusGen('gerando…');
+      painel.statusGen(t('panel.gerando'));
       pedirGeracao(kind);
     });
   },
@@ -157,10 +158,10 @@ const playBtn = $('play');
 async function alternarPlay() {
   // garantir() já tenta resume() de novo aqui (síncrono no boot, ou no AudioContext existente); se
   // depois do resume() assentar o contexto ainda não estiver 'running', não afirma que está tocando.
-  if (!(await comCarregando(playBtn, 'Carregando…', audio.garantir))) return;
+  if (!(await comCarregando(playBtn, t('common.carregando'), audio.garantir))) return;
   const vaiTocar = !tocando;
   if (vaiTocar && !audio.estaRodando()) {
-    painel.statusGen('TOQUE PLAY DE NOVO PARA OUVIR');
+    painel.statusGen(t('panel.toque-play-de-novo'));
     return;
   }
   tocando = vaiTocar;
@@ -233,7 +234,7 @@ function receberGerado(m) {
   link.href = URL.createObjectURL(new Blob([escreverMidi(notas, bpm)], { type: 'audio/midi' }));
   link.dataset.blob = '1';
   link.removeAttribute('aria-disabled');
-  const texto = `${m.kind === 0 ? 'BASS' : 'LEAD'}: ${m.count} notas em ${m.bars} compassos`;
+  const texto = t('panel.gerado-texto', { kind: m.kind === 0 ? 'BASS' : 'LEAD', count: m.count, bars: m.bars });
   painel.statusGen(texto);
 }
 
@@ -269,3 +270,9 @@ const lerEntradasPal = () => {
 carregarEspelho()
   .then((M) => { pal = criarPal({ espelho: M, pixels: painel.pixels, aparelho: $('aparelho'), lerEntradas: lerEntradasPal }); })
   .catch((err) => console.error('brdrum: Pal sem motor', err));
+
+// ---------- idioma: só o texto muda, o som e o estado seguem tocando ----------
+document.addEventListener('dd-lang-changed', () => {
+  painel.tocando(tocando); // repinta "Parado"/"Tocando" no idioma atual
+  for (let k = 0; k < 2; k++) desenharRolo(painel.rolos[k], gerado[k], k); // placeholder "APERTE X PARA GERAR"
+});

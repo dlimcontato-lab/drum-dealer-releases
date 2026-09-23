@@ -400,6 +400,11 @@ input.recess:focus{outline:2px solid var(--led-green);outline-offset:1px}
 .topbar nav a{font-weight:600;font-size:11px;letter-spacing:.06em;text-transform:uppercase;
      color:var(--silk-dim);text-decoration:none}
 .topbar nav a:hover,.topbar nav a[aria-current]{color:var(--silk)}
+.topbar nav .langsw{display:inline-flex;align-items:center;gap:6px}
+.topbar nav .langsw button{font:inherit;font-weight:600;font-size:11px;letter-spacing:.06em;text-transform:uppercase;
+     color:var(--silk-dim);background:none;border:0;padding:0;cursor:pointer}
+.topbar nav .langsw button:hover,.topbar nav .langsw button[aria-current="true"]{color:var(--silk)}
+.topbar nav .langsw i{font-style:normal;color:var(--silk-dim);opacity:.5}
 
 .hero-note{display:flex;align-items:baseline;justify-content:space-between;gap:var(--s3);flex-wrap:wrap;
      padding:10px 4px 0;max-width:none}

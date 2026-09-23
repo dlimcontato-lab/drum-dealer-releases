@@ -1,11 +1,11 @@
 // Preços da home: os valores no HTML são o placeholder; a tabela `plans` manda.
 // Quem já tem licença vê "Fazer upgrade · R$ <diferença>" (valor vindo do /quote),
 // o plano atual aparece como "Seu plano" e os menores ficam desabilitados.
-import { loadPlans, getSession, select, quote, precoEfetivo, emPromocao, BRL } from './dd-api.js?v=20260911p';
+import { loadPlans, getSession, select, quote, precoEfetivo, emPromocao, BRL } from './dd-api.js?v=20260923a';
+import { t, seatsLabel, fmtBRLCompact } from './dd-i18n.js';
 
 function perSeat(cents, seats) {
-  const v = cents / seats / 100;
-  return 'R$ ' + (Number.isInteger(v) ? String(v) : v.toFixed(2).replace('.', ','));
+  return fmtBRLCompact(cents / seats);
 }
 
 function pintarPreco(card, cents) {
@@ -14,7 +14,7 @@ function pintarPreco(card, cents) {
   card.querySelector('.cents').textContent = resto ? ',' + String(resto).padStart(2, '0') : '';
 }
 
-(async () => {
+async function pintarTudo() {
   let plans = [];
   try {
     plans = await loadPlans();
@@ -24,7 +24,7 @@ function pintarPreco(card, cents) {
       const cents = precoEfetivo(p);
       pintarPreco(card, cents);
       card.querySelector('.per-seat').textContent = perSeat(cents, p.seats);
-      card.querySelector('.seats-n').textContent = `${p.seats} acesso${p.seats > 1 ? 's' : ''}`;
+      card.querySelector('.seats-n').textContent = seatsLabel(p.seats);
       if (emPromocao(p)) {
         const linha = card.querySelector('.per-line');
         if (linha && !linha.querySelector('.was')) {
@@ -58,25 +58,28 @@ function pintarPreco(card, cents) {
 
     if (p.seats === lic.seats) {
       const b = document.createElement('button');
-      b.type = 'button'; b.className = 'key'; b.disabled = true; b.textContent = 'Seu plano';
+      b.type = 'button'; b.className = 'key'; b.disabled = true; b.textContent = t('plans.seu-plano');
       cta.replaceWith(b);
       continue;
     }
     if (p.seats < lic.seats) {
       const b = document.createElement('button');
-      b.type = 'button'; b.className = 'key'; b.disabled = true; b.textContent = 'Menor que o seu plano';
+      b.type = 'button'; b.className = 'key'; b.disabled = true; b.textContent = t('plans.menor-que-seu');
       cta.replaceWith(b);
       continue;
     }
-    cta.textContent = 'Fazer upgrade';
+    cta.textContent = t('plans.fazer-upgrade');
     cta.href = `conta.html?plano=${p.id}#licenca`;
     try {
       const q = await quote({ plan_id: p.id });
-      cta.textContent = `Fazer upgrade · ${BRL(q.final_cents)}`;
+      cta.textContent = t('plans.fazer-upgrade-valor', { valor: BRL(q.final_cents) });
     } catch {
       const atual = plans.filter((x) => x.seats <= lic.seats).sort((a, b) => b.seats - a.seats)[0];
       const dif = atual ? Math.max(precoEfetivo(p) - precoEfetivo(atual), 99) : precoEfetivo(p);
-      cta.textContent = `Fazer upgrade · ${BRL(dif)}`;
+      cta.textContent = t('plans.fazer-upgrade-valor', { valor: BRL(dif) });
     }
   }
-})();
+}
+
+pintarTudo();
+document.addEventListener('dd-lang-changed', pintarTudo);

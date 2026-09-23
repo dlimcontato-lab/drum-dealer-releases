@@ -1,6 +1,7 @@
 // Cliente mínimo do backend de licenças (Supabase Auth + PostgREST + Edge Functions).
 // Sem SDK: são quatro chamadas HTTP e um localStorage. Contrato em
 // ~/Sistema AI/drum-dealer-backend/API.md.
+import { t, fmtBRL } from './dd-i18n.js';
 
 export const SUPABASE_URL = 'https://bwzngjvjxrqbalvoadpu.supabase.co';
 export const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ3em5nanZqeHJxYmFsdm9hZHB1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5NjM1MzQsImV4cCI6MjEwNDUzOTUzNH0.tZpL6lVNO9wQ4MagySs7mnCFmc0RxdAdxmh6gTNv7xs';
@@ -44,15 +45,15 @@ export class ApiError extends Error {
 
 function traduzAuth(code, msg, status) {
   const m = (code + ' ' + msg).toLowerCase();
-  if (m.includes('invalid login') || m.includes('invalid_credentials')) return 'E-mail ou senha não conferem.';
-  if (m.includes('already registered') || m.includes('user_already_exists')) return 'Já existe uma conta com esse e-mail. Entre com a senha.';
-  if (m.includes('password') && m.includes('at least')) return 'A senha precisa ter pelo menos 8 caracteres.';
-  if (m.includes('known to be weak') || m.includes('pwned')) return 'Essa senha já apareceu em vazamentos de dados. Escolha outra.';
-  if (m.includes('weak_password')) return 'Senha fraca demais. Use pelo menos 8 caracteres.';
-  if (m.includes('rate') || status === 429) return 'Muitas tentativas. Espere um minuto e tente de novo.';
-  if (m.includes('email') && m.includes('invalid')) return 'Esse e-mail não parece válido.';
-  if (m.includes('not confirmed')) return 'Confirme seu e-mail antes de entrar.';
-  return msg || 'Não deu certo. Tente de novo.';
+  if (m.includes('invalid login') || m.includes('invalid_credentials')) return t('api.auth-credenciais');
+  if (m.includes('already registered') || m.includes('user_already_exists')) return t('api.auth-ja-existe');
+  if (m.includes('password') && m.includes('at least')) return t('api.auth-senha-curta');
+  if (m.includes('known to be weak') || m.includes('pwned')) return t('api.auth-senha-vazada');
+  if (m.includes('weak_password')) return t('api.auth-senha-fraca');
+  if (m.includes('rate') || status === 429) return t('api.auth-rate-limit');
+  if (m.includes('email') && m.includes('invalid')) return t('api.auth-email-invalido');
+  if (m.includes('not confirmed')) return t('api.auth-nao-confirmado');
+  return msg || t('api.auth-generico');
 }
 
 export async function signUp(email, password) {
@@ -91,7 +92,7 @@ export async function getSession() {
 
 async function bearerHeaders() {
   const s = await getSession();
-  if (!s) throw new ApiError('Você precisa entrar na conta.', 'no_session', 401);
+  if (!s) throw new ApiError(t('api.no-session'), 'no_session', 401);
   return { apikey: ANON_KEY, Authorization: `Bearer ${s.access_token}` };
 }
 
@@ -99,7 +100,7 @@ async function bearerHeaders() {
 export async function select(table, query = '', { auth: needAuth = true } = {}) {
   const headers = needAuth ? await bearerHeaders() : { apikey: ANON_KEY };
   const r = await fetch(`${SUPABASE_URL}/rest/v1/${table}?${query}`, { headers });
-  if (!r.ok) throw new ApiError('Não consegui carregar os dados.', 'rest_error', r.status);
+  if (!r.ok) throw new ApiError(t('api.rest-error'), 'rest_error', r.status);
   return r.json();
 }
 
@@ -110,7 +111,7 @@ export async function call(name, body) {
     method: 'POST', headers, body: JSON.stringify(body || {}),
   });
   const json = await r.json().catch(() => ({}));
-  if (!r.ok) throw new ApiError(json.message || 'O servidor não respondeu como esperado.', json.error || 'fn_error', r.status, json);
+  if (!r.ok) throw new ApiError(json.message || t('api.fn-error'), json.error || 'fn_error', r.status, json);
   return json;
 }
 
@@ -176,7 +177,7 @@ export function publicUrl(bucket, path) {
 // upload direto no bucket `avatars` com a sessão do usuário; depois grava o caminho no perfil
 export async function uploadAvatar(blob, uid) {
   const s = await getSession();
-  if (!s) throw new ApiError('Você precisa entrar na conta.', 'no_session', 401);
+  if (!s) throw new ApiError(t('api.no-session'), 'no_session', 401);
   const path = `avatars/${uid}/avatar-${Date.now()}.webp`;
   const r = await fetch(`${SUPABASE_URL}/storage/v1/object/${path}`, {
     method: 'POST',
@@ -188,7 +189,7 @@ export async function uploadAvatar(blob, uid) {
   });
   if (!r.ok) {
     const j = await r.json().catch(() => ({}));
-    throw new ApiError(j.message || 'Não consegui enviar a foto. Tente outra imagem.', j.error || 'storage_error', r.status);
+    throw new ApiError(j.message || t('api.upload-erro'), j.error || 'storage_error', r.status);
   }
   await saveProfile({ avatar_path: path });
   return path;
@@ -198,7 +199,7 @@ export async function uploadAvatar(blob, uid) {
 export async function changePassword(email, atual, nova) {
   try { await signIn(email, atual); }
   catch (e) {
-    if (e.status === 400 || e.code === 'invalid_credentials') throw new ApiError('A senha atual não confere.', 'wrong_password', 400);
+    if (e.status === 400 || e.code === 'invalid_credentials') throw new ApiError(t('api.senha-atual-errada'), 'wrong_password', 400);
     throw e;
   }
   const s = await getSession();
@@ -210,8 +211,8 @@ export async function changePassword(email, atual, nova) {
   const json = await r.json().catch(() => ({}));
   if (!r.ok) {
     const razoes = json.weak_password?.reasons || [];
-    if (razoes.includes('pwned')) throw new ApiError('Essa senha já apareceu em vazamentos de dados. Escolha outra.', 'pwned', r.status);
-    if (razoes.includes('length')) throw new ApiError('A senha precisa ter pelo menos 8 caracteres.', 'short', r.status);
+    if (razoes.includes('pwned')) throw new ApiError(t('api.auth-senha-vazada'), 'pwned', r.status);
+    if (razoes.includes('length')) throw new ApiError(t('api.auth-senha-curta'), 'short', r.status);
     throw new ApiError(
       traduzAuth(json.error_code || json.code || json.error || '', json.msg || json.message || '', r.status),
       json.error_code || 'auth_error', r.status);
@@ -304,8 +305,10 @@ export async function ehAdmin(uid, { cache = true } = {}) {
 }
 
 // ---------- formatos ----------
+// moeda continua BRL nas duas línguas (o produto é pago em reais); só o formato do número muda
+// (Intl.NumberFormat('pt-BR'|'en-US', {currency:'BRL'})), conforme dd-i18n.js.
 export function BRL(cents) {
-  return 'R$ ' + (cents / 100).toFixed(2).replace('.', ',');
+  return fmtBRL(cents);
 }
 
 export function primeiroNome(nome, email) {
@@ -320,4 +323,9 @@ export function iniciais(nome, email) {
   return s.toUpperCase();
 }
 
-export const TIPOS_PACK = { drums: 'Bateria', midi: 'MIDI', 'drums+midi': 'Bateria + MIDI' };
+// getter (não objeto congelado): assim cada leitura reflete o idioma atual
+export const TIPOS_PACK = {
+  get drums() { return t('api.tipo-bateria'); },
+  get midi() { return t('api.tipo-midi'); },
+  get 'drums+midi'() { return t('api.tipo-bateria-midi'); },
+};

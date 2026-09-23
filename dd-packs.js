@@ -3,9 +3,10 @@
 import {
   getSession, select, call, loadPacks, meusPacks, packDownload, quote, publicUrl,
   precoEfetivo, emPromocao, BRL, TIPOS_PACK,
-} from './dd-api.js?v=20260911p';
-import { montarTopo } from './dd-topo.js?v=20260911p';
-import { $, el, msg, aviso, recado, previa, pararPrevia, tamanho } from './dd-ui.js?v=20260911p';
+} from './dd-api.js?v=20260923a';
+import { montarTopo } from './dd-topo.js?v=20260923a';
+import { $, el, msg, aviso, recado, previa, pararPrevia, tamanho } from './dd-ui.js?v=20260923a';
+import { t } from './dd-i18n.js';
 
 const est = { session: null, lic: null, packs: [], meus: new Map(), atual: null, cupom: '' };
 
@@ -36,17 +37,17 @@ function precoNode(p) {
 function botaoPrincipal(p, { grande = false } = {}) {
   const dono = est.meus.has(p.id);
   if (dono) {
-    const bt = el('button', 'key green' + (grande ? '' : ''), 'Na sua conta · Baixar');
+    const bt = el('button', 'key green' + (grande ? '' : ''), t('packs.na-conta-baixar'));
     bt.type = 'button';
     bt.addEventListener('click', () => baixar(p, bt));
     return bt;
   }
   if (!est.lic) {
-    const a = el('a', 'key cream sub-only', 'Exclusivo para assinantes do BRDRUM · Ver planos');
+    const a = el('a', 'key cream sub-only', t('packs.exclusivo-assinantes'));
     a.href = 'index.html#precos';
     return a;
   }
-  const bt = el('button', 'key orange', `Comprar · ${BRL(precoEfetivo(p))}`);
+  const bt = el('button', 'key orange', t('packs.comprar-valor', { valor: BRL(precoEfetivo(p)) }));
   bt.type = 'button';
   bt.addEventListener('click', () => abrirDetalhe(p));
   return bt;
@@ -55,12 +56,12 @@ function botaoPrincipal(p, { grande = false } = {}) {
 async function baixar(p, bt) {
   if (!est.session) { location.href = 'conta.html'; return; }
   const antes = bt.textContent;
-  bt.disabled = true; bt.textContent = 'Preparando…';
+  bt.disabled = true; bt.textContent = t('packs.preparando');
   try {
     const r = await packDownload(p.id);
     const a = document.createElement('a');
     a.href = r.url; a.rel = 'noopener'; document.body.appendChild(a); a.click(); a.remove();
-    recado('O download começou. O link vale 10 minutos.', 'ok');
+    recado(t('packs.download-comecou'), 'ok');
   } catch (e) { recado(e.message, 'err'); }
   finally { bt.disabled = false; bt.textContent = antes; }
 }
@@ -76,7 +77,7 @@ function cartao(p) {
   if (p.preview_path) {
     const play = el('button', 'key orange small', 'Play');
     play.type = 'button';
-    play.setAttribute('aria-label', `Tocar prévia de ${p.title}`);
+    play.setAttribute('aria-label', t('packs.tocar-previa-de', { titulo: p.title }));
     const led = el('span', 'led');
     led.setAttribute('aria-hidden', 'true');
     play.prepend(led);
@@ -86,7 +87,7 @@ function cartao(p) {
   cover.addEventListener('click', () => abrirDetalhe(p));
   card.appendChild(cover);
 
-  const h = el('h3', null, p.title || 'Pack');
+  const h = el('h3', null, p.title || t('packs.pack-fallback'));
   card.appendChild(h);
   card.appendChild(el('p', 'artist', p.artist || ''));
 
@@ -94,7 +95,7 @@ function cartao(p) {
   if (p.kind) meta.appendChild(el('span', 'chip', TIPOS_PACK[p.kind] || p.kind));
   for (const c of chipsConteudo(p.contents)) meta.appendChild(el('span', 'chip', c));
   if (p.file_size_bytes) meta.appendChild(el('span', 'chip', tamanho(p.file_size_bytes)));
-  if (est.meus.has(p.id)) meta.appendChild(el('span', 'chip ok', 'seu'));
+  if (est.meus.has(p.id)) meta.appendChild(el('span', 'chip ok', t('packs.chip-seu')));
   card.appendChild(meta);
 
   card.appendChild(precoNode(p));
@@ -107,9 +108,9 @@ function abrirDetalhe(p) {
   est.atual = p;
   est.cupom = '';
   pararPrevia();
-  $('det-legend').textContent = p.kind ? (TIPOS_PACK[p.kind] || p.kind) : 'Pack';
-  $('det-titulo').textContent = p.title || 'Pack';
-  $('det-artista').textContent = p.artist ? 'por ' + p.artist : '';
+  $('det-legend').textContent = p.kind ? (TIPOS_PACK[p.kind] || p.kind) : t('packs.det-legend-default');
+  $('det-titulo').textContent = p.title || t('packs.pack-fallback');
+  $('det-artista').textContent = p.artist ? t('packs.por-artista', { artista: p.artist }) : '';
   $('det-desc').textContent = p.description || '';
   $('det-desc').hidden = !p.description;
 
@@ -124,10 +125,10 @@ function abrirDetalhe(p) {
   const dl = $('det-dl');
   dl.innerHTML = '';
   const linhas = [];
-  if (p.kind) linhas.push(['Tipo', TIPOS_PACK[p.kind] || p.kind]);
+  if (p.kind) linhas.push([t('packs.tipo-label'), TIPOS_PACK[p.kind] || p.kind]);
   const cont = chipsConteudo(p.contents);
-  if (cont.length) linhas.push(['Conteúdo', cont.join(' · ')]);
-  if (p.file_size_bytes) linhas.push(['Arquivo', '.zip · ' + tamanho(p.file_size_bytes)]);
+  if (cont.length) linhas.push([t('packs.conteudo-label'), cont.join(' · ')]);
+  if (p.file_size_bytes) linhas.push([t('packs.arquivo-label'), '.zip · ' + tamanho(p.file_size_bytes)]);
   for (const [dt, dd] of linhas) {
     const d = el('div');
     d.append(el('dt', null, dt), el('dd', null, dd));
@@ -144,18 +145,18 @@ function abrirDetalhe(p) {
   const dono = est.meus.has(p.id);
   $('det-compra').hidden = dono || !est.lic;
   $('det-cupom').value = '';
-  msg($('det-msg'), dono ? 'Este pack já é seu: baixe pela aba "Meus packs" da conta.' : '', dono ? 'ok' : '');
+  msg($('det-msg'), dono ? t('packs.ja-e-seu') : '', dono ? 'ok' : '');
   if (dono) {
-    const bt = el('button', 'key green', 'Baixar agora');
+    const bt = el('button', 'key green', t('packs.baixar-agora'));
     bt.type = 'button';
     bt.addEventListener('click', () => baixar(p, bt));
     $('det-valor').appendChild(bt);
   }
   const compra = $('det-comprar');
-  compra.textContent = `Comprar · ${BRL(precoEfetivo(p))}`;
+  compra.textContent = t('packs.comprar-valor', { valor: BRL(precoEfetivo(p)) });
   compra.onclick = () => comprar(p);
 
-  if (!est.lic && !dono) msg($('det-msg'), 'Os sample packs são exclusivos para quem tem um plano do BRDRUM. <b>Veja os planos</b> para liberar a compra.');
+  if (!est.lic && !dono) msg($('det-msg'), t('packs.exclusivo-veja-planos-html'));
 
   const fs = $('detalhe');
   fs.hidden = false;
@@ -168,11 +169,11 @@ function pintarValorDetalhe(q) {
   if (q.discount_cents > 0) {
     v.appendChild(el('span', 'was', BRL(q.list_price_cents)));
     v.appendChild(el('span', 'agora', BRL(q.final_cents)));
-    v.appendChild(el('span', 'legend', 'cupom aplicado'));
+    v.appendChild(el('span', 'legend', t('packs.cupom-aplicado-tag')));
   } else if (emPromocao(est.atual)) {
     v.appendChild(el('span', 'was', BRL(est.atual.price_cents)));
     v.appendChild(el('span', 'agora', BRL(q.final_cents)));
-    v.appendChild(el('span', 'legend', 'promoção'));
+    v.appendChild(el('span', 'legend', t('packs.promocao-tag')));
   } else {
     v.appendChild(el('span', 'agora', BRL(q.final_cents)));
   }
@@ -185,17 +186,17 @@ $('det-cupom-ok').addEventListener('click', async () => {
   if (!p) return;
   const code = $('det-cupom').value.trim().toUpperCase();
   est.cupom = code;
-  msg($('det-msg'), code ? 'Conferindo o cupom…' : '');
+  msg($('det-msg'), code ? t('packs.conferindo-cupom') : '');
   if (!code) { pintarValorDetalhe({ list_price_cents: p.price_cents, final_cents: precoEfetivo(p), discount_cents: 0 }); return; }
   try {
     const q = await quote({ pack_id: p.id, coupon_code: code });
     pintarValorDetalhe(q);
-    $('det-comprar').textContent = `Comprar · ${BRL(q.final_cents)}`;
-    msg($('det-msg'), q.discount_cents > 0 ? 'Cupom aplicado.' : 'Esse cupom não muda o valor deste pack.', q.discount_cents > 0 ? 'ok' : '');
+    $('det-comprar').textContent = t('packs.comprar-valor', { valor: BRL(q.final_cents) });
+    msg($('det-msg'), q.discount_cents > 0 ? t('packs.cupom-aplicado') : t('packs.cupom-sem-efeito'), q.discount_cents > 0 ? 'ok' : '');
   } catch (e) {
     est.cupom = '';
     pintarValorDetalhe({ list_price_cents: p.price_cents, final_cents: precoEfetivo(p), discount_cents: 0 });
-    $('det-comprar').textContent = `Comprar · ${BRL(precoEfetivo(p))}`;
+    $('det-comprar').textContent = t('packs.comprar-valor', { valor: BRL(precoEfetivo(p)) });
     msg($('det-msg'), e.message, 'err');
   }
 });
@@ -204,21 +205,21 @@ async function comprar(p) {
   if (!est.session) { location.href = 'conta.html'; return; }
   const bt = $('det-comprar');
   bt.disabled = true;
-  msg($('det-msg'), 'Abrindo o pagamento…');
+  msg($('det-msg'), t('packs.abrindo-pagamento'));
   try {
     const corpo = est.cupom ? { pack_id: p.id, coupon_code: est.cupom } : { pack_id: p.id };
     const r = await call('checkout', corpo);
     if (r.simulated) {
-      msg($('det-msg'), 'Pack liberado na sua conta.', 'ok');
+      msg($('det-msg'), t('packs.pack-liberado'), 'ok');
       await carregar();
       pintar();
       return;
     }
     location.href = r.init_point;
   } catch (e) {
-    if (e.code === 'plan_required') msg($('det-msg'), 'Os sample packs são exclusivos para quem tem um plano do BRDRUM.', 'err');
-    else if (e.code === 'mp_not_configured') msg($('det-msg'), 'O pagamento online ainda não está ligado. Fale com a gente informando o e-mail da sua conta.', '');
-    else if (e.code === 'already_owned') msg($('det-msg'), 'Este pack já é seu: baixe pela sua conta.', 'ok');
+    if (e.code === 'plan_required') msg($('det-msg'), t('packs.plan-required'), 'err');
+    else if (e.code === 'mp_not_configured') msg($('det-msg'), t('packs.mp-not-configured'), '');
+    else if (e.code === 'already_owned') msg($('det-msg'), t('packs.already-owned'), 'ok');
     else msg($('det-msg'), e.message, 'err');
   } finally { bt.disabled = false; }
 }
@@ -249,12 +250,12 @@ function pintar() {
   $('nota').hidden = vazio;
   if (vazio) $('detalhe').hidden = true;
 
-  if (!est.session) setStatus('Entre para comprar', false);
-  else if (est.lic) setStatus('Plano ativo · pode comprar packs', true);
-  else setStatus('Sem plano · packs são para assinantes', false);
+  if (!est.session) setStatus(t('packs.status-entre'), false);
+  else if (est.lic) setStatus(t('packs.status-ativo'), true);
+  else setStatus(t('packs.status-sem-plano'), false);
 
   if (est.session && !est.lic && !vazio) {
-    aviso($('aviso'), 'Os sample packs são exclusivos para quem tem um plano do BRDRUM. <a href="index.html#precos">Ver os planos</a>.');
+    aviso($('aviso'), t('packs.aviso-exclusivo-html'));
   } else aviso($('aviso'), '');
 }
 
@@ -264,7 +265,9 @@ function pintar() {
     await carregar();
     pintar();
   } catch (e) {
-    setStatus('Não consegui carregar', false);
+    setStatus(t('packs.status-erro'), false);
     aviso($('aviso'), e.message, 'err');
   }
 })();
+
+document.addEventListener('dd-lang-changed', pintar);

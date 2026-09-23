@@ -5,12 +5,13 @@ import {
   signIn, signUp, signOut, getSession, select, call, loadPlans, loadProfile, saveProfile,
   uploadAvatar, changePassword, logoutAll, seats as fnSeats, quote, packDownload, loadPacks,
   precoEfetivo, BRL, ApiError, DOWNLOADS, TIPOS_PACK, publicUrl, primeiroNome,
-} from './dd-api.js?v=20260911p';
-import { montarTopo, avatarNode } from './dd-topo.js?v=20260911p';
+} from './dd-api.js?v=20260923a';
+import { montarTopo, avatarNode } from './dd-topo.js?v=20260923a';
 import {
   $, el, msg, aviso as avisoUI, confirmar, perguntar, recado, abas, quando, dataHora,
-  STATUS_PEDIDO, corStatus, tamanho, copiar, recortarQuadrado,
-} from './dd-ui.js?v=20260911p';
+  statusPedidoLabel, corStatus, tamanho, copiar, recortarQuadrado,
+} from './dd-ui.js?v=20260923a';
+import { t, seatsLabel, seatWord } from './dd-i18n.js';
 
 const params = new URLSearchParams(location.search);
 const planoPedido = params.get('plano');
@@ -53,7 +54,7 @@ async function cotar(planId) {
 }
 
 async function comprar(planId) {
-  msg($('msg-buy'), 'Abrindo o pagamento…');
+  msg($('msg-buy'), t('conta.abrindo-pagamento'));
   try {
     const corpo = est.cupom ? { plan_id: planId, coupon_code: est.cupom } : { plan_id: planId };
     const r = await call('checkout', corpo);
@@ -61,13 +62,13 @@ async function comprar(planId) {
       msg($('msg-buy'), '');
       await carregar();
       pintarTudo();
-      aviso('Licença liberada nesta conta. Baixe o instalador e entre com este e-mail dentro do plugin.', 'ok');
+      aviso(t('conta.licenca-liberada'), 'ok');
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
     location.href = r.init_point;
   } catch (e) {
-    if (e.code === 'mp_not_configured') msg($('msg-buy'), 'O pagamento online ainda não está ligado. Sua conta já existe: fale com a gente informando este e-mail e a licença é liberada nela.', '');
+    if (e.code === 'mp_not_configured') msg($('msg-buy'), t('conta.mp-nao-ligado'), '');
     else msg($('msg-buy'), e.message, 'err');
   }
 }
@@ -77,29 +78,27 @@ async function pintarCompra() {
   up.innerHTML = '';
   const lic = est.lic;
   const seats = lic ? lic.seats : 0;
-  $('buy-title').textContent = lic ? 'Fazer upgrade' : 'Planos';
+  $('buy-title').textContent = lic ? t('conta.buy-title-upgrade') : t('conta.buy-title-planos');
   $('cupom-box').hidden = false;
-  $('buy-text').textContent = lic
-    ? 'Você paga só a diferença entre o seu plano e o maior. A licença passa a valer o novo número de computadores na hora da confirmação.'
-    : 'Pagamento único pelo Mercado Pago (Pix, cartão ou boleto). A licença cai nesta conta na hora da confirmação.';
+  $('buy-text').textContent = lic ? t('conta.buy-text-upgrade') : t('conta.buy-text-normal');
 
   for (const p of plans) {
     const b = document.createElement('button');
     b.type = 'button';
     b.className = 'key ' + (p.badge ? 'orange' : 'cream');
-    const esq = el('span', null, `${p.name} · ${p.seats} acesso${p.seats > 1 ? 's' : ''}`);
+    const esq = el('span', null, t('conta.plano-e-acessos', { nome: p.name, n: seatsLabel(p.seats) }));
     const dir = el('span', null, '…');
     b.append(esq, dir);
 
     if (lic && p.seats === seats) {
       b.disabled = true; b.className = 'key';
-      dir.textContent = 'Seu plano';
+      dir.textContent = t('plans.seu-plano');
       up.appendChild(b);
       continue;
     }
     if (lic && p.seats < seats) {
       b.disabled = true; b.className = 'key';
-      dir.textContent = 'menor que o seu';
+      dir.textContent = t('conta.menor-que-o-seu');
       up.appendChild(b);
       continue;
     }
@@ -109,7 +108,7 @@ async function pintarCompra() {
     cotar(p.id).then((q) => {
       const valor = BRL(q.final_cents);
       if (q.is_upgrade || lic) {
-        esq.textContent = `Fazer upgrade · ${p.name} · ${p.seats} acessos`;
+        esq.textContent = t('conta.upgrade-e-acessos', { nome: p.name, n: p.seats });
         dir.textContent = valor;
       } else {
         dir.textContent = valor;
@@ -123,8 +122,8 @@ async function pintarCompra() {
   }
 
   if (lic && !plans.some((p) => p.seats > seats)) {
-    $('buy-title').textContent = 'Licença';
-    $('buy-text').textContent = 'Você já tem o maior plano. Precisa de mais acessos? Escreva pra gente.';
+    $('buy-title').textContent = t('conta.maior-plano-title');
+    $('buy-text').textContent = t('conta.maior-plano-text');
     $('cupom-box').hidden = true;
   }
   await mostrarValor();
@@ -149,10 +148,10 @@ async function mostrarValor() {
     const valor = BRL(q.final_cents);
     v.hidden = false;
     v.innerHTML = q.discount_cents > 0
-      ? `<span class="legend">${plano.name} com o cupom ${q.coupon ? q.coupon.code : est.cupom}</span>
+      ? `<span class="legend">${t('conta.valor-com-cupom', { nome: plano.name, codigo: q.coupon ? q.coupon.code : est.cupom })}</span>
          <span class="was">${BRL(q.list_price_cents)}</span><span class="agora">${valor}</span>`
-      : `<span class="legend">${plano.name} · ${plano.seats} acesso${plano.seats > 1 ? 's' : ''}</span><span class="agora">${valor}</span>`;
-    pagar.textContent = `Pagar ${valor}`;
+      : `<span class="legend">${t('conta.valor-normal', { nome: plano.name, n: seatsLabel(plano.seats) })}</span><span class="agora">${valor}</span>`;
+    pagar.textContent = t('conta.pagar-valor', { valor });
     pagar.hidden = false;
   } catch (e) {
     v.hidden = true; v.innerHTML = ''; pagar.hidden = true;
@@ -166,7 +165,7 @@ $('btn-cupom').addEventListener('click', async () => {
   const code = $('cupom').value.trim().toUpperCase();
   est.cupom = code;
   est.cotacoes.clear();
-  msg($('msg-buy'), code ? 'Conferindo o cupom…' : '');
+  msg($('msg-buy'), code ? t('conta.conferindo-cupom') : '');
   if (!est.planoSel) {
     const alvo = plans.filter((p) => !est.lic || p.seats > est.lic.seats)[0];
     if (alvo) est.planoSel = alvo.id;
@@ -176,8 +175,8 @@ $('btn-cupom').addEventListener('click', async () => {
     await pintarCompra();
     if (!code) return;
     const q = est.planoSel ? est.cotacoes.get(est.planoSel + '|' + code) : null;
-    if (q && q.discount_cents > 0) msg($('msg-buy'), 'Cupom aplicado.', 'ok');
-    else msg($('msg-buy'), 'Esse cupom não muda o valor deste plano.', '');
+    if (q && q.discount_cents > 0) msg($('msg-buy'), t('conta.cupom-aplicado'), 'ok');
+    else msg($('msg-buy'), t('conta.cupom-sem-efeito'), '');
   } catch (e) {
     est.cupom = '';
     est.cotacoes.clear();
@@ -208,7 +207,7 @@ $('file-foto').addEventListener('change', async (e) => {
   const file = e.target.files && e.target.files[0];
   e.target.value = '';
   if (!file) return;
-  msg($('msg-perfil'), 'Preparando a foto…');
+  msg($('msg-perfil'), t('conta.preparando-foto'));
   try {
     const { blob, url } = await recortarQuadrado(file, 256);
     fotoPendente = blob;
@@ -218,31 +217,31 @@ $('file-foto').addEventListener('change', async (e) => {
     const img = document.createElement('img'); img.src = url; img.alt = '';
     sp.appendChild(img); slot.appendChild(sp);
     $('btn-foto-rm').hidden = false;
-    msg($('msg-perfil'), 'Foto recortada em 256×256. Clique em "Salvar perfil" para enviar.', 'ok');
+    msg($('msg-perfil'), t('conta.foto-recortada'), 'ok');
   } catch (err) {
     msg($('msg-perfil'), err.message, 'err');
   }
 });
 
 $('btn-foto-rm').addEventListener('click', async () => {
-  if (fotoPendente) { fotoPendente = null; pintarPerfil(); msg($('msg-perfil'), 'Foto descartada.'); return; }
-  if (!await confirmar({ titulo: 'Remover foto', texto: 'A foto do perfil volta a ser as suas iniciais.', ok: 'Remover', perigo: true })) return;
+  if (fotoPendente) { fotoPendente = null; pintarPerfil(); msg($('msg-perfil'), t('conta.foto-descartada')); return; }
+  if (!await confirmar({ titulo: t('conta.remover-foto-titulo'), texto: t('conta.remover-foto-texto'), ok: t('conta.remover-foto-ok'), perigo: true })) return;
   try {
     await saveProfile({ avatar_path: null });
     est.perfil = { ...(est.perfil || {}), avatar_path: null };
     pintarPerfil();
     await montarTopoDeNovo();
-    recado('Foto removida.', 'ok');
+    recado(t('conta.foto-removida'), 'ok');
   } catch (e) { msg($('msg-perfil'), e.message, 'err'); }
 });
 
 $('form-perfil').addEventListener('submit', async (e) => {
   e.preventDefault();
   const nome = e.target.display_name.value.trim();
-  if (nome.length < 1 || nome.length > 60) return msg($('msg-perfil'), 'O nome precisa ter de 1 a 60 caracteres.', 'err');
+  if (nome.length < 1 || nome.length > 60) return msg($('msg-perfil'), t('conta.nome-tamanho'), 'err');
   const botao = e.target.querySelector('button[type=submit]');
   botao.disabled = true;
-  msg($('msg-perfil'), 'Salvando…');
+  msg($('msg-perfil'), t('conta.salvando'));
   try {
     if (fotoPendente) {
       const path = await uploadAvatar(fotoPendente, est.session.user.id);
@@ -253,7 +252,7 @@ $('form-perfil').addEventListener('submit', async (e) => {
     est.perfil = { ...(est.perfil || {}), display_name: nome };
     pintarPerfil();
     await montarTopoDeNovo();
-    msg($('msg-perfil'), 'Perfil salvo.', 'ok');
+    msg($('msg-perfil'), t('conta.perfil-salvo'), 'ok');
   } catch (err) {
     msg($('msg-perfil'), err.message, 'err');
   } finally { botao.disabled = false; }
@@ -278,7 +277,7 @@ function pintarLicenca() {
   const sockets = total || 5;   // um soquete por acesso da licença
   $('seats').innerHTML = Array.from({ length: sockets }, (_, i) =>
     `<span class="socket${i < usadas ? ' on' : ''}"></span>`).join('')
-    + `<span class="legend">${total ? `${usadas} de ${total} acesso${total > 1 ? 's' : ''} em uso` : 'sem licença'}</span>`;
+    + `<span class="legend">${total ? t('conta.seats-legend', { usadas, total, acessos: seatWord(total) }) : t('conta.seats-sem-licenca')}</span>`;
 
   const ul = $('slots');
   ul.innerHTML = '';
@@ -287,18 +286,18 @@ function pintarLicenca() {
   acts.hidden = true;
 
   if (!lic) {
-    setStatus(est.session.user.email + ' · sem licença', false);
-    $('lic-text').textContent = 'Esta conta ainda não tem licença.';
-    $('lic-sub').textContent = 'Escolha um plano abaixo. O pagamento é único e a licença aparece aqui assim que o Mercado Pago confirmar.';
+    setStatus(t('conta.sem-licenca-status', { email: est.session.user.email }), false);
+    $('lic-text').textContent = t('conta.sem-licenca-texto');
+    $('lic-sub').textContent = t('conta.sem-licenca-sub');
     $('slots-empty').hidden = true;
     return;
   }
 
-  setStatus(est.session.user.email + ' · licença ativa', true);
-  $('lic-text').textContent = `${nomePlano(v && v.plan_id)} · ${usadas} de ${total} acesso${total > 1 ? 's' : ''} em uso.`;
+  setStatus(t('conta.licenca-ativa-status', { email: est.session.user.email }), true);
+  $('lic-text').textContent = t('conta.licenca-texto', { plano: nomePlano(v && v.plan_id), usadas, total, acessos: seatWord(total) });
   $('lic-sub').innerHTML = usadas >= total
-    ? 'Todos os acessos estão ocupados. Libere uma vaga abaixo ou <b>faça upgrade</b> para mais computadores.'
-    : 'Cada vaga é um computador. Você pode entrar com a conta dentro do plugin, ou <b>gerar uma chave</b> para outra pessoa ativar sem saber a sua senha.';
+    ? t('conta.licenca-sub-cheia-html')
+    : t('conta.licenca-sub-livre-html');
 
   if (est.vagasErro) {
     $('slots-empty').hidden = true;
@@ -317,8 +316,8 @@ function pintarLicenca() {
   for (let i = lista.length; i < total; i++) {
     const li = el('li', 'recess free');
     const who = el('span', 'who');
-    who.append(el('b', null, 'Vaga livre'), el('span', 'legend', 'gere uma chave ou entre com a conta no plugin'));
-    const bt = el('button', 'key small cream', 'Gerar chave'); bt.type = 'button';
+    who.append(el('b', null, t('conta.vaga-livre')), el('span', 'legend', t('conta.vaga-livre-legend')));
+    const bt = el('button', 'key small cream', t('conta.gerar-chave')); bt.type = 'button';
     bt.addEventListener('click', () => gerarChave(bt));
     const acts2 = el('span', 'acts'); acts2.appendChild(bt);
     li.append(who, acts2);
@@ -328,10 +327,10 @@ function pintarLicenca() {
   if (usadas >= total) {
     acts.hidden = false;
     const w = el('div', 'recess warn');
-    w.innerHTML = 'A licença está cheia: todas as vagas ocupadas. Remova uma vaga acima ou <b>faça upgrade</b> para um plano com mais computadores.';
+    w.innerHTML = t('conta.licenca-cheia-aviso-html');
     w.style.flex = '1 1 100%';
     acts.appendChild(w);
-    const bt = el('button', 'key orange', 'Fazer upgrade'); bt.type = 'button';
+    const bt = el('button', 'key orange', t('plans.fazer-upgrade')); bt.type = 'button';
     bt.addEventListener('click', () => {
       $('panel-buy').scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
@@ -345,54 +344,54 @@ function linhaVaga(s) {
   const acts = el('span', 'acts');
 
   if (s.type === 'machine') {
-    who.append(el('b', null, s.machine_name || 'Computador'));
-    who.append(el('span', 'legend', `máquina via conta · ${s.os || '—'} · visto ${quando(s.last_seen_at)}`));
-    const bt = el('button', 'key small', 'Remover'); bt.type = 'button';
+    who.append(el('b', null, s.machine_name || t('conta.computador-fallback')));
+    who.append(el('span', 'legend', t('conta.maquina-legend', { os: s.os || '—', quando: quando(s.last_seen_at) })));
+    const bt = el('button', 'key small', t('conta.remover-vaga')); bt.type = 'button';
     bt.addEventListener('click', async () => {
       if (!await confirmar({
-        titulo: 'Remover computador',
-        texto: `<b>${escapar(s.machine_name || 'Computador')}</b> perde o acesso na próxima abertura do plugin e a vaga fica livre.`,
-        ok: 'Remover', perigo: true,
+        titulo: t('conta.remover-computador-titulo'),
+        texto: t('conta.remover-computador-texto-html', { nome: escapar(s.machine_name || t('conta.computador-fallback')) }),
+        ok: t('conta.remover-vaga'), perigo: true,
       })) return;
-      await acaoVaga(bt, 'release_machine', { activation_id: s.id }, 'Vaga liberada.');
+      await acaoVaga(bt, 'release_machine', { activation_id: s.id }, t('conta.vaga-liberada'));
     });
     acts.appendChild(bt);
   } else {
-    const nome = s.label || 'Chave sem apelido';
+    const nome = s.label || t('conta.chave-sem-apelido');
     who.append(el('b', null, nome));
     const linha = el('span', 'status-row');
     const code = el('span', 'code-key', s.code || '—');
     linha.appendChild(code);
-    linha.appendChild(el('span', 'chip' + (s.status === 'active' ? ' ok' : ''), s.status === 'active' ? 'ativa' : 'pendente'));
+    linha.appendChild(el('span', 'chip' + (s.status === 'active' ? ' ok' : ''), s.status === 'active' ? t('conta.chave-ativa') : t('conta.chave-pendente')));
     who.appendChild(linha);
     who.append(el('span', 'legend', s.status === 'active'
-      ? `${s.machine_name || 'computador'} · ${s.os || '—'} · visto ${quando(s.last_seen_at)}`
-      : 'ainda não ativada: entregue esta chave para quem vai usar'));
+      ? t('conta.chave-legend-ativa', { maquina: s.machine_name || t('conta.chave-computador-fallback'), os: s.os || '—', quando: quando(s.last_seen_at) })
+      : t('conta.chave-legend-pendente')));
 
     if (s.status === 'pending') {
-      const bc = el('button', 'key small cream', 'Copiar'); bc.type = 'button';
+      const bc = el('button', 'key small cream', t('conta.copiar')); bc.type = 'button';
       bc.addEventListener('click', async () => {
-        recado(await copiar(s.code) ? 'Chave copiada.' : 'Não consegui copiar. Selecione o código na tela.', 'ok');
+        recado(await copiar(s.code) ? t('conta.chave-copiada') : t('conta.chave-copiar-falhou'), 'ok');
       });
       acts.appendChild(bc);
     }
-    const br = el('button', 'key small', 'Renomear'); br.type = 'button';
+    const br = el('button', 'key small', t('conta.renomear')); br.type = 'button';
     br.addEventListener('click', async () => {
-      const novo = await perguntar({ titulo: 'Apelido da chave', rotulo: 'Apelido', valor: s.label || '', texto: 'Serve para você saber de quem é a chave. Ex.: "PC do Nana".' });
+      const novo = await perguntar({ titulo: t('conta.apelido-titulo'), rotulo: t('conta.apelido-rotulo'), valor: s.label || '', texto: t('conta.apelido-texto') });
       if (novo == null) return;
-      await acaoVaga(br, 'rename_key', { key_id: s.id, label: novo }, 'Apelido salvo.');
+      await acaoVaga(br, 'rename_key', { key_id: s.id, label: novo }, t('conta.apelido-salvo'));
     });
     acts.appendChild(br);
-    const bd = el('button', 'key small', s.status === 'pending' ? 'Apagar' : 'Remover'); bd.type = 'button';
+    const bd = el('button', 'key small', s.status === 'pending' ? t('conta.apagar') : t('conta.remover-vaga')); bd.type = 'button';
     bd.addEventListener('click', async () => {
       if (!await confirmar({
-        titulo: s.status === 'pending' ? 'Apagar chave' : 'Remover chave',
+        titulo: s.status === 'pending' ? t('conta.apagar-chave-titulo') : t('conta.remover-chave-titulo'),
         texto: s.status === 'pending'
-          ? 'A chave deixa de funcionar e a vaga fica livre.'
-          : `O computador <b>${escapar(s.machine_name || 'que usa esta chave')}</b> tranca na próxima renovação e a vaga fica livre.`,
-        ok: s.status === 'pending' ? 'Apagar' : 'Remover', perigo: true,
+          ? t('conta.apagar-chave-texto')
+          : t('conta.remover-chave-texto-html', { nome: escapar(s.machine_name || t('conta.chave-que-usa-fallback')) }),
+        ok: s.status === 'pending' ? t('conta.apagar') : t('conta.remover-vaga'), perigo: true,
       })) return;
-      await acaoVaga(bd, 'revoke_key', { key_id: s.id }, 'Vaga liberada.');
+      await acaoVaga(bd, 'revoke_key', { key_id: s.id }, t('conta.vaga-liberada'));
     });
     acts.appendChild(bd);
   }
@@ -417,9 +416,9 @@ async function acaoVaga(botao, action, corpo, ok) {
 
 async function gerarChave(botao) {
   botao.disabled = true;
-  msg($('msg-lic'), 'Gerando a chave…');
+  msg($('msg-lic'), t('conta.gerando-chave'));
   try {
-    const label = await perguntar({ titulo: 'Nova chave', rotulo: 'Apelido (opcional)', texto: 'A chave ativa um computador sem pedir a senha da sua conta.', ok: 'Gerar chave', valor: '' });
+    const label = await perguntar({ titulo: t('conta.nova-chave-titulo'), rotulo: t('conta.apelido-opcional-rotulo'), texto: t('conta.nova-chave-texto'), ok: t('conta.gerar-chave'), valor: '' });
     if (label == null) { botao.disabled = false; msg($('msg-lic'), ''); return; }
     const r = await fnSeats('create_key', label ? { label } : {});
     await carregarVagas();
@@ -427,12 +426,12 @@ async function gerarChave(botao) {
     const code = r.code || (r.key && r.key.code);
     if (code) {
       await copiar(code);
-      msg($('msg-lic'), `Chave ${code} criada e copiada. Entregue para quem vai ativar.`, 'ok');
-    } else msg($('msg-lic'), 'Chave criada.', 'ok');
+      msg($('msg-lic'), t('conta.chave-criada-copiada', { codigo: code }), 'ok');
+    } else msg($('msg-lic'), t('conta.chave-criada'), 'ok');
   } catch (e) {
     botao.disabled = false;
     if (e.code === 'seats_full') {
-      msg($('msg-lic'), 'A licença está cheia. Libere uma vaga ou faça upgrade.', 'err');
+      msg($('msg-lic'), t('conta.seats-full'), 'err');
       if (e.data && e.data.slots) { est.vagas = { ...est.vagas, ...e.data }; pintarLicenca(); }
     } else msg($('msg-lic'), e.message, 'err');
   }
@@ -452,23 +451,23 @@ function pintarPacks() {
       cover.appendChild(img);
     } else cover.appendChild(el('span', 'none', 'BRDRUM'));
     card.appendChild(cover);
-    card.appendChild(el('h3', null, p.title || 'Pack'));
+    card.appendChild(el('h3', null, p.title || t('conta.pack-fallback')));
     card.appendChild(el('p', 'artist', p.artist || ''));
     const meta = el('div', 'meta');
     if (p.kind) meta.appendChild(el('span', 'chip', TIPOS_PACK[p.kind] || p.kind));
     if (p.file_size_bytes) meta.appendChild(el('span', 'chip', tamanho(p.file_size_bytes)));
-    if (p.source === 'grant') meta.appendChild(el('span', 'chip ok', 'cortesia'));
+    if (p.source === 'grant') meta.appendChild(el('span', 'chip ok', t('conta.pack-cortesia')));
     card.appendChild(meta);
-    const bt = el('button', 'key orange', 'Baixar'); bt.type = 'button';
+    const bt = el('button', 'key orange', t('conta.baixar')); bt.type = 'button';
     bt.addEventListener('click', async () => {
       bt.disabled = true;
       const antes = bt.textContent;
-      bt.textContent = 'Preparando…';
+      bt.textContent = t('conta.preparando');
       try {
         const r = await packDownload(p.pack_id);
         const a = document.createElement('a');
         a.href = r.url; a.rel = 'noopener'; document.body.appendChild(a); a.click(); a.remove();
-        recado('O download começou. O link vale 10 minutos.', 'ok');
+        recado(t('conta.download-comecou'), 'ok');
       } catch (e) { recado(e.message, 'err'); }
       finally { bt.disabled = false; bt.textContent = antes; }
     });
@@ -486,15 +485,15 @@ function pintarPedidos() {
   for (const o of est.orders) {
     const tr = document.createElement('tr');
     const item = o.kind === 'pack'
-      ? (o.pack && o.pack.title ? `Pack · ${o.pack.title}` : 'Sample pack')
-      : `${o.is_upgrade ? 'Upgrade · ' : ''}${nomePlano(o.plan_id)}${o.seats ? ` · ${o.seats} acesso${o.seats > 1 ? 's' : ''}` : ''}`;
+      ? (o.pack && o.pack.title ? t('conta.pedido-pack-titulo', { titulo: o.pack.title }) : t('conta.pedido-pack-fallback'))
+      : `${o.is_upgrade ? t('conta.pedido-upgrade-prefixo') : ''}${nomePlano(o.plan_id)}${o.seats ? t('conta.pedido-acessos-sufixo', { n: seatsLabel(o.seats) }) : ''}`;
     const cells = [
       dataHora(o.created_at),
       item,
       BRL(o.amount_cents),
       o.discount_cents ? '− ' + BRL(o.discount_cents) : '—',
-      (o.coupon && o.coupon.code) || o.coupon_code || (o.coupon_id ? 'cupom aplicado' : '—'),
-      STATUS_PEDIDO[o.status] || o.status,
+      (o.coupon && o.coupon.code) || o.coupon_code || (o.coupon_id ? t('conta.pedido-cupom-aplicado') : '—'),
+      statusPedidoLabel(o.status),
     ];
     cells.forEach((c, i) => {
       const td = el('td', null, c);
@@ -510,16 +509,16 @@ $('form-senha').addEventListener('submit', async (e) => {
   e.preventDefault();
   const f = e.target;
   const nova = f.nova.value;
-  if (nova.length < 8) return msg($('msg-senha'), 'A nova senha precisa ter pelo menos 8 caracteres.', 'err');
-  if (nova !== f.confirm.value) return msg($('msg-senha'), 'As duas senhas novas não são iguais.', 'err');
-  if (nova === f.atual.value) return msg($('msg-senha'), 'A nova senha é igual à atual.', 'err');
+  if (nova.length < 8) return msg($('msg-senha'), t('conta.senha-min'), 'err');
+  if (nova !== f.confirm.value) return msg($('msg-senha'), t('conta.senhas-novas-diferentes'), 'err');
+  if (nova === f.atual.value) return msg($('msg-senha'), t('conta.senha-nova-igual-atual'), 'err');
   const botao = f.querySelector('button[type=submit]');
   botao.disabled = true;
-  msg($('msg-senha'), 'Trocando…');
+  msg($('msg-senha'), t('conta.trocando-senha'));
   try {
     await changePassword(est.session.user.email, f.atual.value, nova);
     f.reset();
-    msg($('msg-senha'), 'Senha trocada. Use a nova também dentro do plugin.', 'ok');
+    msg($('msg-senha'), t('conta.senha-trocada'), 'ok');
   } catch (err) {
     msg($('msg-senha'), err.message, 'err');
   } finally { botao.disabled = false; }
@@ -527,11 +526,11 @@ $('form-senha').addEventListener('submit', async (e) => {
 
 $('btn-logout-all').addEventListener('click', async () => {
   if (!await confirmar({
-    titulo: 'Sair de todos os dispositivos',
-    texto: 'Toda sessão desta conta é encerrada: este navegador e todo plugin que entrou com ela. A licença continua valendo.',
-    ok: 'Sair de tudo', perigo: true,
+    titulo: t('conta.sair-de-tudo-titulo'),
+    texto: t('conta.sair-de-tudo-texto'),
+    ok: t('conta.sair-de-tudo-ok'), perigo: true,
   })) return;
-  msg($('msg-dev'), 'Encerrando as sessões…');
+  msg($('msg-dev'), t('conta.encerrando-sessoes'));
   try {
     await logoutAll();
     location.href = 'conta.html';
@@ -560,7 +559,7 @@ async function carregarVagas() {
       est.vagasErro = null;
     } catch {
       est.vagas = { seats: est.lic.seats, used: 0, slots: [] };
-      est.vagasErro = 'Não consegui ler as vagas agora. Recarregue a página em um minuto.';
+      est.vagasErro = t('conta.nao-consegui-vagas');
     }
   }
 }
@@ -633,16 +632,16 @@ function escapar(s) {
 function renderAuth() {
   $('view-account').hidden = true;
   $('view-auth').hidden = false;
-  $('titulo').textContent = planoPedido ? 'Entre ou crie a conta para comprar'
-    : baixarPedido ? 'Crie sua conta para baixar' : 'Sua conta';
-  if (baixarPedido) aviso('O download pede uma conta: é a mesma que você vai usar dentro do plugin. Leva 10 segundos, e o instalador começa a baixar sozinho depois.');
-  setStatus('Não conectado', false);
+  $('titulo').textContent = planoPedido ? t('conta.titulo-comprar')
+    : baixarPedido ? t('conta.titulo-baixar') : t('conta.titulo');
+  if (baixarPedido) aviso(t('conta.aviso-baixar'));
+  setStatus(t('conta.nao-conectado'), false);
 }
 
 $('form-login').addEventListener('submit', async (e) => {
   e.preventDefault();
   const f = e.target;
-  msg($('msg-login'), 'Entrando…');
+  msg($('msg-login'), t('conta.entrando'));
   try {
     const s = await signIn(f.email.value.trim(), f.password.value);
     msg($('msg-login'), '');
@@ -653,9 +652,9 @@ $('form-login').addEventListener('submit', async (e) => {
 $('form-signup').addEventListener('submit', async (e) => {
   e.preventDefault();
   const f = e.target;
-  if (f.password.value.length < 8) return msg($('msg-signup'), 'A senha precisa ter pelo menos 8 caracteres.', 'err');
-  if (f.password.value !== f.confirm.value) return msg($('msg-signup'), 'As senhas não são iguais.', 'err');
-  msg($('msg-signup'), 'Criando…');
+  if (f.password.value.length < 8) return msg($('msg-signup'), t('conta.senha-min'), 'err');
+  if (f.password.value !== f.confirm.value) return msg($('msg-signup'), t('conta.senhas-diferentes'), 'err');
+  msg($('msg-signup'), t('conta.criando'));
   try {
     let s = await signUp(f.email.value.trim(), f.password.value);
     if (!s) s = await signIn(f.email.value.trim(), f.password.value);
@@ -668,7 +667,7 @@ async function abrirConta(session) {
   est.session = session;
   $('view-auth').hidden = true;
   $('view-account').hidden = false;
-  $('titulo').textContent = 'Sua conta';
+  $('titulo').textContent = t('conta.titulo');
   await carregar();
   pintarTudo();
 }
@@ -679,16 +678,16 @@ async function depoisDoLogin(session) {
     history.replaceState(null, '', 'conta.html#licenca');
     location.hash = '#licenca';
     await selecionarPlano(planoPedido);   // só pré-seleciona: o pagamento sai pelo botão Pagar, depois do valor e do cupom
-    aviso('Confira o plano e o valor (e o cupom, se tiver) e aperte Pagar.', '');
+    aviso(t('conta.pagamento-confirmado'), '');
   } else if (baixarPedido && DOWNLOADS[baixarPedido]) {
     history.replaceState(null, '', 'conta.html');
     const a = document.createElement('a');
     a.href = DOWNLOADS[baixarPedido]; a.download = ''; document.body.appendChild(a); a.click(); a.remove();
     if (est.lic) {
-      aviso(`O instalador para ${baixarPedido === 'mac' ? 'Mac' : 'Windows'} está baixando. Instale e entre com esta conta no plugin.`, 'ok');
+      aviso(t(baixarPedido === 'mac' ? 'conta.instalador-mac-baixando-com-licenca' : 'conta.instalador-win-baixando-com-licenca'), 'ok');
     } else {
       location.hash = '#licenca';
-      aviso(`O instalador para ${baixarPedido === 'mac' ? 'Mac' : 'Windows'} está baixando. Pra destravar o plugin, escolha um plano abaixo e pague; ele libera na hora.`, 'ok');
+      aviso(t(baixarPedido === 'mac' ? 'conta.instalador-mac-baixando-sem-licenca' : 'conta.instalador-win-baixando-sem-licenca'), 'ok');
       $('panel-buy').scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   }
@@ -699,10 +698,10 @@ async function esperarLicenca() {
   for (let i = 0; i < 12; i++) {
     await carregar();
     pintarTudo();
-    if (est.lic) { aviso('Pagamento confirmado. Sua licença está ativa: baixe o instalador e entre com esta conta no plugin.', 'ok'); return; }
+    if (est.lic) { aviso(t('conta.pagamento-confirmado-lic'), 'ok'); return; }
     await new Promise((r) => setTimeout(r, 2500));
   }
-  aviso('O pagamento foi recebido mas a licença ainda não apareceu. Recarregue a página em um minuto; se não aparecer, escreva pra gente com o e-mail da conta.');
+  aviso(t('conta.pagamento-recebido-sem-lic'));
 }
 
 // ============================ início ============================
@@ -724,11 +723,11 @@ async function esperarLicenca() {
     if (pagamento === 'sucesso' || pagamento === 'pendente') {
       history.replaceState(null, '', 'conta.html#licenca');
       location.hash = '#licenca';
-      if (pagamento === 'pendente') aviso('Pagamento em análise (Pix ou boleto levam um pouco). A licença aparece aqui assim que o Mercado Pago confirmar.');
+      if (pagamento === 'pendente') aviso(t('conta.pagamento-em-analise'));
       await abrirConta(session);
       await esperarLicenca();
     } else {
-      if (pagamento === 'falha') { history.replaceState(null, '', 'conta.html'); aviso('O pagamento não foi concluído. Você pode tentar de novo abaixo.', 'err'); }
+      if (pagamento === 'falha') { history.replaceState(null, '', 'conta.html'); aviso(t('conta.pagamento-falhou'), 'err'); }
       await depoisDoLogin(session);
     }
   } catch (e) {
@@ -736,3 +735,9 @@ async function esperarLicenca() {
     else aviso(e.message, 'err');
   }
 })();
+
+// idioma: repinta a página logada (ou a tela de entrar) sem recarregar nem repetir chamadas de rede
+document.addEventListener('dd-lang-changed', () => {
+  if (est.session) pintarTudo();
+  else renderAuth();
+});
