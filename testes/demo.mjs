@@ -82,7 +82,7 @@ try {
   console.log((scrollDepois > scrollAntes ? 'ok: ' : 'obs: ') + `espaço fora do atalho ainda rola a página (scrollY ${scrollAntes} -> ${scrollDepois})`);
 
   // 2) clique no fundo do painel arma o atalho: espaço toca, espaço de novo para
-  await s.clicar('.p-stripe');
+  await s.clicar('.p-status');
   await bateEspaco();
   // o primeiro play carrega o motor e os samples: espera até 10 s (a frio pode passar de 1,5 s)
   let eEsp = await s.avaliar('__dd.estado()');
@@ -94,7 +94,7 @@ try {
   ok(!(await s.avaliar('__dd.estado()')).tocando, 'espaço de novo para o play');
 
   // 3) focar um seletor do MIDI GEN desarma o atalho: espaço não deve tocar nem trocar a escala
-  await s.clicar('.p-stripe');
+  await s.clicar('.p-status');
   await s.avaliar(`${ctl('genScale')}.el.focus()`);
   await bateEspaco();
   await s.esperar(300);
@@ -118,21 +118,21 @@ try {
   ok(await s.avaliar(`document.querySelector('.step').classList.contains('on')`) === passoAntes, 'passo restaurado ao estado original');
 
   // 5) clicar fora da demo desarma o atalho
-  await s.clicar('.p-stripe');
+  await s.clicar('.p-status');
   await s.clicar('.compat-title');
   await bateEspaco();
   await s.esperar(300);
   ok(!(await s.avaliar('__dd.estado()')).tocando, 'clicar fora da demo desarma o atalho: espaço não liga o play');
 
   // 6) Tab (foco por teclado) pra fora do aparelho/transporte desarma o atalho, igual a um clique fora
-  await s.clicar('.p-stripe');
+  await s.clicar('.p-status');
   await s.avaliar(`document.getElementById('nav-conta').focus()`);
   await bateEspaco();
   await s.esperar(300);
   ok(!(await s.avaliar('__dd.estado()')).tocando, 'Tab pra fora da demo desarma o atalho: espaço não liga o play');
 
   // 7) espaço não passa por cima do "Carregando…": com o PLAY desabilitado, a barra de espaço não faz nada
-  await s.clicar('.p-stripe');
+  await s.clicar('.p-status');
   const tocandoAntesDoGuard = (await s.avaliar('__dd.estado()')).tocando;
   await s.avaliar(`document.getElementById('play').disabled = true`);
   await bateEspaco();
@@ -195,15 +195,18 @@ try {
   ok(mudouDeVerdade(deltaSat, ruidoSat),
     `SAT DRIVE muda o som de verdade (ruído ${ruidoSat.toFixed(4)}, delta ${deltaSat.toFixed(4)}, nível ${satAntes2.toFixed(3)} -> ${nivelDriveDepois.toFixed(3)})`);
 
+  // fillBeat (Task 15C): serigrafia nova do RATE da virada, 9 valores na ordem do painel/params.json
+  // ('2','1','3/4','0','1/2','1/4','1/8','1/16','1/32' — '0' no meio é o OFF, igual ao fillRate
+  // legado). O motor novo recebe o próprio id fillBeat, sem mapeamento pro legado.
   const legendas = new Set();
-  await s.avaliar(`${ctl('fillRate')}.el.focus()`);
+  await s.avaliar(`${ctl('fillBeat')}.el.focus()`);
   await s.cmd('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Home', code: 'Home', windowsVirtualKeyCode: 36 });
-  for (let i = 0; i < 12; i++) {
+  for (let i = 0; i < 9; i++) {
     legendas.add(await s.avaliar('__dd.painel.legendas.rate.textContent'));
     await s.cmd('Input.dispatchKeyEvent', { type: 'keyDown', key: 'ArrowUp', code: 'ArrowUp', windowsVirtualKeyCode: 38 });
   }
-  ok(legendas.size === 12 && legendas.has('RATE 1/16·') && legendas.has('RATE 2'), `RATE percorre os 12 degraus (${[...legendas].join(', ')})`);
-  ok(await s.avaliar('__dd.audio.lerParam("fillRate")') === 11, 'último degrau chega no motor');
+  ok(legendas.size === 9 && legendas.has('RATE 2') && legendas.has('RATE 1/32'), `RATE percorre os 9 degraus (${[...legendas].join(', ')})`);
+  ok(await s.avaliar('__dd.audio.lerParam("fillBeat")') === 8, 'último degrau (1/32) chega no motor');
 
   // FILL RATE e TONE X (abaixo) só mexem no KICK: dá SOLO nele antes de medir, senão o pico lido é
   // o da mistura inteira (6 instrumentos) e o padrão dos outros 5 é ruído bem maior que a mudança
@@ -212,23 +215,25 @@ try {
   await s.esperar(300);
   ok(await s.avaliar('__dd.audio.lerParam("kickSolo")') === 1, 'SOLO do KICK chega no motor antes de medir');
 
-  // FILL RATE muda o som (determinístico): alvo KICK, RATE 1/16 (a mais rápida) contra OFF — mas
-  // com o KICK esparso (só o passo 1 aceso). Com a base cheia (4 batidas por compasso) a virada soma
-  // pouca energia relativa e a diferença real fica perto do ruído do medidor; esparso, a virada é a
-  // maior parte da energia do compasso e a diferença fica gritante.
+  // FILL RATE muda o som (determinístico): alvo KICK, RATE 1/16 (índice 7 de fillBeat) contra OFF
+  // (índice 3, o valor '0') — mas com o KICK esparso (só o passo 1 aceso). Com a base cheia (4
+  // batidas por compasso) a virada soma pouca energia relativa e a diferença real fica perto do
+  // ruído do medidor; esparso, a virada é a maior parte da energia do compasso e a diferença fica
+  // gritante.
   const kickOnAntes = await s.avaliar(`[...document.querySelectorAll('[aria-label^="KICK, passo"]')].map((b) => b.classList.contains('on'))`);
   await s.avaliar(`(() => { const els = [...document.querySelectorAll('[aria-label^="KICK, passo"]')];
     els.forEach((el, i) => { const alvoOn = i === 0; if (el.classList.contains('on') !== alvoOn) el.click(); }); })()`);
   await s.avaliar(`(() => { const sel = ${ctl('fillTarget')}.el; sel.value = '0'; sel.dispatchEvent(new Event('change')); })()`);
-  await s.avaliar(`${ctl('fillRate')}.el.focus()`);
+  await s.avaliar(`${ctl('fillBeat')}.el.focus()`);
   await s.cmd('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Home', code: 'Home', windowsVirtualKeyCode: 36 });
-  ok(await s.avaliar('__dd.audio.lerParam("fillRate")') === 0, 'RATE OFF chega no motor');
+  for (let i = 0; i < 3; i++) await s.cmd('Input.dispatchKeyEvent', { type: 'keyDown', key: 'ArrowUp', code: 'ArrowUp', windowsVirtualKeyCode: 38 });
+  ok(await s.avaliar('__dd.audio.lerParam("fillBeat")') === 3, 'RATE 0 (OFF) chega no motor');
   await s.esperar(200);
   const rateAntes1 = await nivelBarras(2);
   const rateAntes2 = await nivelBarras(2);
   const ruidoRate = Math.abs(rateAntes2 - rateAntes1);
-  await s.cmd('Input.dispatchKeyEvent', { type: 'keyDown', key: 'ArrowUp', code: 'ArrowUp', windowsVirtualKeyCode: 38 });
-  ok(await s.avaliar('__dd.audio.lerParam("fillRate")') === 1, 'RATE 1/16 chega no motor');
+  for (let i = 0; i < 4; i++) await s.cmd('Input.dispatchKeyEvent', { type: 'keyDown', key: 'ArrowUp', code: 'ArrowUp', windowsVirtualKeyCode: 38 });
+  ok(await s.avaliar('__dd.audio.lerParam("fillBeat")') === 7, 'RATE 1/16 chega no motor');
   await s.esperar(200);
   const nivelRateDepois = await nivelBarras(2);
   const deltaRate = Math.abs(nivelRateDepois - rateAntes2);

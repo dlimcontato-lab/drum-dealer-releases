@@ -1045,8 +1045,6 @@ table.tbl .who b{color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ell
 .p-screw{position:absolute;width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:50%;background:var(--tooth);
   border:1px solid var(--skirt);box-shadow:inset 1px 1px 0 rgba(255,255,255,.25),0 1.5px 2px rgba(14,14,16,.6)}
 .p-screw::after{content:'';position:absolute;left:1px;right:1px;top:50%;height:1.8px;margin-top:-.9px;background:var(--ink)}
-.p-stripe{background:var(--ink)}
-.p-stripe i{position:absolute;left:1px;right:1px;height:4px}
 .p-logo{text-align:center;color:var(--silk);font:700 30px/32px var(--silk-font);letter-spacing:.03em}
 .p-logo img{display:block;height:100%;width:auto;max-width:100%;margin:0 auto}
 .p-logo i{display:block;font:400 15px/18px var(--script-font);color:var(--silk-dim);letter-spacing:0}
@@ -1115,6 +1113,40 @@ select.recess.p-abs{font-size:11px;padding:0 20px 0 6px;background-position:righ
 .p-status b{width:7px;height:7px;border-radius:50%;background:var(--led-off);border:1px solid rgba(14,14,16,.8)}
 .p-status.tocando b{background:var(--led-on);box-shadow:0 0 0 3px rgba(255,59,47,.28)}
 .p-status .gen{margin-left:12px}
+
+/* ---------- Task 15B: painel atualizado ao plugin (STEPS/BAR, CLEAR/RAND, ECHO por linha,
+   KEY+visor de nota do KICK, faixa em degrau do RANDOM, MASTER sem moldura) ---------- */
+/* teclas pequenas do painel: CLEAR/RAND por linha, STEPS 16|32, BAR 1|2 — mesma serigrafia do
+   .key, só menor, porque a caixa do plugin pra elas é pequena */
+.key.p-abs.mini{height:auto;padding:0 6px;font-size:9px;letter-spacing:.02em;border-radius:2px;
+  box-shadow:0 2px 0 var(--body),var(--sh-key);gap:.3em}
+.key.p-abs.mini:active:not([disabled]){transform:translateY(1px);box-shadow:0 1px 0 var(--body)}
+.key.p-abs.mini .led-dot{width:5px;height:5px}
+/* STEPS 16|32: dot amarelo (led-dot.yellow) igual ao seletor de página do plugin */
+.p-led-key{--face-a:#3a3a3c;--face-b:#242426}
+/* BAR 1|2: vermelho vivo quando escolhida, vermelho escuro (o --face-a/b padrão) quando não */
+.p-bar-key{--face-a:#6b1f1c;--face-b:#4a1613}
+.p-bar-key.ligada{--face-a:#e0453c;--face-b:#c8302a;--body:#7a1c17;--edge:#6b1a15}
+
+/* ECHO alta, uma por linha: texto em cima, LED embaixo (mesmo led-dot vermelho de sempre) */
+.p-echokey{--face-a:#4b4b4c;--face-b:#212123;--body:#171718;--edge:#151516;
+  display:flex;flex-direction:column;align-items:center;justify-content:space-between;
+  background:linear-gradient(180deg,var(--face-a),var(--face-b));border:1px solid var(--edge);
+  border-radius:4px;padding:4px 0 5px;cursor:pointer;box-shadow:0 2px 0 var(--body),var(--sh-key);
+  font:700 7.5px/1 var(--silk-font);letter-spacing:.04em;text-transform:uppercase;color:var(--silk-dim)}
+.p-echokey:active{transform:translateY(1px);box-shadow:0 1px 0 var(--body)}
+.p-echokey.on{color:var(--silk)}
+
+/* visor da nota do KICK (KEY liga a fonte: MIDI GEN ou TUNE) — a mesma luz laranja da tela */
+.p-nota-kick{font-size:10px;text-align:center;display:flex;align-items:center;justify-content:center}
+
+/* faixa em degrau atrás da grade (randZone) e a aba ao redor da tecla RANDOM (randZoneTab):
+   relevo sutil, nunca laranja — a cor fica só na própria tecla RANDOM */
+.p-randzone{border:1.5px solid rgba(233,230,222,.14);border-radius:10px;
+  background:rgba(14,14,16,.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.04)}
+.p-randzone-tab{border:1.5px solid rgba(233,230,222,.14);border-bottom:none;border-radius:9px 9px 0 0;
+  background:rgba(14,14,16,.14)}
+
 .transporte{display:flex;align-items:center;flex-wrap:wrap;gap:12px 16px;margin-top:14px;padding:10px 14px;
   background:var(--steel-dark);border:1px solid var(--ink);border-radius:6px}
 .transporte .spacer{flex:1}

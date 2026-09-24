@@ -5,12 +5,12 @@ import {
   signIn, signUp, signOut, getSession, select, call, loadPlans, loadProfile, saveProfile,
   uploadAvatar, changePassword, logoutAll, seats as fnSeats, quote, packDownload, loadPacks,
   precosDoPlano, BRL, ApiError, DOWNLOADS, TIPOS_PACK, publicUrl, primeiroNome,
-} from './dd-api.js?v=20260924b';
-import { montarTopo, avatarNode } from './dd-topo.js?v=20260924b';
+} from './dd-api.js?v=20260925b';
+import { montarTopo, avatarNode } from './dd-topo.js?v=20260925b';
 import {
   $, el, msg, aviso as avisoUI, confirmar, perguntar, recado, abas, quando, dataHora,
   statusPedidoLabel, corStatus, tamanho, copiar, recortarQuadrado,
-} from './dd-ui.js?v=20260924b';
+} from './dd-ui.js?v=20260925b';
 import { t, seatsLabel, seatWord, fmtDate } from './dd-i18n.js';
 
 const params = new URLSearchParams(location.search);

@@ -15,7 +15,11 @@ export const GRADE_INICIAL = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
 ];
-const CANAL = [['Decay', 'DECAY'], ['Tone', 'TONE'], ['Vol', 'VOL'], ['Pan', 'PAN'], ['Noise', 'NOISE']];
+// Sufixo do id do parâmetro por posição do knob do canal, na mesma ordem de L.legends.knobs
+// (DECAY, RELEASE, TUNE, VOL, PAN, NOISE, PUNCH). O KICK tem os 7; as outras linhas têm os 6
+// primeiros (row.knobs.length manda). O nome interno do parâmetro de afinação continua "Tone"
+// (herdado do plugin); só a legenda serigrafada virou TUNE.
+const SUF_CANAL = ['Decay', 'Release', 'Tone', 'Vol', 'Pan', 'Noise', 'Punch'];
 
 export function posiciona(n, [x, y, w, h]) {
   n.style.left = x + 'px';
@@ -276,14 +280,10 @@ export function montarPainel(raiz, L, params, palJson, ao) {
     p.style.top = y + 'px';
     p.setAttribute('aria-hidden', 'true');
   }
-  const [fx, fy, fw] = L.top.stripe;
-  const faixaCores = peca(raiz, 'div', 'p-stripe', [fx - 1, fy - 1, fw + 2, 21]);
-  faixaCores.setAttribute('aria-hidden', 'true');
-  ['var(--cream)', 'var(--yellow)', 'var(--orange)', 'var(--red)'].forEach((cor, k) => {
-    const i = peca(faixaCores, 'i', '');
-    i.style.top = 1 + k * 5 + 'px';
-    i.style.background = cor;
-  });
+  // faixa em degrau (randZone) por trás da grade toda, até GROOVE/ACCENT, com a aba (randZoneTab)
+  // ao redor da tecla RANDOM do topo — relevo sutil, nunca laranja (a cor fica só na própria tecla)
+  peca(raiz, 'div', 'p-randzone', L.top.randZone).setAttribute('aria-hidden', 'true');
+  peca(raiz, 'div', 'p-randzone-tab', L.top.randZoneTab).setAttribute('aria-hidden', 'true');
   const logo = peca(raiz, 'div', 'p-logo', L.top.logo);
   logo.innerHTML = '<img src="img/brdrum-logo-oficial.png" alt="BRDRUM Rhythm Composer - 001">';   // LOGO OFICIAL (23/09), a mesma do aparelho
   logo.setAttribute('aria-hidden', 'true');
@@ -303,27 +303,82 @@ export function montarPainel(raiz, L, params, palJson, ao) {
     classeOn: 'ligada', led: toneX.firstChild, rotulo: t('panel.tonex-rotulo'),
     aoMudar: (v) => { ao.pal('click'); ao.mudou('toneX20', v); },
   }));
-  const rand = peca(raiz, 'button', 'key orange', L.top.rand, 'Random');
+  const rand = peca(raiz, 'button', 'key orange', L.top.rand, L.legends.random);
   rand.addEventListener('click', () => { ao.pal('rand'); ao.rand(); });
   // ordem no DOM igual à do painel: SAMPLER, TONE X, RAND, EXPORT (o EXPORT vai para depois do RAND)
   raiz.appendChild(raiz.querySelectorAll(':scope > button.key[disabled]')[1]);
 
-  // números dos passos e filetes
-  L.stepNumbers.forEach((b, i) => peca(raiz, 'span', 'p-num' + (i % 4 === 0 ? ' forte' : ''), b, String(i + 1)).setAttribute('aria-hidden', 'true'));
+  // cabeçalho da grade: STEPS 16|32, números 1–16 (17–32 na página 2 do BAR), BAR 1|2, filetes
+  const H = L.header;
+  legenda(raiz, H.stepsLegend, L.legends.steps);
+  const gridLenKeys = ['gridLen16', 'gridLen32'].map((chave, i) => {
+    const b = peca(raiz, 'button', 'key mini p-led-key', H[chave]);
+    b.innerHTML = '<i class="led-dot yellow" aria-hidden="true"></i>' + (i === 0 ? '16' : '32');
+    b.setAttribute('aria-label', t('panel.steps-rotulo', { n: i === 0 ? 16 : 32 }));
+    return b;
+  });
+  legenda(raiz, H.barLegend, L.legends.bar);
+  const pageKeys = H.pageKeys.map((b, i) => {
+    const btn = peca(raiz, 'button', 'key mini p-bar-key', b, String(i + 1));
+    btn.setAttribute('aria-label', t('panel.bar-rotulo', { n: i + 1 }));
+    return btn;
+  });
+  const numEls = H.stepNumbers.map((b, i) => {
+    const n = peca(raiz, 'span', 'p-num' + (i % 4 === 0 ? ' forte' : ''), b, String(i + 1));
+    n.setAttribute('aria-hidden', 'true');
+    return n;
+  });
+  let gridLenIdx = Math.round(P('gridLength').def);
+  let pagina2 = false;
+  const pintarPaginaSteps = () => {
+    const mostraP2 = gridLenIdx === 1 && pagina2;
+    numEls.forEach((n, i) => { n.textContent = mostraP2 ? H.stepNumbersPage2[i] : String(i + 1); });
+    // BAR 1|2: vermelho vivo/escuro como no render — nunca cinza de [disabled] (com STEPS=16 o
+    // clique no BAR 2 é ignorado pelo próprio handler, mas a tecla continua com a cor de "solta")
+    pageKeys.forEach((b, i) => b.classList.toggle('ligada', i === (pagina2 ? 1 : 0)));
+  };
+  gridLenKeys.forEach((b, i) => {
+    b.querySelector('.led-dot').classList.toggle('on', i === gridLenIdx);
+    b.addEventListener('click', () => {
+      if (i === gridLenIdx) return;
+      gridLenIdx = i;
+      if (gridLenIdx === 0) pagina2 = false;
+      gridLenKeys.forEach((k, j) => k.querySelector('.led-dot').classList.toggle('on', j === gridLenIdx));
+      pintarPaginaSteps();
+      ao.pal('click');
+      ao.mudou('gridLength', gridLenIdx);
+    });
+  });
+  pageKeys.forEach((b, i) => b.addEventListener('click', () => {
+    if (gridLenIdx === 0 || pagina2 === (i === 1)) return;
+    pagina2 = i === 1;
+    ao.pal('click');
+    pintarPaginaSteps();
+  }));
+  pintarPaginaSteps();
   L.rowLines.forEach((b) => peca(raiz, 'i', 'p-linha', b));
 
   // linhas dos instrumentos
   const steps = [];
   const pads = [];
   const toneXLeds = [];
+  let notaVisor = null;
+  let notaInstId = null;
   L.rows.forEach((row, r) => {
     const id = INST_IDS[r];
     const nome = INSTS[r];
     tecla(row.mute, 'ms ms-pair', 'MUTE', id + 'Mute', 'on-mute', t('panel.label-of', { label: 'Mute', inst: nome }));
     tecla(row.solo, 'ms ms-pair', 'SOLO', id + 'Solo', 'on-solo', t('panel.label-of', { label: 'Solo', inst: nome }));
-    CANAL.forEach(([suf, leg], k) => {
-      knob(row.knobs[k], id + suf, t('panel.label-of', { label: leg, inst: nome }));
-      legenda(raiz, row.knobLegends[k], leg);
+    if (row.key) {
+      // só o KICK: liga a nota mostrada no visor ao KEY do MIDI GEN em vez do TUNE
+      tecla(row.key, 'ms', 'KEY', id + 'Key', 'on-sync', t('panel.key-do-kick'));
+      notaVisor = peca(raiz, 'span', 'screen p-nota-kick', row.note, '');
+      notaVisor.setAttribute('aria-hidden', 'true');
+      notaInstId = id;
+    }
+    row.knobs.forEach((caixa, k) => {
+      knob(caixa, id + SUF_CANAL[k], t('panel.label-of', { label: L.legends.knobs[k], inst: nome }));
+      legenda(raiz, row.knobLegends[k], L.legends.knobs[k]);
     });
     const led = peca(raiz, 'button', 'p-ledx', row.toneXLed);
     toneXLeds[r] = led;
@@ -345,10 +400,25 @@ export function montarPainel(raiz, L, params, palJson, ao) {
       });
       return st;
     });
+    // CLEAR limpa a linha inteira; RAND (na demo) só embaralha o grid da linha — nenhum dos dois é
+    // parâmetro do plugin, então não passam por knob()/tecla()/ao.mudou
+    const clearBtn = peca(raiz, 'button', 'key cream mini', row.clear, t('panel.clear'));
+    clearBtn.setAttribute('aria-label', t('panel.clear-rotulo', { inst: nome }));
+    clearBtn.addEventListener('click', () => { ao.pal('decision'); ao.clearRow(r); });
+    const randBtn = peca(raiz, 'button', 'key orange mini', row.rand, t('panel.rand'));
+    randBtn.setAttribute('aria-label', t('panel.rand-rotulo', { inst: nome }));
+    randBtn.addEventListener('click', () => { ao.pal('rand'); ao.randRow(r); });
+    // ECHO alta: manda o instrumento pro efeito ECHO do MASTER FX (novo; sem motor ainda)
+    const echoKey = peca(raiz, 'button', 'p-echokey', row.echoKey);
+    echoKey.innerHTML = L.legends.echo + '<i class="led-dot" aria-hidden="true"></i>';
+    liga(id + 'EchoOn', criarTecla(echoKey, P(id + 'EchoOn'), {
+      classeOn: 'on', led: echoKey.querySelector('.led-dot'), rotulo: t('panel.label-of', { label: 'ECHO', inst: nome }),
+      aoMudar: (v) => { ao.pal('click'); ao.mudou(id + 'EchoOn', v); },
+    }));
     knob(row.rev, id + 'RevSend', t('panel.label-of', { label: 'REV', inst: nome }), true);
-    legenda(raiz, row.revLegend, 'REV', 'laranja');
+    legenda(raiz, row.revLegend, L.legends.reverb, 'laranja');
     knob(row.del, id + 'DelSend', t('panel.label-of', { label: 'DEL', inst: nome }), true);
-    legenda(raiz, row.delLegend, 'DEL', 'laranja');
+    legenda(raiz, row.delLegend, L.legends.delay, 'laranja');
   });
 
   // ACCENT
@@ -361,9 +431,9 @@ export function montarPainel(raiz, L, params, palJson, ao) {
     return criarAccent(n, c, (i, v) => ao.accent(i, v));
   });
 
-  // MIDI GEN
+  // MIDI GEN — KEY/SCALE/BARS são serigrafia fixa do plugin, iguais nos dois idiomas (L.legends)
   moldura(raiz, L.midiGen.panel, 'MIDI Gen');
-  [t('panel.tom'), t('panel.escala'), t('panel.compassos')].forEach((leg, k) => legenda(raiz, L.midiGen.legends[k], leg));
+  [L.legends.key, L.legends.scale, L.legends.bars].forEach((leg, k) => legenda(raiz, L.midiGen.legends[k], leg));
   seletor(L.midiGen.selectors[0], 'genRoot', t('panel.tom-rotulo'));
   seletor(L.midiGen.selectors[1], 'genScale', t('panel.escala-rotulo'));
   seletor(L.midiGen.selectors[2], 'genBars', t('panel.compassos-rotulo'));
@@ -404,10 +474,12 @@ export function montarPainel(raiz, L, params, palJson, ao) {
   const editMb = peca(raiz, 'button', 'ms p-edit-tecla', M.mb.edit, 'EDIT');
   editMb.setAttribute('aria-label', t('panel.abrir-edit-mb'));
   editMb.addEventListener('click', () => { ao.pal('click'); ao.edit(1); });
-  legenda(raiz, M.echo.title, 'ECHO', 'esq');
+  legenda(raiz, M.echo.title, L.legends.echo, 'esq');
   tecla(M.echo.sync, 'ms', 'SYNC', 'echoSync', 'on-sync', t('panel.sync-echo'));
   const tempo = knob(M.echo.knobs[0], 'echoTime', t('panel.knob-echo', { leg: 'TIME' }), true);
-  const divisao = knob(M.echo.knobs[0], 'echoDiv', t('panel.echo-time-divisao'), true);
+  // echoBeat (9 divisões) é a serigrafia nova do TIME sincronizado; o valor que vai pro motor,
+  // quando existe, é o legado echoDiv (mapeado em dd-main.js — o motor de 17/09 só conhece echoDiv)
+  const divisao = knob(M.echo.knobs[0], 'echoBeat', t('panel.echo-time-divisao'), true);
   divisao.el.hidden = true;
   const legTempo = legenda(raiz, M.echo.legends[0], 'TIME');
   [['echoFeedback', 'FEEDBACK'], ['echoInput', 'INPUT'], ['echoFilter', 'FILTER'], ['echoMod', 'MOD'], ['echoMix', 'DRY/WET']].forEach(([id, leg], j) => {
@@ -424,12 +496,11 @@ export function montarPainel(raiz, L, params, palJson, ao) {
   status.innerHTML = '<b aria-hidden="true"></b><span class="rot"></span><span class="gen"></span>';
   status.querySelector('.rot').textContent = t('panel.parado');
 
-  // GAIN
-  moldura(raiz, L.gain.panel, 'Gain', true);
-  knob(L.gain.knob, 'masterGain', 'GAIN master', true);
-  legenda(raiz, L.gain.legend, 'MASTER');
-  const medidores = [L.gain.meterL, L.gain.meterR].map((b) => peca(peca(raiz, 'div', 'p-meter', b), 'i', ''));
-  L.gain.marks.forEach((m) => { legenda(raiz, m.text, m.label, 'esq'); peca(raiz, 'i', 'p-tick', m.tick); });
+  // MASTER: knob + legenda + 2 medidores com a escala de dB — sem moldura própria (o filete saiu)
+  knob(L.masterKnob, 'masterGain', L.legends.master + ' GAIN', true);
+  legenda(raiz, L.masterLegend, L.legends.master);
+  const medidores = [L.meterL, L.meterR].map((b) => peca(peca(raiz, 'div', 'p-meter', b), 'i', ''));
+  L.meterMarks.forEach((m) => { legenda(raiz, m.text, m.label, 'esq'); peca(raiz, 'i', 'p-tick', m.tick); });
 
   // tela de pixels com o Pal
   const tela = peca(raiz, 'div', 'p-pixels', L.pixelScreen);
@@ -439,25 +510,42 @@ export function montarPainel(raiz, L, params, palJson, ao) {
   for (let k = 0; k < palJson.cols * palJson.rows; k++) pixels.push(peca(tela, 'i', ''));
   pintarPal(pixels, palJson.sheet[0].join(''));
 
-  // GROOVE e FILL
-  moldura(raiz, L.groove.panel, 'Groove');
-  seletor(L.groove.type, 'grooveType', t('panel.groove-tipo'));
+  // GROOVE: sem moldura, ao lado do ACCENT — grooveFamily (9 famílias) é a serigrafia nova; o
+  // legado grooveType (24 itens) não tem equivalente óbvio, fica só no estado visual (dd-main.js)
+  legenda(raiz, L.groove.label, 'GROOVE');
+  seletor(L.groove.combo, 'grooveFamily', t('panel.groove-tipo'));
   knob(L.groove.knob, 'groove', t('panel.knob-groove', { leg: 'AMOUNT' }), true);
-  legenda(raiz, L.groove.legend, 'AMOUNT');
+  legenda(raiz, L.groove.legend, L.legends.amount);
+  // FILL: fillBeat (9 valores) é a serigrafia nova do RATE; o legado fillRate só recebe quando o
+  // valor bate exatamente (mapeado em dd-main.js). fillContra é o OFFBEAT, sem equivalente legado.
   moldura(raiz, L.fill.panel, 'Fill');
   seletor(L.fill.target, 'fillTarget', t('panel.fill-instrumento'));
-  knob(L.fill.rate, 'fillRate', t('panel.fill-rate-rotulo'), true);
-  const legRate = legenda(raiz, L.fill.rateLegend, 'RATE OFF');
+  knob(L.fill.rate, 'fillBeat', t('panel.fill-rate-rotulo'), true);
+  const legRate = legenda(raiz, L.fill.rateLegend, 'RATE 0');
+  tecla(L.fill.contra, 'ms', L.legends.offbeat, 'fillContra', 'on-sync', t('panel.fill-offbeat-rotulo'));
   knob(L.fill.vol, 'fillVol', t('panel.fill-vol-rotulo'), true);
-  legenda(raiz, L.fill.volLegend, 'VOLUME');
+  legenda(raiz, L.fill.volLegend, L.legends.volume);
 
   rolos.forEach((cv, kind) => desenharRolo(cv, null, kind));
+
+  // visor da nota do KICK: com KEY ligada mostra a nota do MIDI GEN (genRoot), senão a do TUNE
+  // (kickTone) — mesma tabela C..B do plugin (as 12 escolhas de genRoot)
+  const tabelaNotas = P('genRoot').choices;
+  const atualizarNota = () => {
+    if (!notaVisor) return;
+    const ligada = controles.get(notaInstId + 'Key').get() > 0.5;
+    const idx = ligada
+      ? Math.round(controles.get('genRoot').get())
+      : Math.round(faixa(P(notaInstId + 'Tone')).to01(controles.get(notaInstId + 'Tone').get()) * (tabelaNotas.length - 1));
+    notaVisor.textContent = tabelaNotas[idx] || '';
+  };
 
   const retido = [0, 0];
   return {
     controles, steps, pads, accents, toneXLeds, genKeys, rolos, pixels,
     editTeclas: [editSat, editMb],
     legendas: { rate: legRate, tempo: legTempo, mod: legMod },
+    atualizarNota,
     pintarGrade(grid) {
       steps.forEach((linha, r) => linha.forEach((st, c) => {
         st.classList.toggle('on', !!grid[r][c]);

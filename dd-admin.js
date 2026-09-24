@@ -4,13 +4,13 @@
 import {
   SUPABASE_URL, getSession, select, admin, ehAdmin, loadPlans, loadPacks, publicUrl,
   avatarUrl, BRL, iniciais, TIPOS_PACK, ApiError,
-} from './dd-api.js?v=20260924b';
-import { montarTopo } from './dd-topo.js?v=20260924b';
+} from './dd-api.js?v=20260925b';
+import { montarTopo } from './dd-topo.js?v=20260925b';
 import { fmtDate } from './dd-i18n.js';
 import {
   $, el, msg, aviso as avisoUI, confirmar, perguntar, recado, abas, dataHora, quando,
   STATUS_PEDIDO, corStatus, tamanho,
-} from './dd-ui.js?v=20260924b';
+} from './dd-ui.js?v=20260925b';
 
 const est = {
   session: null, plans: [], packs: [], packAtual: null,

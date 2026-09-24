@@ -1,12 +1,12 @@
 // Demo do topo: o painel do plugin (dd-painel.js + dd-edit.js) tocando o motor C++ do plugin em WASM.
-import { montarPainel, escalar, desenharRolo, GRADE_INICIAL, INST_IDS } from './dd-painel.js?v=20260924b';
-import { montarEdit } from './dd-edit.js?v=20260924b';
-import { criarAudio, carregarEspelho, escreverMidi } from './dd-audio.js?v=20260924b';
+import { montarPainel, escalar, desenharRolo, GRADE_INICIAL, INST_IDS } from './dd-painel.js?v=20260925b';
+import { montarEdit } from './dd-edit.js?v=20260925b';
+import { criarAudio, carregarEspelho, escreverMidi } from './dd-audio.js?v=20260925b';
 import { criarPal } from './dd-pal.js?v=20260917c';
 import { t } from './dd-i18n.js';
 
 const TESTE = new URLSearchParams(location.search).get('teste') === '1'; // mesma flag de dd-audio.js
-const V = '20260916c';
+const V = '20260925b';
 const carregar = (u) => fetch(u + '?v=' + V).then((r) => {
   if (!r.ok) throw new Error(u + ': ' + r.status);
   return r.json();
@@ -17,6 +17,12 @@ const [layout, lista, palJson] = await Promise.all([
 const params = new Map(lista.map((p) => [p.id, p]));
 const valores = new Map(lista.map((p) => [p.id, p.def]));
 const SO_NA_PAGINA = new Set(['genRoot', 'genScale', 'genBars']);   // o MIDI GEN recebe na hora de gerar
+
+// Task 15C (24/09): o motor WASM de hoje (6f13917) conhece todos os 149 IDs vivos do params.json,
+// inclusive os 19 novos da Task 15B (grooveFamily, fillBeat/fillContra, echoBeat, gridLength,
+// kickKey, kickPunch, <inst>Release ×6, <inst>EchoOn ×6). Todo parâmetro que não é SO_NA_PAGINA vai
+// pro motor pelo próprio id — sem SO_VISUAL nem mapeamento pros legados (grooveType/echoDiv/
+// fillRate), que o motor novo não conhece mais e nunca são enviados.
 const $ = (id) => document.getElementById(id);
 
 const grid = GRADE_INICIAL.map((l) => l.slice());
@@ -70,8 +76,21 @@ const audio = criarAudio({
 const ao = {
   mudou(id, v) {
     valores.set(id, v);
-    if (!SO_NA_PAGINA.has(id)) audio.enviar({ type: 'param', id, value: v });
+    if (SO_NA_PAGINA.has(id)) { /* só na hora de gerar */ }
+    else audio.enviar({ type: 'param', id, value: v });
     reagir(id);
+  },
+  clearRow(r) {
+    for (let c = 0; c < 16; c++) { grid[r][c] = 0; audio.enviar({ type: 'step', inst: r, step: c, on: false }); }
+    painel.pintarGrade(grid);
+  },
+  randRow(r) {
+    for (let c = 0; c < 16; c++) {
+      const on = Math.random() < 0.5;
+      grid[r][c] = on ? 1 : 0;
+      audio.enviar({ type: 'step', inst: r, step: c, on });
+    }
+    painel.pintarGrade(grid);
   },
   step(r, c, on) {
     grid[r][c] = on ? 1 : 0;
@@ -110,17 +129,22 @@ function nomeEscolha(id) {
 
 function reagir(id) {
   if (id === 'toneX20') painel.armarToneX(valores.get('toneX20') > 0.5);
-  if (id === 'fillRate') painel.legendas.rate.textContent = 'RATE ' + nomeEscolha('fillRate');
-  if (id === 'echoSync' || id === 'echoDiv') {
+  // fillBeat é a serigrafia nova do RATE da virada (fillRate legado sai de cena, só recebe o valor
+  // mapeado quando existe — dd-main.js topo)
+  if (id === 'fillBeat') painel.legendas.rate.textContent = 'RATE ' + nomeEscolha('fillBeat');
+  if (id === 'echoSync' || id === 'echoBeat') {
     const sync = valores.get('echoSync') > 0.5;
     painel.trocarTempoEcho(sync);
-    painel.legendas.tempo.textContent = sync ? 'TIME ' + nomeEscolha('echoDiv') : 'TIME';
+    painel.legendas.tempo.textContent = sync ? 'TIME ' + nomeEscolha('echoBeat') : 'TIME';
   }
   if (id === 'echoMod') painel.legendas.mod.textContent = 'MOD ' + Math.round(Math.min(1, Math.max(0, valores.get('echoMod'))) * 100) + '%';
   if (id.startsWith('sat')) { edit.atualizar(); curvaAtual(); }
+  // visor da nota do KICK: KEY liga/desliga a fonte (MIDI GEN x TUNE); o TOM do MIDI GEN só conta
+  // quando a KEY está ligada, mas repintar sempre é barato e mantém o visor sempre certo
+  if (id === 'kickKey' || id === 'kickTone' || id === 'genRoot') painel.atualizarNota();
   if (SO_NA_PAGINA.has(id)) for (const k of [0, 1]) if (gerado[k]) pedirGeracao(k);
 }
-['toneX20', 'fillRate', 'echoSync', 'echoMod'].forEach(reagir);
+['toneX20', 'fillBeat', 'echoSync', 'echoMod', 'kickKey'].forEach(reagir);
 
 async function curvaAtual() {
   if (edit.pagina() !== 0) return;

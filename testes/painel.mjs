@@ -1,4 +1,6 @@
-// Conta o painel da demo contra a referência do plugin. node testes/painel.mjs [url] [largura]
+// Conta o painel da demo contra a referência do plugin (Task 15B: painel/layout.json+params.json
+// do dump de 24/09, seis linhas, KICK com 7 knobs e as outras com 6, CLEAR/RAND/ECHO por linha,
+// STEPS/BAR no cabeçalho, MASTER sem moldura). node testes/painel.mjs [url] [largura]
 import { abrir } from './cdp.mjs';
 
 const urlBase = process.argv[2] || 'http://localhost:8123/index.html';
@@ -32,15 +34,21 @@ try {
     return {
       steps: q(':scope > .step'), ms: q(':scope > .ms'),
       knobs: q(':scope > .knob'), knobsVisiveis: q(':scope > .knob:not([hidden])'),
-      temEchoDiv: !!(window.__dd && window.__dd.painel.controles.get('echoDiv')),
+      temEchoBeat: !!(window.__dd && window.__dd.painel.controles.get('echoBeat')),
       leds: q(':scope > .p-ledx'),
       pads: t(':scope > .lab'), acc: q(':scope > .acc'), pixels: q('.p-pixels i'), acesos: q('.p-pixels i.on'),
-      selects: q(':scope > select'), teclas: t(':scope > button.key'),
-      desabilitadas: [...a.querySelectorAll(':scope > button.key[disabled]')].map((n) => n.textContent.trim().toUpperCase()),
+      selects: q(':scope > select'), teclas: t(':scope > button.key:not(.mini)'),
+      minis: q(':scope > button.key.mini'), echoKeys: q(':scope > .p-echokey'),
+      randZone: q(':scope > .p-randzone'), randZoneTab: q(':scope > .p-randzone-tab'),
+      medidores: q(':scope > .p-meter'), ticks: q(':scope > .p-tick'),
+      // .key.mini[disabled] é o BAR 2 desligado enquanto STEPS=16 (não é "só no plugin")
+      desabilitadas: [...a.querySelectorAll(':scope > button.key:not(.mini)[disabled]')].map((n) => n.textContent.trim().toUpperCase()),
       textos: [...a.querySelectorAll(':scope > *')].map((n) => n.textContent).join(' ').toUpperCase(),
       transporteAbaixo: trans.top >= caixa.bottom - 1 && !caixaEl.contains(document.getElementById('transporte')), escala: +a.dataset.escala,
       larguraPagina: document.documentElement.scrollWidth, janela: innerWidth, caixaRight: caixa.right,
-      rate: [...a.querySelectorAll('.p-leg')].some((n) => n.textContent === 'RATE OFF'),
+      rate: [...a.querySelectorAll('.p-leg')].some((n) => n.textContent === 'RATE 0'),
+      steps16: document.querySelector('.p-num').textContent, stepsLegend: t('.p-leg').includes('STEPS'),
+      barLegend: t('.p-leg').includes('BAR'), nota: document.querySelector('.p-nota-kick').textContent,
       transAltura: trans.height, tallyVisivel: visivel('tally'), genStatusVisivel: visivel('gen-status'),
     };
   })()`);
@@ -50,15 +58,24 @@ try {
     ok(r.pads.join(',') === 'KICK,SNARE,CLAP,CHAT,OHAT,TOM', `teclas dos 6 instrumentos (${r.pads})`);
     ok(r.leds === 6, `6 LEDs de TONE X (${r.leds})`);
     ok(r.acc === 16, `16 faders de ACCENT (${r.acc})`);
-    ok(r.knobsVisiveis === 61, `61 knobs visíveis: 42 dos canais, 3 SAT, 6 MB, 6 ECHO à vista (TIME ou divisão, nunca os dois), GAIN, GROOVE, RATE, VOLUME (${r.knobsVisiveis})`);
-    ok(r.temEchoDiv, `o knob oculto echoDiv (TIME do ECHO em divisão do BPM) existe no modelo, mesmo escondido (${r.knobs} no total)`);
-    ok(r.ms === 17, `17 teclas pequenas: 12 MUTE/SOLO, 2 ON, 2 EDIT, SYNC (${r.ms})`);
-    ok(r.selects === 6, `6 seletores: TOM, ESCALA, COMPASSOS, WAVE SHAPE, GROOVE, FILL (${r.selects})`);
+    ok(r.knobsVisiveis === 68, `68 knobs visíveis: 49 dos canais (KICK 7 + 5x6 + REV/DEL), 3 SAT, 6 MB, 6 ECHO à vista (TIME ou divisão, nunca os dois), MASTER, GROOVE, RATE, VOLUME (${r.knobsVisiveis})`);
+    ok(r.temEchoBeat, `o knob oculto echoBeat (TIME do ECHO em divisão do BPM) existe no modelo, mesmo escondido (${r.knobs} no total)`);
+    ok(r.ms === 19, `19 teclas pequenas: 12 MUTE/SOLO, 2 ON, 2 EDIT, SYNC, KEY do KICK, OFFBEAT da FILL (${r.ms})`);
+    ok(r.selects === 6, `6 seletores: KEY, SCALE, BARS, WAVE SHAPE, GROOVE, FILL (${r.selects})`);
     ok(r.teclas.join(',') === 'SAMPLER,TONE X,RANDOM,EXPORT,BASS,LEAD', `teclas grandes (${r.teclas})`);
+    ok(r.minis === 16, `16 teclas mini: CLEAR+RAND por linha (12), STEPS 16|32 (2), BAR 1|2 (2) (${r.minis})`);
+    ok(r.echoKeys === 6, `6 teclas ECHO altas, uma por linha (${r.echoKeys})`);
+    ok(r.randZone === 1 && r.randZoneTab === 1, 'faixa em degrau (randZone) e a aba da tecla RANDOM (randZoneTab) existem');
+    ok(r.medidores === 2 && r.ticks === 8, `2 medidores do MASTER com 8 marcas de dB (${r.medidores}/${r.ticks})`);
     ok(r.desabilitadas.join(',') === 'SAMPLER,EXPORT', 'SAMPLER e EXPORT desabilitados');
     ok(r.textos.includes('SÓ NO PLUGIN'), 'aviso "só no plugin" no painel');
+    ok(r.textos.includes('RANDOM'), 'texto RANDOM na tecla do topo');
     ok(r.pixels === 260 && r.acesos > 20, `tela do Pal 26x10 com o quadro contente (${r.acesos} pontos acesos)`);
-    ok(r.rate, 'legenda RATE OFF');
+    ok(r.rate, 'legenda RATE 0 (fillBeat, default "0")');
+    ok(r.stepsLegend, 'legenda STEPS no cabeçalho da grade');
+    ok(r.barLegend, 'legenda BAR no cabeçalho da grade');
+    ok(r.steps16 === '1', `números do passo começam em 1 (página 1 do BAR) (${r.steps16})`);
+    ok(r.nota === 'F#', `visor da nota do KICK: KEY desligada mostra a nota do TUNE (def 0,5 -> F#) (${r.nota})`);
     for (const proibido of ['BPM', 'PLAY', '×20', 'X20', 'FASE', 'CONTRA'])
       ok(!r.textos.includes(proibido), `painel sem ${proibido}`);
     ok(r.transporteAbaixo, 'barrinha de transporte abaixo da moldura');
@@ -69,6 +86,8 @@ try {
       const piso = largura < 900 ? 0.2 : 0.6;
       ok(r.escala >= piso - 1e-6 && r.escala <= 1, `no celular (${largura}px) escala dentro do piso ${piso} (${r.escala})`);
     } else {
+      // ~0,945 no desktop (1680px de rolo / 1600px do aparelho, descontada a moldura .unit) — a
+      // mesma faixa de antes da Task 15B, sem regressão
       ok(r.escala > 0.9 && r.escala <= 1, `no desktop o painel quase em 100% (${r.escala})`);
     }
     if (movel) {
@@ -83,6 +102,19 @@ try {
     if (largura === 320) {
       ok(r.larguraPagina === 320, `em 320px a página não rola na horizontal (scrollWidth=${r.larguraPagina})`);
     }
+  }
+  if (r && !movel) {
+    // STEPS 32 + BAR 2: os números do cabeçalho viram 17..32 (só o rótulo — o motor ainda é de
+    // 16 passos, isso é puramente visual até o motor novo, como o resto dos IDs sem legado)
+    const pagina2 = await s.avaliar(`(() => {
+      const a = document.getElementById('aparelho');
+      const led = [...a.querySelectorAll('.p-led-key')].find((b) => b.textContent.trim() === '32');
+      led.click();
+      const bar2 = [...a.querySelectorAll('.p-bar-key')].find((b) => b.textContent.trim() === '2');
+      bar2.click();
+      return document.querySelector('.p-num').textContent;
+    })()`);
+    ok(pagina2 === '17', `STEPS 32 + BAR 2: o primeiro número do cabeçalho vira 17 (${pagina2})`);
   }
   if (r && movel) {
     // área de toque do LED do TONE X (fix 2): sonda em elementFromPoint ao redor do centro,

@@ -1,7 +1,7 @@
 // AudioWorkletProcessor que roda o motor C++ do BRDRUM (WASM). A página fala o ID de parâmetro do
 // plugin; aqui ele vira índice uma vez (cache) e vai para web_set.
 import './url-shim.js'; // precisa vir antes: o glue referencia URL no top-level
-import createEngine from './engine.mjs?v=6'; // casa com ENGINE_V em dd-audio.js
+import createEngine from './engine.mjs?v=7'; // casa com ENGINE_V em dd-audio.js
 
 const BLOCK = 128;
 
