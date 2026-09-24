@@ -72,7 +72,7 @@ const ok = (c, m) => { console.log((c ? 'ok: ' : 'FAIL: ') + m); if (!c) falhas+
   } finally { s.fechar(); }
 }
 
-// ---------- rodapé da home: link para termos.html e o CPF do vendedor ----------
+// ---------- rodapé da home: link para termos.html, sem CPF nem nome pessoal ----------
 {
   const s = await abrir(`${BASE}/index.html`, { largura: 1400, altura: 900, porta: 9473 });
   try {
@@ -87,7 +87,7 @@ const ok = (c, m) => { console.log((c ? 'ok: ' : 'FAIL: ') + m); if (!c) falhas+
     })()`);
     ok(r.temLink, 'rodapé da home tem link para termos.html');
     ok(r.textoLink === 'Termos de Uso', `link do rodapé lê "Termos de Uso" (${r.textoLink})`);
-    ok(r.rodapeTexto.includes('CPF [removido]'), 'rodapé da home mostra o CPF [removido]');
+    ok(!r.rodapeTexto.includes("CPF") && !r.rodapeTexto.includes("Diogo"), "rodapé da home não mostra CPF nem nome pessoal");
     ok(s.erros.length === 0, `sem console.error na home (${JSON.stringify(s.erros)})`);
   } finally { s.fechar(); }
 }

@@ -234,7 +234,7 @@ export const DICT = {
     'footer.chat-aria': 'Falar com a gente',
     'footer.payment-only': 'Pagamento pelo Mercado Pago, sem renovação automática',
     'footer.termos-link': 'Termos de Uso',
-    'footer.vendedor': 'BRDRUM · BRDRUM · CPF [removido] · Brasília, DF',
+    'footer.vendedor': 'BRDRUM · Brazilian Waves · contato: [removido]',
 
     // ---------- packs.html ----------
     // desligado 23/09 a pedido do Diogo: aviso estático no topo da página, sem link nenhum do site
@@ -802,7 +802,7 @@ export const DICT = {
     'footer.chat-aria': 'Talk to us',
     'footer.payment-only': 'Paid through Mercado Pago, no auto-renewal',
     'footer.termos-link': 'Terms of Use',
-    'footer.vendedor': 'BRDRUM · BRDRUM · CPF [removido] · Brasília, DF',
+    'footer.vendedor': 'BRDRUM · Brazilian Waves · contato: [removido]',
 
     'packs.desligado-titulo': 'The packs store is coming back soon',
     'packs.desligado-voltar': 'Back to the homepage',
