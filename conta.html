@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Yellowtail&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='4' y='4' width='92' height='92' rx='10' fill='%232a2a2c' stroke='%230e0e10' stroke-width='3'/><rect x='22' y='16' width='56' height='68' rx='6' fill='%23e0702a' stroke='%23844219' stroke-width='3'/><circle cx='50' cy='34' r='8' fill='%23ff3b2f'/><circle cx='50' cy='34' r='14' fill='%23ff3b2f' opacity='.3'/></svg>">
-<link rel="stylesheet" href="dd.css?v=20260925h">
+<link rel="stylesheet" href="dd.css?v=20260925i">
 </head>
 <body>
 
@@ -40,6 +40,7 @@
 
   <!-- deslogado: entrar / criar conta -->
   <div class="account" id="view-auth" hidden>
+    <!-- resumo do plano escolhido (Task 2, F5/F9): só entra no DOM com ?plano= na URL; montado por conta.js -->
     <fieldset class="panel">
       <legend data-i18n="conta.entrar-legend">Entrar</legend>
       <form class="form" id="form-login" novalidate>
@@ -52,7 +53,7 @@
     <fieldset class="panel">
       <legend data-i18n="conta.criar-legend">Criar conta</legend>
       <form class="form" id="form-signup" novalidate>
-        <p class="dim" style="font-size:var(--t-small)" data-i18n="conta.criar-aviso">É a conta que você vai usar dentro do plugin. Guarde a senha: é ela que destrava a máquina.</p>
+        <p class="dim" style="font-size:var(--t-small)" data-i18n="conta.criar-aviso">É a conta que você vai usar dentro do plugin. Guarde a senha: é ela que ativa o BRDRUM no seu computador.</p>
         <label><span class="legend" data-i18n="conta.email-label">E-mail</span><input class="recess" type="email" name="email" autocomplete="email" required placeholder="voce@exemplo.com" data-i18n-attr="placeholder:conta.email-placeholder"></label>
         <label><span class="legend" data-i18n="conta.senha8-label">Senha (8+ caracteres)</span><input class="recess" type="password" name="password" autocomplete="new-password" required minlength="8" placeholder="crie uma senha" data-i18n-attr="placeholder:conta.senha8-placeholder"></label>
         <label><span class="legend" data-i18n="conta.repita-senha-label">Repita a senha</span><input class="recess" type="password" name="confirm" autocomplete="new-password" required minlength="8" placeholder="a mesma senha" data-i18n-attr="placeholder:conta.repita-senha-placeholder"></label>
@@ -126,12 +127,12 @@
       <fieldset class="panel">
         <legend data-i18n="conta.licenca-legend">Licença</legend>
         <div class="status-row">
-          <span class="seats" id="seats" aria-label="acessos" data-i18n-attr="aria-label:packs.status-row"></span>
+          <span class="seats" id="seats" aria-label="computadores" data-i18n-attr="aria-label:packs.status-row"></span>
         </div>
         <p class="lead" id="lic-text" style="margin-top:12px"></p>
         <p class="sub" id="lic-sub"></p>
         <ul class="slots" id="slots"></ul>
-        <p class="empty" id="slots-empty" hidden data-i18n="conta.slots-empty">Nenhuma vaga ocupada. Entre com esta conta dentro do plugin, ou gere uma chave para outra pessoa ativar.</p>
+        <p class="empty" id="slots-empty" hidden data-i18n="conta.slots-empty">Nenhum computador ativado ainda. Entre com esta conta dentro do plugin, ou gere uma chave para outra pessoa ativar.</p>
         <div class="form-row" id="lic-acts" style="margin-top:16px"></div>
         <p class="msg" id="msg-lic" aria-live="polite" style="min-height:1.3em;font-size:var(--t-small);margin-top:8px"></p>
       </fieldset>
@@ -221,7 +222,7 @@
   </div>
 </div>
 
-<script type="module" src="dd-topo.js?v=20260925h"></script>
-<script type="module" src="conta.js?v=20260925h"></script>
+<script type="module" src="dd-topo.js?v=20260925i"></script>
+<script type="module" src="conta.js?v=20260925i"></script>
 </body>
 </html>

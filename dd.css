@@ -551,6 +551,9 @@ footer{margin-top:var(--s5);padding-top:var(--s3);border-top:1px solid var(--lan
 /* ---------- conta ---------- */
 .account{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:var(--s4);align-items:start;padding-top:var(--s3)}
 .account .panel{padding:26px 22px 22px}
+/* resumo do plano escolhido (Task 2, F5/F9): ocupa as duas colunas do grid, acima dos painéis de entrar/criar conta */
+.account .panel.escolhido{grid-column:1/-1}
+.account .panel.escolhido .trocar-plano{margin-left:8px}
 .form{display:grid;gap:12px}
 .form label{display:grid;gap:5px}
 .form .msg{min-height:1.3em;font-size:var(--t-small)}

@@ -160,5 +160,38 @@ const ok = (c, m) => { console.log((c ? 'ok: ' : 'FAIL: ') + m); if (!c) falhas+
   ok(admin.includes('12+ caracteres e usos máximos obrigatórios'), 'admin.html tem a legenda do cupom grátis');
 }
 
-console.log(falhas === 0 ? 'PRECOS: todos os testes passaram' : `${falhas} falhas`);
+// ---------- (j): Task 3 (F6) — estadoFaixaFinal(lic, plans, lang), função pura da faixa final ----------
+// Sem DOM disponível em Node puro (dd-precos.js roda pintarTudo() ao importar, que mexe em
+// document): a função é testada dentro da página via import() dinâmico, igual ao módulo já
+// carregado por index.html.
+{
+  const s = await abrir(`${BASE}/index.html`, { largura: 1440, altura: 900, bloquear: BLOQUEIO, porta: 9339 });
+  try {
+    await s.esperar(500);
+    const r = await s.avaliar(`(async () => {
+      const { estadoFaixaFinal } = await import('/dd-precos.js?v=20260925h');
+      const plans = [{ id: 'studio', name: 'Studio', seats: 3 }];
+      const futuro = new Date(Date.now() + 30 * 86400000).toISOString();
+      const passado = new Date(Date.now() - 5 * 86400000).toISOString();
+      return {
+        semLic: estadoFaixaFinal(null, plans, 'pt'),
+        ativaComPrazo: estadoFaixaFinal({ seats: 3, expires_at: futuro }, plans, 'pt'),
+        perpetua: estadoFaixaFinal({ seats: 3, expires_at: null }, plans, 'pt'),
+        vencida: estadoFaixaFinal({ seats: 3, expires_at: passado }, plans, 'pt'),
+        vencidaEn: estadoFaixaFinal({ seats: 3, expires_at: passado }, plans, 'en'),
+      };
+    })()`);
+    ok(r.semLic.modo === 'comprar', `estadoFaixaFinal sem lic: modo comprar (${r.semLic.modo})`);
+    ok(r.ativaComPrazo.modo === 'licenca' && r.ativaComPrazo.texto.includes('Studio') && r.ativaComPrazo.texto.includes('vale até'),
+      `estadoFaixaFinal ativa com prazo: licença com data (${r.ativaComPrazo.texto})`);
+    ok(r.ativaComPrazo.legenda.includes('Baixe ao lado'), `estadoFaixaFinal ativa com prazo: legenda de licença (${r.ativaComPrazo.legenda})`);
+    ok(r.perpetua.modo === 'licenca' && r.perpetua.texto === 'Sua licença Studio não tem prazo', `estadoFaixaFinal perpétua: sem prazo (${r.perpetua.texto})`);
+    ok(r.vencida.modo === 'renovar' && r.vencida.texto === 'Renovar Studio' && r.vencida.href === 'conta.html?renovar=1#licenca',
+      `estadoFaixaFinal vencida: botão Renovar (${JSON.stringify(r.vencida)})`);
+    ok(r.vencidaEn.texto === 'Renew Studio', `estadoFaixaFinal vencida (en): "Renew Studio" (${r.vencidaEn.texto})`);
+    ok(s.erros.length === 0, `sem console.error na home (${JSON.stringify(s.erros)})`);
+  } finally { s.fechar(); }
+}
+
+console.log(falhas === 0 ? 'precos ok' : `${falhas} falhas`);
 process.exit(falhas === 0 ? 0 : 1);

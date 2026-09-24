@@ -2,25 +2,85 @@
 // Seletor MENSAL | ANUAL (referência de 23/09): o anual é o padrão. A etiqueta -N% é a
 // economia do anual sobre o mensal; o bullet "% por computador em relação ao Solo" é
 // calculado do período mostrado. Quem já tem licença vê Renovar/Upgrade/Seu plano.
-import { loadPlans, getSession, select, quote, precosDoPlano, emPromocao, BRL } from './dd-api.js?v=20260925h';
-import { t, seatsLabel, fmtBRLCompact } from './dd-i18n.js';
+import { loadPlans, getSession, select, quote, precosDoPlano, emPromocao, BRL, PLANOS_PADRAO, nomePlanoBonito } from './dd-api.js?v=20260925i';
+import { t, seatsLabel, fmtBRLCompact, getLang, DICT } from './dd-i18n.js';
 
 let periodo = 'annual';
 try { const s = localStorage.getItem('dd-period'); if (s === 'monthly' || s === 'annual') periodo = s; } catch { /* sem storage */ }
 
-// Fallback sem rede e completação enquanto o banco não tem as colunas novas (migração 0004).
-// Os valores são a tabela da spec de 23/09; quem cobra é o servidor, aqui é só para mostrar.
-const PLANOS_PADRAO = [
-  { id: 'solo',   name: 'SOLO',   seats: 1, price_cents: 4999,  monthly_cents: 4999,  annual_month_cents: 3990,  annual_cents: 47880,  badge: null,          sort: 1 },
-  { id: 'studio', name: 'STUDIO', seats: 3, price_cents: 12999, monthly_cents: 12999, annual_month_cents: 10990, annual_cents: 131880, badge: 'RECOMENDADO', sort: 2 },
-  { id: 'team',   name: 'EQUIPE', seats: 5, price_cents: 20999, monthly_cents: 20999, annual_month_cents: 17999, annual_cents: 215988, badge: null,          sort: 3 },
-];
+// PLANOS_PADRAO (fallback sem rede) mora em dd-api.js desde a Task 2 da jornada de compra
+// (24/09): conta.html também precisa dele pro resumo do plano antes do cadastro.
 function completar(p) {
   const base = PLANOS_PADRAO.find((x) => x.id === p.id) || {};
   return { ...p,
     monthly_cents: p.monthly_cents ?? base.monthly_cents ?? p.price_cents,
     annual_month_cents: p.annual_month_cents ?? base.annual_month_cents ?? p.price_cents,
     annual_cents: p.annual_cents ?? base.annual_cents ?? ((p.annual_month_cents ?? base.annual_month_cents ?? p.price_cents) * 12) };
+}
+
+// interpolação manual de {chave} num valor de DICT, igual ao t() de dd-i18n.js, mas para um
+// idioma explícito — a faixa final precisa montar o texto certo mesmo quando `lang` (o idioma
+// atual do módulo dd-i18n.js) já mudou, e a função de estado abaixo precisa ser pura e testável
+// nos dois idiomas sem depender do estado global do módulo.
+function traduz(idioma, chave, vars) {
+  let s = (DICT[idioma] || DICT.pt)[chave];
+  if (vars) for (const k of Object.keys(vars)) s = s.split('{' + k + '}').join(String(vars[k]));
+  return s;
+}
+
+function fmtDataIdioma(iso, idioma) {
+  const locale = idioma === 'en' ? 'en-US' : 'pt-BR';
+  return new Intl.DateTimeFormat(locale, { dateStyle: 'short' }).format(new Date(iso));
+}
+
+// Task 3 (F6): o que a faixa final da home mostra depende da licença de quem está vendo.
+// Função pura, sem DOM, para ser testada com os 4 casos (sem lic, ativa com prazo, perpétua,
+// vencida) — quem pinta o DOM é pintarFaixaFinal(), logo abaixo.
+export function estadoFaixaFinal(lic, plans, lang) {
+  const idioma = lang === 'en' ? 'en' : 'pt';
+  if (!lic) return { modo: 'comprar', texto: null, legenda: null, href: null };
+  const vencida = !!lic.expires_at && Date.parse(lic.expires_at) < Date.now();
+  const perpetua = !lic.expires_at;
+  const plano = nomePlanoBonito((plans.find((p) => p.seats === lic.seats) || {}).name);
+  if (vencida) {
+    return { modo: 'renovar', texto: traduz(idioma, 'close.renovar-cta', { plano }), legenda: null, href: 'conta.html?renovar=1#licenca' };
+  }
+  const texto = perpetua
+    ? traduz(idioma, 'close.licenca-perpetua', { plano })
+    : traduz(idioma, 'close.licenca-valida', { plano, data: fmtDataIdioma(lic.expires_at, idioma) });
+  return { modo: 'licenca', texto, legenda: traduz(idioma, 'close.legenda-licenca'), href: null };
+}
+
+// pinta a faixa final (#close-buy-cta / #close-legend) conforme estadoFaixaFinal()
+function pintarFaixaFinal(lic, plansAtual) {
+  const btn = document.getElementById('close-buy-cta');
+  const legend = document.getElementById('close-legend');
+  let licP = document.getElementById('close-lic-text');
+  const estado = estadoFaixaFinal(lic, plansAtual, getLang());
+
+  if (estado.modo === 'comprar') {
+    if (licP) licP.remove();
+    if (btn) { btn.hidden = false; btn.textContent = t('close.buy-cta'); btn.href = 'conta.html?plano=studio&periodo=' + periodo; }
+    if (legend) legend.textContent = t('close.legend');
+    return;
+  }
+  if (estado.modo === 'renovar') {
+    if (licP) licP.remove();
+    if (btn) { btn.hidden = false; btn.textContent = estado.texto; btn.href = estado.href; }
+    if (legend) legend.textContent = t('close.legend');
+    return;
+  }
+  // modo 'licenca': o botão de comprar some, entra o parágrafo com o estado da licença
+  if (btn) btn.hidden = true;
+  if (legend) legend.textContent = estado.legenda;
+  if (!licP) {
+    licP = document.createElement('p');
+    licP.className = 'close-lic';
+    licP.id = 'close-lic-text';
+    if (btn) btn.insertAdjacentElement('afterend', licP);
+    else document.querySelector('.close-buy')?.appendChild(licP);
+  }
+  licP.textContent = estado.texto;
 }
 
 function pintarPreco(card, cents) {
@@ -93,13 +153,14 @@ async function pintarTudo() {
   }
 
   const s = await getSession();
-  if (!s) return;
+  if (!s) { pintarFaixaFinal(null, plans); return; }
 
   let lic = null;
   try {
     const lics = await select('licenses', 'select=id,seats,status,expires_at&limit=1');
     lic = lics.find((l) => l.status === 'active') || null;
   } catch { /* sessão velha: segue como visitante */ }
+  pintarFaixaFinal(lic, plans);
   if (!lic) return;
   const vencida = !!lic.expires_at && Date.parse(lic.expires_at) < Date.now();
   const perpetua = !lic.expires_at;

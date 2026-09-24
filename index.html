@@ -25,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Yellowtail&family=Montserrat:wght@300;500;700;800&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='4' y='4' width='92' height='92' rx='10' fill='%232a2a2c' stroke='%230e0e10' stroke-width='3'/><rect x='22' y='16' width='56' height='68' rx='6' fill='%23e0702a' stroke='%23844219' stroke-width='3'/><circle cx='50' cy='34' r='8' fill='%23ff3b2f'/><circle cx='50' cy='34' r='14' fill='%23ff3b2f' opacity='.3'/></svg>">
-<link rel="stylesheet" href="dd.css?v=20260925h">
+<link rel="stylesheet" href="dd.css?v=20260925i">
 </head>
 <body>
 <!-- impeccable direction contract · seed 4268164a (herdado do painel do plugin)
@@ -96,7 +96,7 @@ RISK: aço demais sem cor; a cor mora nas teclas e nos LEDs, nunca no fundo. -->
   </p>
 </div>
 
-<script type="module" src="dd-main.js?v=20260925h"></script>
+<script type="module" src="dd-main.js?v=20260925i"></script>
 
 <!-- bloco novo "DAW + download" (23/09): a captura do plugin no Ableton à esquerda, os dois downloads
      empilhados e a fileira de DAWs à direita. Recebe a âncora #download; a antiga seção #download
@@ -165,7 +165,7 @@ RISK: aço demais sem cor; a cor mora nas teclas e nos LEDs, nunca no fundo. -->
       <span class="off">-20%</span>
       <p class="big-price"><small>R$</small><span class="amount">39</span><sup class="cents">,90</sup></p>
       <p class="period-line" data-period-line>por mês · R$ 478,80 cobrado uma vez, 12 meses</p>
-      <p class="per-line"><span class="per-seat">R$ 39,90</span> <span data-i18n="plans.per-computador">por computador</span> · <span class="seats-n">1 acesso</span></p>
+      <p class="per-line"><span class="per-seat">R$ 39,90</span> <span data-i18n="plans.per-computador">por computador</span> · <span class="seats-n">1 computador</span></p>
       <ul>
         <li data-i18n="plans.solo-li1">1 computador ativo por vez</li>
         <li data-i18n="plans.solo-li2">VST3 e AU, Mac e Windows</li>
@@ -179,9 +179,9 @@ RISK: aço demais sem cor; a cor mora nas teclas e nos LEDs, nunca no fundo. -->
       <span class="off">-15%</span>
       <p class="big-price"><small>R$</small><span class="amount">109</span><sup class="cents">,90</sup></p>
       <p class="period-line" data-period-line>por mês · R$ 1.318,80 cobrado uma vez, 12 meses</p>
-      <p class="per-line"><span class="per-seat">R$ 36,63</span> <span data-i18n="plans.per-computador">por computador</span> · <span class="seats-n">3 acessos</span></p>
+      <p class="per-line"><span class="per-seat">R$ 36,63</span> <span data-i18n="plans.per-computador">por computador</span> · <span class="seats-n">3 computadores</span></p>
       <ul>
-        <li data-i18n-html="plans.studio-li1-html"><b>3 computadores</b> ativos ao mesmo tempo: estúdio, notebook e a máquina do parceiro</li>
+        <li data-i18n-html="plans.studio-li1-html"><b>3 computadores</b> ativos ao mesmo tempo: estúdio, notebook e o computador do parceiro</li>
         <li data-li-desconto><b>8% de desconto</b> por computador em relação ao Solo</li>
         <li data-i18n="plans.studio-li3">Atualizações incluídas</li>
       </ul>
@@ -192,10 +192,10 @@ RISK: aço demais sem cor; a cor mora nas teclas e nos LEDs, nunca no fundo. -->
       <span class="off">-14%</span>
       <p class="big-price"><small>R$</small><span class="amount">179</span><sup class="cents">,99</sup></p>
       <p class="period-line" data-period-line>por mês · R$ 2.159,88 cobrado uma vez, 12 meses</p>
-      <p class="per-line"><span class="per-seat">R$ 36,00</span> <span data-i18n="plans.per-computador">por computador</span> · <span class="seats-n">5 acessos</span></p>
+      <p class="per-line"><span class="per-seat">R$ 36,00</span> <span data-i18n="plans.per-computador">por computador</span> · <span class="seats-n">5 computadores</span></p>
       <ul>
         <li data-i18n="plans.team-li1">5 computadores ativos ao mesmo tempo</li>
-        <li data-i18n="plans.team-li2">Para produtora, dupla ou coletivo com várias máquinas</li>
+        <li data-i18n="plans.team-li2">Para produtora, dupla ou coletivo com vários computadores</li>
         <li data-li-desconto><b>10% de desconto</b> por computador em relação ao Solo</li>
       </ul>
       <a class="key green" href="conta.html?plano=team&periodo=annual" data-i18n="plans.team-cta">Comprar Equipe</a>
@@ -342,8 +342,8 @@ RISK: aço demais sem cor; a cor mora nas teclas e nos LEDs, nunca no fundo. -->
 <div class="close">
   <div class="wrap close-grid">
     <div class="close-buy">
-      <a class="key green big" href="conta.html?plano=studio" data-i18n="close.buy-cta">Comprar Studio</a>
-      <p class="legend" data-i18n="close.legend">Pagamento único por período, sem renovação automática. Pix, cartão ou boleto pelo Mercado Pago.</p>
+      <a class="key green big" id="close-buy-cta" href="conta.html?plano=studio" data-i18n="close.buy-cta">Comprar Studio</a>
+      <p class="legend" id="close-legend" data-i18n="close.legend">Pagamento único por período, sem renovação automática. Pix, cartão ou boleto pelo Mercado Pago.</p>
     </div>
     <div class="close-dl">
       <p class="compat-title small" data-i18n-html="close.compat-title-html"><b>compatível</b> com todas as DAWs</p>
@@ -376,8 +376,8 @@ RISK: aço demais sem cor; a cor mora nas teclas e nos LEDs, nunca no fundo. -->
   <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 6C12.4 6 4 13.6 4 23c0 4.8 2.3 9.1 6 12.2L8 42l9.6-4.2c2 .5 4.2.8 6.4.8 11.6 0 20-7.6 20-17S35.6 6 24 6z" fill="currentColor"/><circle cx="16" cy="23" r="2.6" fill="#1b1b1c"/><circle cx="24" cy="23" r="2.6" fill="#1b1b1c"/><circle cx="32" cy="23" r="2.6" fill="#1b1b1c"/></svg>
 </a>
 
-<script type="module" src="dd-topo.js?v=20260925h"></script>
-<script type="module" src="dd-precos.js?v=20260925h"></script>
-<script type="module" src="dd-reviews.js?v=20260925h"></script>
+<script type="module" src="dd-topo.js?v=20260925i"></script>
+<script type="module" src="dd-precos.js?v=20260925i"></script>
+<script type="module" src="dd-reviews.js?v=20260925i"></script>
 </body>
 </html>

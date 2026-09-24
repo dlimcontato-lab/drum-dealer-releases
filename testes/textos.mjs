@@ -27,5 +27,16 @@ try {
 } finally {
   s.fechar();
 }
+
+// ---------- Task 5 (F10): nomeNoTopo() nunca usa o e-mail ----------
+{
+  const { nomeNoTopo } = await import('../dd-api.js');
+  ok(nomeNoTopo(null, 'x@y.com', 'pt') === 'Minha conta', `nomeNoTopo(null,'pt') === 'Minha conta' (${nomeNoTopo(null, 'x@y.com', 'pt')})`);
+  ok(nomeNoTopo('f1jornada+123', 'F1jornada+123@drumdealer.test', 'pt') === 'Minha conta', 'nome semeado pelo banco (parte do e-mail) vira Minha conta');
+  ok(nomeNoTopo('Produtor', 'x@y.com', 'pt') === 'Minha conta', 'nome semeado "Produtor" vira Minha conta');
+  ok(nomeNoTopo('Diogo Lima', 'x@y.com', 'pt') === 'Diogo', `nomeNoTopo('Diogo Lima','pt') === 'Diogo' (${nomeNoTopo('Diogo Lima', 'x@y.com', 'pt')})`);
+  ok(nomeNoTopo(null, 'x@y.com', 'en') === 'My account', `nomeNoTopo(null,'en') === 'My account' (${nomeNoTopo(null, 'x@y.com', 'en')})`);
+}
+
 console.log(falhas === 0 ? 'TEXTOS: todos os testes passaram' : `${falhas} falhas`);
 process.exit(falhas === 0 ? 0 : 1);

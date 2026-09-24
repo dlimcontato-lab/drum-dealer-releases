@@ -1,7 +1,7 @@
 // Cliente mínimo do backend de licenças (Supabase Auth + PostgREST + Edge Functions).
 // Sem SDK: são quatro chamadas HTTP e um localStorage. Contrato em
 // ~/Sistema AI/drum-dealer-backend/API.md.
-import { t, fmtBRL } from './dd-i18n.js';
+import { t, fmtBRL, DICT } from './dd-i18n.js';
 
 export const SUPABASE_URL = 'https://bwzngjvjxrqbalvoadpu.supabase.co';
 export const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ3em5nanZqeHJxYmFsdm9hZHB1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5NjM1MzQsImV4cCI6MjEwNDUzOTUzNH0.tZpL6lVNO9wQ4MagySs7mnCFmc0RxdAdxmh6gTNv7xs';
@@ -124,6 +124,16 @@ export function formatBRL(cents) {
     ? String(v)
     : v.toFixed(2).replace('.', ',');
 }
+
+// Fallback sem rede e completação enquanto o banco não tem as colunas novas (migração 0004).
+// Os valores são a tabela da spec de 23/09; quem cobra é o servidor, aqui é só para mostrar.
+// Movido de dd-precos.js (24/09, Task 2 da jornada de compra) para servir também o resumo do
+// plano em conta.html antes do cadastro (view-auth), sem depender de rede.
+export const PLANOS_PADRAO = [
+  { id: 'solo',   name: 'Solo',   seats: 1, price_cents: 4999,  monthly_cents: 4999,  annual_month_cents: 3990,  annual_cents: 47880,  badge: null,          sort: 1 },
+  { id: 'studio', name: 'Studio', seats: 3, price_cents: 12999, monthly_cents: 12999, annual_month_cents: 10990, annual_cents: 131880, badge: 'RECOMENDADO', sort: 2 },
+  { id: 'team',   name: 'Equipe', seats: 5, price_cents: 20999, monthly_cents: 20999, annual_month_cents: 17999, annual_cents: 215988, badge: null,          sort: 3 },
+];
 
 export async function loadPlans() {
   const base = 'active=eq.true&order=sort.asc';
@@ -329,6 +339,25 @@ export function BRL(cents) {
 export function primeiroNome(nome, email) {
   const base = (nome || '').trim() || (email || '').split('@')[0] || '';
   return base.split(/[\s.]+/)[0].replace(/^./, (c) => c.toUpperCase());
+}
+
+// Pílula do topo (Task 5 da jornada de compra, F10): nunca usa o e-mail. Com nome de exibição,
+// o primeiro nome; sem nome, o rótulo genérico "Minha conta"/"My account". `lang` explícito (não
+// o idioma global do módulo) pra ficar testável nos dois idiomas de uma vez.
+// O banco semeia display_name com a parte do e-mail antes do @ (handle_new_user, migração 0003):
+// esse valor também conta como "sem nome", senão o e-mail voltaria para a pílula pela porta dos fundos.
+export function nomeNoTopo(displayName, email, lang) {
+  const nome = (displayName || '').trim();
+  const local = ((email || '').split('@')[0] || '').trim().toLowerCase();
+  const semeado = !nome || nome.toLowerCase() === local || nome.toLowerCase() === 'produtor' || nome.includes('@');
+  if (!semeado) return nome.split(/[\s.]+/)[0].replace(/^./, (c) => c.toUpperCase());
+  return (DICT[lang === 'en' ? 'en' : 'pt'])['nav.minha-conta'];
+}
+
+// Nome do plano como o site escreve ("Studio"), venha do banco em caixa alta ("STUDIO") ou não.
+export function nomePlanoBonito(name) {
+  const s = String(name || '').trim();
+  return s ? s.charAt(0).toUpperCase() + s.slice(1).toLowerCase() : '—';
 }
 
 export function iniciais(nome, email) {

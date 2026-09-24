@@ -4,14 +4,15 @@
 import {
   signIn, signUp, signOut, getSession, select, call, loadPlans, loadProfile, saveProfile,
   uploadAvatar, changePassword, logoutAll, seats as fnSeats, quote, packDownload, loadPacks,
-  precosDoPlano, BRL, ApiError, DOWNLOADS, TIPOS_PACK, publicUrl, primeiroNome,
-} from './dd-api.js?v=20260925h';
-import { montarTopo, avatarNode } from './dd-topo.js?v=20260925h';
+  precosDoPlano, BRL, ApiError, DOWNLOADS, TIPOS_PACK, publicUrl, nomeNoTopo, nomePlanoBonito, PLANOS_PADRAO,
+} from './dd-api.js?v=20260925i';
+import { montarTopo, avatarNode } from './dd-topo.js?v=20260925i';
 import {
   $, el, msg, aviso as avisoUI, confirmar, perguntar, recado, abas, quando, dataHora,
   statusPedidoLabel, corStatus, tamanho, copiar, recortarQuadrado,
-} from './dd-ui.js?v=20260925h';
-import { t, seatsLabel, seatWord, fmtDate } from './dd-i18n.js';
+} from './dd-ui.js?v=20260925i';
+import { t, seatsLabel, seatWord, fmtDate, getLang } from './dd-i18n.js';
+import { textoChave } from './dd-textos.js?v=20260925i';
 
 const params = new URLSearchParams(location.search);
 const planoPedido = params.get('plano');
@@ -63,13 +64,21 @@ async function cotar(planId) {
   return r;
 }
 
+// Pedido do Diogo (24/09): o Mercado Pago abre em OUTRA aba, para a do site continuar aberta.
+// A aba nova é aberta em branco ainda dentro do clique (depois do await o bloqueador de pop-up
+// descartaria o window.open) e recebe a URL do checkout quando ela chega. Se o navegador bloquear
+// mesmo assim (aba nula), cai no comportamento antigo: navega na própria aba. Enquanto isso, esta
+// aba fica sondando a licença e se atualiza sozinha quando o pagamento confirmar.
 async function comprar(planId) {
   msg($('msg-buy'), t('conta.abrindo-pagamento'));
+  let aba = null;
+  try { aba = window.open('', '_blank'); if (aba) aba.opener = null; } catch { aba = null; }
   try {
     const corpo = { plan_id: planId, period: est.periodo };
     if (est.cupom) corpo.coupon_code = est.cupom;
     const r = await call('checkout', corpo);
     if (r.simulated || r.free) {
+      if (aba) aba.close();
       msg($('msg-buy'), '');
       await carregar();
       pintarTudo();
@@ -77,10 +86,38 @@ async function comprar(planId) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
-    location.href = r.init_point;
+    if (aba) {
+      aba.location.href = r.init_point;
+      msg($('msg-buy'), '');
+      aviso(t('conta.pagamento-outra-aba'), '');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      aguardarPagamentoEmOutraAba();
+    } else {
+      location.href = r.init_point;
+    }
   } catch (e) {
+    if (aba) aba.close();
     if (e.code === 'mp_not_configured') msg($('msg-buy'), t('conta.mp-nao-ligado'), '');
     else msg($('msg-buy'), e.message, 'err');
+  }
+}
+
+// Sonda a licença a cada 5 s por até 20 min enquanto o pagamento corre na outra aba; qualquer
+// mudança (licença nova, mais computadores, vencimento estendido) repinta e avisa.
+const retratoLicenca = (lic) => (lic ? `${lic.seats}|${lic.expires_at || ''}|${lic.status}` : '');
+let sondaPagamento = 0;
+async function aguardarPagamentoEmOutraAba() {
+  const minha = ++sondaPagamento;
+  const antes = retratoLicenca(est.lic);
+  for (let i = 0; i < 240 && minha === sondaPagamento; i++) {
+    await new Promise((r) => setTimeout(r, 5000));
+    if (minha !== sondaPagamento || document.hidden) continue;
+    try { await carregar(); } catch { continue; }
+    if (retratoLicenca(est.lic) !== antes) {
+      pintarTudo();
+      aviso(t('conta.pagamento-confirmado-lic'), 'ok');
+      return;
+    }
   }
 }
 
@@ -289,7 +326,7 @@ async function montarTopoDeNovo() {
   if (!link) return;
   link.textContent = '';
   link.classList.add('me');
-  link.append(avatarNode(est.perfil, est.session.user), document.createTextNode(primeiroNome(est.perfil && est.perfil.display_name, est.session.user.email)));
+  link.append(avatarNode(est.perfil, est.session.user), document.createTextNode(nomeNoTopo(est.perfil && est.perfil.display_name, est.session.user.email, getLang())));
 }
 
 // ============================ licença e vagas ============================
@@ -409,7 +446,12 @@ function linhaVaga(s) {
       : t('conta.chave-legend-pendente')));
 
     if (s.status === 'pending') {
-      const bc = el('button', 'key small cream', t('conta.copiar')); bc.type = 'button';
+      const bi = el('button', 'key small cream', t('conta.copiar-instrucoes')); bi.type = 'button';
+      bi.addEventListener('click', async () => {
+        recado(await copiar(textoChave(s.code, s.label, getLang())) ? t('conta.chave-copiada') : t('conta.chave-copiar-falhou'), 'ok');
+      });
+      acts.appendChild(bi);
+      const bc = el('button', 'key small', t('conta.copiar')); bc.type = 'button';
       bc.addEventListener('click', async () => {
         recado(await copiar(s.code) ? t('conta.chave-copiada') : t('conta.chave-copiar-falhou'), 'ok');
       });
@@ -458,14 +500,14 @@ async function gerarChave(botao) {
   botao.disabled = true;
   msg($('msg-lic'), t('conta.gerando-chave'));
   try {
-    const label = await perguntar({ titulo: t('conta.nova-chave-titulo'), rotulo: t('conta.apelido-opcional-rotulo'), texto: t('conta.nova-chave-texto'), ok: t('conta.gerar-chave'), valor: '' });
+    const label = await perguntar({ titulo: t('conta.nova-chave-titulo'), rotulo: t('conta.apelido-opcional-rotulo'), texto: t('conta.nova-chave-texto'), ok: t('conta.criar-chave'), valor: '' });
     if (label == null) { botao.disabled = false; msg($('msg-lic'), ''); return; }
     const r = await fnSeats('create_key', label ? { label } : {});
     await carregarVagas();
     pintarLicenca();
     const code = r.code || (r.key && r.key.code);
     if (code) {
-      await copiar(code);
+      await copiar(textoChave(code, label, getLang()));
       msg($('msg-lic'), t('conta.chave-criada-copiada', { codigo: code }), 'ok');
     } else msg($('msg-lic'), t('conta.chave-criada'), 'ok');
   } catch (e) {
@@ -670,6 +712,35 @@ function escapar(s) {
 }
 
 // ============================ auth ============================
+// resumo do plano escolhido (Task 2, F5/F9): só quando a URL tem ?plano=; período da URL,
+// padrão mensal (diferente do período padrão anual do painel de compra logado). Preço vem de
+// `plans` (loadPlans(), já carregado antes de renderAuth) com fallback em PLANOS_PADRAO, pra
+// funcionar mesmo sem rede.
+function pintarEscolhido() {
+  const antigo = document.getElementById('plano-escolhido');
+  if (antigo) antigo.remove();
+  if (!planoPedido) return;
+  const plano = plans.find((p) => p.id === planoPedido) || PLANOS_PADRAO.find((p) => p.id === planoPedido);
+  if (!plano) return;
+  const periodoEscolhido = params.get('periodo') === 'annual' ? 'annual' : 'monthly';
+  const v = precosDoPlano(plano);
+  const linhaTexto = periodoEscolhido === 'annual'
+    ? t('conta.escolhido-anual', { total: BRL(v.anualTotal) })
+    : t('conta.escolhido-mensal', { total: BRL(v.mensal) });
+
+  const fs = document.createElement('fieldset');
+  fs.className = 'panel escolhido';
+  fs.id = 'plano-escolhido';
+  const legend = el('legend', null, t('conta.escolhido-legend'));
+  const linha = el('p', 'legend');
+  linha.textContent = `${nomePlanoBonito(plano.name)} · ${linhaTexto} · ${seatsLabel(plano.seats)} `;
+  const link = el('a', 'trocar-plano', t('conta.trocar-plano'));
+  link.href = './#precos';
+  linha.appendChild(link);
+  fs.append(legend, linha);
+  $('view-auth').prepend(fs);
+}
+
 function renderAuth() {
   $('view-account').hidden = true;
   $('view-auth').hidden = false;
@@ -677,6 +748,7 @@ function renderAuth() {
     : baixarPedido ? t('conta.titulo-baixar') : t('conta.titulo');
   if (baixarPedido) aviso(t('conta.aviso-baixar'));
   setStatus(t('conta.nao-conectado'), false);
+  pintarEscolhido();
 }
 
 $('form-login').addEventListener('submit', async (e) => {
@@ -721,6 +793,7 @@ async function abrirConta(session) {
   $('titulo').textContent = t('conta.titulo');
   await carregar();
   pintarTudo();
+  await montarTopoDeNovo();   // a pílula do topo troca de "Entrar" para a conta sem esperar um reload
   if (renovar) $('panel-buy').scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
