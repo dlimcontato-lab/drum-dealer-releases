@@ -5,12 +5,12 @@ import {
   signIn, signUp, signOut, getSession, select, call, loadPlans, loadProfile, saveProfile,
   uploadAvatar, changePassword, logoutAll, seats as fnSeats, quote, packDownload, loadPacks,
   precosDoPlano, BRL, ApiError, DOWNLOADS, TIPOS_PACK, publicUrl, primeiroNome,
-} from './dd-api.js?v=20260925d';
-import { montarTopo, avatarNode } from './dd-topo.js?v=20260925d';
+} from './dd-api.js?v=20260925f';
+import { montarTopo, avatarNode } from './dd-topo.js?v=20260925f';
 import {
   $, el, msg, aviso as avisoUI, confirmar, perguntar, recado, abas, quando, dataHora,
   statusPedidoLabel, corStatus, tamanho, copiar, recortarQuadrado,
-} from './dd-ui.js?v=20260925d';
+} from './dd-ui.js?v=20260925f';
 import { t, seatsLabel, seatWord, fmtDate } from './dd-i18n.js';
 
 const params = new URLSearchParams(location.search);
@@ -69,7 +69,7 @@ async function comprar(planId) {
     const corpo = { plan_id: planId, period: est.periodo };
     if (est.cupom) corpo.coupon_code = est.cupom;
     const r = await call('checkout', corpo);
-    if (r.simulated) {
+    if (r.simulated || r.free) {
       msg($('msg-buy'), '');
       await carregar();
       pintarTudo();
@@ -154,13 +154,14 @@ async function mostrarValor() {
   try {
     const q = await cotar(plano.id);
     const valor = BRL(q.final_cents);
+    const gratis = q.is_free || q.final_cents === 0;
     const prefixoPeriodo = t(est.periodo === 'annual' ? 'conta.periodo-anual' : 'conta.periodo-mensal') + ' · ';
     v.hidden = false;
     v.innerHTML = q.discount_cents > 0
       ? `<span class="legend">${prefixoPeriodo}${t('conta.valor-com-cupom', { nome: plano.name, codigo: q.coupon ? q.coupon.code : est.cupom })}</span>
          <span class="was">${BRL(q.list_price_cents)}</span><span class="agora">${valor}</span>`
       : `<span class="legend">${prefixoPeriodo}${t('conta.valor-normal', { nome: plano.name, n: seatsLabel(plano.seats) })}</span><span class="agora">${valor}</span>`;
-    pagar.textContent = t('conta.pagar-valor', { valor });
+    pagar.textContent = gratis ? t('conta.ativar-gratis') : t('conta.pagar-valor', { valor });
     pagar.hidden = false;
   } catch (e) {
     v.hidden = true; v.innerHTML = ''; pagar.hidden = true;
@@ -689,14 +690,24 @@ $('form-login').addEventListener('submit', async (e) => {
   } catch (err) { msg($('msg-login'), err.message, 'err'); }
 });
 
+// aceite dos Termos de Uso (24/09, decisão do Diogo): a caixa começa desmarcada e o botão de
+// criar conta fica desabilitado até marcar; o listener de submit confere de novo (defesa contra
+// alguém que reative o botão pelo devtools ou algum outro caminho que não passe por aqui).
+const btnCriarConta = document.querySelector('#form-signup button[type="submit"]');
+$('aceite-termos').addEventListener('change', () => {
+  btnCriarConta.disabled = !$('aceite-termos').checked;
+});
+
 $('form-signup').addEventListener('submit', async (e) => {
   e.preventDefault();
   const f = e.target;
+  if (!$('aceite-termos').checked) return msg($('msg-signup'), t('signup.aceite-obrigatorio'), 'err');
   if (f.password.value.length < 8) return msg($('msg-signup'), t('conta.senha-min'), 'err');
   if (f.password.value !== f.confirm.value) return msg($('msg-signup'), t('conta.senhas-diferentes'), 'err');
   msg($('msg-signup'), t('conta.criando'));
   try {
-    let s = await signUp(f.email.value.trim(), f.password.value);
+    const meta = { terms_version: 'v1', terms_accepted_at: new Date().toISOString() };
+    let s = await signUp(f.email.value.trim(), f.password.value, meta);
     if (!s) s = await signIn(f.email.value.trim(), f.password.value);
     msg($('msg-signup'), '');
     await depoisDoLogin(s);

@@ -72,7 +72,7 @@ export const DICT = {
     // ---------- afirmação / statement ----------
     // Título em imagem: fonte Nulshock (licença desktop da Typodermic permite imagem estática, não @font-face)
     'statement.h1-html': '<img src="img/headline-pt.png" alt="Drums infinitas com um clique" width="931" height="730">',
-    'statement.lead': 'Milhares de possibilidades com os seus samples e MIDIs, além dos pacotes que já vêm dentro. Aperta RANDOM e sai uma batida pronta; aperta BASS e ele sorteia um baixo da sua pasta de MIDIs, no tom certo.',
+    'statement.lead': 'Milhares de possibilidades com os seus samples e MIDIs, além dos pacotes que já vêm dentro. Aperta RANDOM e sai uma batida pronta; aperta BASS ou LEAD e ele sorteia um baixo ou uma melodia da sua pasta de MIDIs, no tom certo.',
 
     // ---------- tabela de especificações ----------
     'spec.formatos-th': 'Formatos',
@@ -126,7 +126,7 @@ export const DICT = {
     'plans.studio-name': 'Studio',
     'plans.studio-ribbon': 'Recomendado',
     'plans.studio-li1-html': '<b>3 computadores</b> ativos ao mesmo tempo: estúdio, notebook e a máquina do parceiro',
-    'plans.studio-li3': 'Troque de máquina quando quiser, direto no plugin',
+    'plans.studio-li3': 'Atualizações incluídas',
     'plans.studio-cta': 'Comprar Studio',
     'plans.team-name': 'Equipe',
     'plans.team-li1': '5 computadores ativos ao mesmo tempo',
@@ -139,7 +139,7 @@ export const DICT = {
     'plans.period-line-annual': 'por mês · {total} cobrado uma vez, 12 meses',
     'plans.off-annual': '-{pct}%',
     'plans.li-desconto-solo-html': '<b>{pct}% de desconto</b> por computador em relação ao Solo',
-    'plans.note-html': 'Pagamento único por período, sem renovação automática. Pix, cartão ou boleto pelo <b>Mercado Pago</b>.\n    A licença fica na sua conta: você entra com e-mail e senha dentro do plugin, e cada computador que\n    entra ocupa um acesso. Precisa trocar de máquina? Desativa a antiga no próprio plugin ou na\n    <a href="conta.html">página da conta</a>.',
+    'plans.note-html': 'Pagamento pelo Mercado Pago (Pix, cartão ou boleto).',
     'plans.per-computador': 'por computador',
     'plans.seat-one': '{n} acesso',
     'plans.seat-other': '{n} acessos',
@@ -215,7 +215,7 @@ export const DICT = {
 
     // ---------- fecho ----------
     'close.buy-cta': 'Comprar Studio',
-    'close.legend': 'Pagamento único por período, sem renovação automática. Pix, cartão ou boleto pelo Mercado Pago. A licença fica na sua conta.',
+    'close.legend': 'Pagamento único por período, sem renovação automática. Pix, cartão ou boleto pelo Mercado Pago.',
     'close.compat-title-html': '<b>compatível</b> com todas as DAWs',
 
     // ---------- rodapé ----------
@@ -235,6 +235,8 @@ export const DICT = {
     'footer.signature': 'BRDRUM · Rhythm Composer - 001 · criado por Brazilian Waves',
     'footer.chat-aria': 'Falar com a gente',
     'footer.payment-only': 'Pagamento pelo Mercado Pago, sem renovação automática',
+    'footer.termos-link': 'Termos de Uso',
+    'footer.vendedor': 'BRDRUM · BRDRUM · CPF [removido] · Brasília, DF',
 
     // ---------- packs.html ----------
     // desligado 23/09 a pedido do Diogo: aviso estático no topo da página, sem link nenhum do site
@@ -302,6 +304,9 @@ export const DICT = {
     'conta.repita-senha-label': 'Repita a senha',
     'conta.repita-senha-placeholder': 'a mesma senha',
     'conta.criar-cta': 'Criar conta',
+    'signup.aceite-html': 'Li e aceito os <a href="termos.html" target="_blank" rel="noopener">Termos de Uso</a> do BRDRUM.',
+    'signup.aceite-obrigatorio': 'Para criar a conta, aceite os Termos de Uso.',
+    'signup.rodape': 'Ao criar sua conta você concorda com os Termos de Uso.',
     'conta.tabs-aria': 'Áreas da conta',
     'conta.tab-perfil': 'Perfil',
     'conta.tab-licenca': 'Licença',
@@ -350,6 +355,10 @@ export const DICT = {
     'conta.footer-signature': 'BRDRUM · Rhythm Composer - 001 · criado por Brazilian Waves',
     'conta.footer-payment': 'Pagamento pelo Mercado Pago, sem renovação automática',
 
+    // ---------- termos.html ----------
+    'termos.titulo': 'Termos de Uso',
+    'termos.versao': 'Versão 1, 24 de setembro de 2026',
+
     // ---------- conta.js (dinâmico) ----------
     'conta.titulo-comprar': 'Entre ou crie a conta para comprar',
     'conta.titulo-baixar': 'Crie sua conta para baixar',
@@ -381,6 +390,7 @@ export const DICT = {
     'conta.valor-normal': '{nome} · {n}',
     'conta.pagar-valor': 'Pagar {valor}',
     'conta.pagar-fallback': 'Pagar',
+    'conta.ativar-gratis': 'Ativar grátis',
     'conta.conferindo-cupom': 'Conferindo o cupom…',
     'conta.cupom-aplicado': 'Cupom aplicado.',
     'conta.cupom-sem-efeito': 'Esse cupom não muda o valor deste plano.',
@@ -645,7 +655,7 @@ export const DICT = {
     'compat.title-small-html': '<b>compatible</b> with every DAW',
 
     'statement.h1-html': '<img src="img/headline-en.png" alt="Infinite drums in one click" width="810" height="730">',
-    'statement.lead': "Thousands of possibilities with your own samples and MIDIs, plus the packs that come built in. Hit RANDOM and a ready beat comes out; hit BASS and it draws a bassline from your MIDI folder, in the right key.",
+    'statement.lead': "Thousands of possibilities with your own samples and MIDIs, plus the packs that come built in. Hit RANDOM and a ready beat comes out; hit BASS or LEAD and it draws a bassline or a melody from your MIDI folder, in the right key.",
 
     'spec.formatos-th': 'Formats',
     'spec.formatos-td': 'VST3 · AU',
@@ -693,7 +703,7 @@ export const DICT = {
     'plans.studio-name': 'Studio',
     'plans.studio-ribbon': 'Recommended',
     'plans.studio-li1-html': '<b>3 computers</b> active at the same time: studio, laptop and your partner\'s machine',
-    'plans.studio-li3': 'Switch machines whenever you want, right in the plugin',
+    'plans.studio-li3': 'Updates included',
     'plans.studio-cta': 'Buy Studio',
     'plans.team-name': 'Team',
     'plans.team-li1': '5 computers active at the same time',
@@ -706,7 +716,7 @@ export const DICT = {
     'plans.period-line-annual': 'per month · {total} charged once, 12 months',
     'plans.off-annual': '-{pct}%',
     'plans.li-desconto-solo-html': '<b>{pct}% off</b> per computer compared to Solo',
-    'plans.note-html': 'One payment per period, no auto-renewal. Pix, card or boleto through <b>Mercado Pago</b>.\n    The license lives in your account: sign in with e-mail and password inside the plugin, and each computer\n    that signs in takes one seat. Need to switch machines? Deactivate the old one in the plugin or on the\n    <a href="conta.html">account page</a>.',
+    'plans.note-html': 'Payment through Mercado Pago (Pix, card or boleto).',
     'plans.per-computador': 'per computer',
     'plans.seat-one': '{n} seat',
     'plans.seat-other': '{n} seats',
@@ -776,7 +786,7 @@ export const DICT = {
     'samples.p2-html': 'Press <b>SAMPLER</b> inside the plugin: it opens the <b>BRDRUM</b> folder with the samples, in the\n      subfolders <code>Kick</code>, <code>Snare</code>, <code>Clap</code>, <code>Hat</code> and\n      <code>Tom</code>. Drop your wavs there and they join the draw <b>alongside</b> the factory ones.\n      The same goes for the generator\'s MIDIs, in the <code>Bass</code> and <code>Lead</code> folders.',
 
     'close.buy-cta': 'Buy Studio',
-    'close.legend': 'One payment per period, no auto-renewal. Pix, card or boleto through Mercado Pago. The license lives in your account.',
+    'close.legend': 'One payment per period, no auto-renewal. Pix, card or boleto through Mercado Pago.',
     'close.compat-title-html': '<b>compatible</b> with every DAW',
 
     'footer.horario-html': 'Support hours:<br>Monday to Saturday, 9am to 6:30pm (BRT)',
@@ -795,6 +805,8 @@ export const DICT = {
     'footer.signature': 'BRDRUM · Rhythm Composer - 001 · made by Brazilian Waves',
     'footer.chat-aria': 'Talk to us',
     'footer.payment-only': 'Paid through Mercado Pago, no auto-renewal',
+    'footer.termos-link': 'Terms of Use',
+    'footer.vendedor': 'BRDRUM · BRDRUM · CPF [removido] · Brasília, DF',
 
     'packs.desligado-titulo': 'The packs store is coming back soon',
     'packs.desligado-voltar': 'Back to the homepage',
@@ -858,6 +870,9 @@ export const DICT = {
     'conta.repita-senha-label': 'Repeat the password',
     'conta.repita-senha-placeholder': 'the same password',
     'conta.criar-cta': 'Create account',
+    'signup.aceite-html': 'I have read and agree to the BRDRUM <a href="termos.html" target="_blank" rel="noopener">Terms of Use</a>.',
+    'signup.aceite-obrigatorio': 'To create your account, accept the Terms of Use.',
+    'signup.rodape': 'By creating your account you agree to the Terms of Use.',
     'conta.tabs-aria': 'Account areas',
     'conta.tab-perfil': 'Profile',
     'conta.tab-licenca': 'License',
@@ -906,6 +921,10 @@ export const DICT = {
     'conta.footer-signature': 'BRDRUM · Rhythm Composer - 001 · made by Brazilian Waves',
     'conta.footer-payment': 'Paid through Mercado Pago, no auto-renewal',
 
+    // ---------- termos.html ----------
+    'termos.titulo': 'Terms of Use',
+    'termos.versao': 'Version 1, September 24, 2026',
+
     'conta.titulo-comprar': 'Sign in or create an account to buy',
     'conta.titulo-baixar': 'Create your account to download',
     'conta.aviso-baixar': "The download asks for an account: it's the same one you'll use inside the plugin. It takes 10 seconds, and the installer starts downloading right after.",
@@ -936,6 +955,7 @@ export const DICT = {
     'conta.valor-normal': '{nome} · {n}',
     'conta.pagar-valor': 'Pay {valor}',
     'conta.pagar-fallback': 'Pay',
+    'conta.ativar-gratis': 'Activate for free',
     'conta.conferindo-cupom': 'Checking the coupon…',
     'conta.cupom-aplicado': 'Coupon applied.',
     'conta.cupom-sem-efeito': "That coupon doesn't change this plan's price.",

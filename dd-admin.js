@@ -4,13 +4,13 @@
 import {
   SUPABASE_URL, getSession, select, admin, ehAdmin, loadPlans, loadPacks, publicUrl,
   avatarUrl, BRL, iniciais, TIPOS_PACK, ApiError,
-} from './dd-api.js?v=20260925d';
-import { montarTopo } from './dd-topo.js?v=20260925d';
+} from './dd-api.js?v=20260925f';
+import { montarTopo } from './dd-topo.js?v=20260925f';
 import { fmtDate } from './dd-i18n.js';
 import {
   $, el, msg, aviso as avisoUI, confirmar, perguntar, recado, abas, dataHora, quando,
   STATUS_PEDIDO, corStatus, tamanho,
-} from './dd-ui.js?v=20260925d';
+} from './dd-ui.js?v=20260925f';
 
 const est = {
   session: null, plans: [], packs: [], packAtual: null,
@@ -188,6 +188,56 @@ function teclinha(rotulo, classe, fn) {
   return b;
 }
 
+// diálogo "Conceder licença": acessos + prazo (perpétua/mensal/anual). Sem select no `perguntar`
+// genérico de dd-ui.js, então monta o próprio diálogo, no mesmo estilo visual.
+function perguntarLicenca({ seats = '1', period = 'lifetime' } = {}) {
+  return new Promise((resolve) => {
+    const back = el('div', 'dlg-back');
+    const fs = document.createElement('fieldset');
+    fs.className = 'panel dlg';
+    const lg = document.createElement('legend');
+    lg.textContent = 'Conceder licença';
+    fs.appendChild(lg);
+    fs.appendChild(el('p', 'dlg-text', 'Cria a licença (ou sobe os acessos) sem pagamento.'));
+
+    const labSeats = el('label');
+    labSeats.style.display = 'grid'; labSeats.style.gap = '5px'; labSeats.style.marginTop = '14px';
+    labSeats.appendChild(el('span', 'legend', 'Acessos'));
+    const inpSeats = document.createElement('input');
+    inpSeats.className = 'recess'; inpSeats.type = 'number'; inpSeats.min = '1'; inpSeats.max = '99'; inpSeats.value = seats;
+    labSeats.appendChild(inpSeats);
+    fs.appendChild(labSeats);
+
+    const labPeriod = el('label');
+    labPeriod.style.display = 'grid'; labPeriod.style.gap = '5px'; labPeriod.style.marginTop = '14px';
+    labPeriod.appendChild(el('span', 'legend', 'Prazo'));
+    const selPeriod = document.createElement('select');
+    selPeriod.className = 'recess';
+    for (const [v, texto] of [['lifetime', 'Perpétua'], ['monthly', 'Mensal (+1 mês)'], ['annual', 'Anual (+12 meses)']]) {
+      const o = document.createElement('option'); o.value = v; o.textContent = texto;
+      if (v === period) o.selected = true;
+      selPeriod.appendChild(o);
+    }
+    labPeriod.appendChild(selPeriod);
+    fs.appendChild(labPeriod);
+
+    const row = el('div', 'dlg-row');
+    const bNo = el('button', 'key', 'Cancelar'); bNo.type = 'button';
+    const bYes = el('button', 'key green', 'Conceder'); bYes.type = 'button';
+    row.append(bNo, bYes);
+    fs.appendChild(row);
+    back.appendChild(fs);
+    document.body.appendChild(back);
+    const fim = (v) => { back.remove(); document.removeEventListener('keydown', tecla); resolve(v); };
+    const tecla = (e) => { if (e.key === 'Escape') fim(null); };
+    document.addEventListener('keydown', tecla);
+    back.addEventListener('click', (e) => { if (e.target === back) fim(null); });
+    bNo.addEventListener('click', () => fim(null));
+    bYes.addEventListener('click', () => fim({ seats: inpSeats.value.trim(), period: selPeriod.value }));
+    inpSeats.focus(); inpSeats.select();
+  });
+}
+
 async function abrirUsuario(user_id, resumo) {
   const painel = $('u-det');
   const corpo = $('u-det-body');
@@ -265,11 +315,11 @@ async function abrirUsuario(user_id, resumo) {
     licLinha.appendChild(el('span', 'chip', 'sem licença'));
   }
   licLinha.appendChild(teclinha('Conceder licença', 'green', async () => {
-    const v = await perguntar({ titulo: 'Conceder licença', rotulo: 'Acessos', valor: '1', texto: 'Cria a licença (ou sobe os acessos) sem pagamento.' });
+    const v = await perguntarLicenca({ seats: '1', period: 'lifetime' });
     if (v == null) return;
-    const n = parseInt(v, 10);
+    const n = parseInt(v.seats, 10);
     if (!(n >= 1 && n <= 99)) return recado('Número de acessos inválido.', 'err');
-    await acaoAdmin('licenses.grant', { user_id, seats: n }, 'Licença concedida.', () => abrirUsuario(user_id, resumo));
+    await acaoAdmin('licenses.grant', { user_id, seats: n, period: v.period }, 'Licença concedida.', () => abrirUsuario(user_id, resumo));
   }));
   licBox.appendChild(licLinha);
   corpo.appendChild(licBox);
@@ -510,7 +560,7 @@ $('form-cupom').addEventListener('submit', async (e) => {
     active: true,
   };
   if (!corpo.code) return msg($('msg-cupom'), 'Escreva o código do cupom.', 'err');
-  if (corpo.kind === 'percent' && !(corpo.value >= 1 && corpo.value <= 90)) return msg($('msg-cupom'), 'Porcentagem de 1 a 90.', 'err');
+  if (corpo.kind === 'percent' && !(corpo.value >= 1 && corpo.value <= 100)) return msg($('msg-cupom'), 'Porcentagem de 1 a 100.', 'err');
   if (corpo.kind === 'fixed' && !(corpo.value >= 1)) return msg($('msg-cupom'), 'Valor fixo em centavos, a partir de 1.', 'err');
   msg($('msg-cupom'), 'Criando…');
   try {

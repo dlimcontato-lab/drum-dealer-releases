@@ -25,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Yellowtail&family=Montserrat:wght@300;500;700;800&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='4' y='4' width='92' height='92' rx='10' fill='%232a2a2c' stroke='%230e0e10' stroke-width='3'/><rect x='22' y='16' width='56' height='68' rx='6' fill='%23e0702a' stroke='%23844219' stroke-width='3'/><circle cx='50' cy='34' r='8' fill='%23ff3b2f'/><circle cx='50' cy='34' r='14' fill='%23ff3b2f' opacity='.3'/></svg>">
-<link rel="stylesheet" href="dd.css?v=20260925d">
+<link rel="stylesheet" href="dd.css?v=20260925f">
 </head>
 <body>
 <!-- impeccable direction contract · seed 4268164a (herdado do painel do plugin)
@@ -98,7 +98,7 @@ RISK: aço demais sem cor; a cor mora nas teclas e nos LEDs, nunca no fundo. -->
   </p>
 </div>
 
-<script type="module" src="dd-main.js?v=20260925d"></script>
+<script type="module" src="dd-main.js?v=20260925f"></script>
 
 <!-- bloco novo "DAW + download" (23/09): a captura do plugin no Ableton à esquerda, os dois downloads
      empilhados e a fileira de DAWs à direita. Recebe a âncora #download; a antiga seção #download
@@ -140,7 +140,7 @@ RISK: aço demais sem cor; a cor mora nas teclas e nos LEDs, nunca no fundo. -->
     <div class="logo-slot" id="logo-slot" aria-hidden="true" data-i18n-html="brand.wordmark-html"><img src="img/brdrum-logo-oficial.png" alt="BRDRUM Rhythm Composer - 001"></div>
     <h1 class="punch punch-img" data-i18n-html="statement.h1-html"><img src="img/headline-pt.png" alt="Drums infinitas com um clique" width="931" height="730"></h1>
     <p class="lead" data-i18n="statement.lead">Milhares de possibilidades com os seus samples e MIDIs, além dos pacotes que já vêm
-      dentro. Aperta RANDOM e sai uma batida pronta; aperta BASS e ele sorteia um baixo da sua pasta de MIDIs, no tom certo.</p>
+      dentro. Aperta RANDOM e sai uma batida pronta; aperta BASS ou LEAD e ele sorteia um baixo ou uma melodia da sua pasta de MIDIs, no tom certo.</p>
   </div>
   <table class="spec-table">
     <tr><th data-i18n="spec.formatos-th">Formatos</th><td data-i18n="spec.formatos-td">VST3 · AU</td></tr>
@@ -185,7 +185,7 @@ RISK: aço demais sem cor; a cor mora nas teclas e nos LEDs, nunca no fundo. -->
       <ul>
         <li data-i18n-html="plans.studio-li1-html"><b>3 computadores</b> ativos ao mesmo tempo: estúdio, notebook e a máquina do parceiro</li>
         <li data-li-desconto><b>8% de desconto</b> por computador em relação ao Solo</li>
-        <li data-i18n="plans.studio-li3">Troque de máquina quando quiser, direto no plugin</li>
+        <li data-i18n="plans.studio-li3">Atualizações incluídas</li>
       </ul>
       <a class="key green" href="conta.html?plano=studio&periodo=annual" data-i18n="plans.studio-cta">Comprar Studio</a>
     </article>
@@ -203,10 +203,7 @@ RISK: aço demais sem cor; a cor mora nas teclas e nos LEDs, nunca no fundo. -->
       <a class="key green" href="conta.html?plano=team&periodo=annual" data-i18n="plans.team-cta">Comprar Equipe</a>
     </article>
   </div>
-  <p class="plans-note" data-i18n-html="plans.note-html">Pagamento único por período, sem renovação automática. Pix, cartão ou boleto pelo <b>Mercado Pago</b>.
-    A licença fica na sua conta: você entra com e-mail e senha dentro do plugin, e cada computador que
-    entra ocupa um acesso. Precisa trocar de máquina? Desativa a antiga no próprio plugin ou na
-    <a href="conta.html">página da conta</a>.</p>
+  <p class="plans-note" data-i18n-html="plans.note-html">Pagamento pelo Mercado Pago (Pix, cartão ou boleto).</p>
 </section>
 
 <!-- vídeos de produtores usando o BRDRUM (lista em dd-reviews.js; a seção só aparece quando houver vídeo) -->
@@ -348,7 +345,7 @@ RISK: aço demais sem cor; a cor mora nas teclas e nos LEDs, nunca no fundo. -->
   <div class="wrap close-grid">
     <div class="close-buy">
       <a class="key green big" href="conta.html?plano=studio" data-i18n="close.buy-cta">Comprar Studio</a>
-      <p class="legend" data-i18n="close.legend">Pagamento único por período, sem renovação automática. Pix, cartão ou boleto pelo Mercado Pago. A licença fica na sua conta.</p>
+      <p class="legend" data-i18n="close.legend">Pagamento único por período, sem renovação automática. Pix, cartão ou boleto pelo Mercado Pago.</p>
     </div>
     <div class="close-dl">
       <p class="compat-title small" data-i18n-html="close.compat-title-html"><b>compatível</b> com todas as DAWs</p>
@@ -366,13 +363,14 @@ RISK: aço demais sem cor; a cor mora nas teclas e nos LEDs, nunca no fundo. -->
       <a class="key cream small-help" id="ajuda" href="conta.html" data-i18n="footer.ajuda">Central de ajuda</a>
     </div>
     <div class="footer-cols">
-      <div><h4 data-i18n="footer.institucional-title">Institucional</h4><a href="./#precos" data-i18n="footer.planos-link">Planos</a><!-- Sample Packs desligado 23/09 a pedido do Diogo --><a href="./#instalacao" data-i18n="footer.instalacao-link">Instalação</a></div>
+      <div><h4 data-i18n="footer.institucional-title">Institucional</h4><a href="./#precos" data-i18n="footer.planos-link">Planos</a><!-- Sample Packs desligado 23/09 a pedido do Diogo --><a href="./#instalacao" data-i18n="footer.instalacao-link">Instalação</a><a href="termos.html" data-i18n="footer.termos-link">Termos de Uso</a></div>
       <div><h4 data-i18n="footer.suporte-title">Suporte</h4><a href="conta.html" data-i18n="footer.conta-link">Minha conta</a><a href="conta.html?baixar=mac" data-i18n="footer.download-link">Download</a></div>
     </div>
   </div>
   <div class="wrap footer-bottom">
     <span class="pay-chips"><i data-i18n="footer.pay-pix">Pix</i><i data-i18n="footer.pay-cartao">Cartão</i><i data-i18n="footer.pay-boleto">Boleto</i><i data-i18n="footer.pay-mp">Mercado Pago</i></span>
     <span class="legend" data-i18n="footer.signature">BRDRUM · Rhythm Composer - 001 · criado por Brazilian Waves</span>
+    <span class="legend" data-i18n="footer.vendedor">BRDRUM · BRDRUM · CPF [removido] · Brasília, DF</span>
   </div>
 </footer>
 
@@ -380,8 +378,8 @@ RISK: aço demais sem cor; a cor mora nas teclas e nos LEDs, nunca no fundo. -->
   <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 6C12.4 6 4 13.6 4 23c0 4.8 2.3 9.1 6 12.2L8 42l9.6-4.2c2 .5 4.2.8 6.4.8 11.6 0 20-7.6 20-17S35.6 6 24 6z" fill="currentColor"/><circle cx="16" cy="23" r="2.6" fill="#1b1b1c"/><circle cx="24" cy="23" r="2.6" fill="#1b1b1c"/><circle cx="32" cy="23" r="2.6" fill="#1b1b1c"/></svg>
 </a>
 
-<script type="module" src="dd-topo.js?v=20260925d"></script>
-<script type="module" src="dd-precos.js?v=20260925d"></script>
-<script type="module" src="dd-reviews.js?v=20260925d"></script>
+<script type="module" src="dd-topo.js?v=20260925f"></script>
+<script type="module" src="dd-precos.js?v=20260925f"></script>
+<script type="module" src="dd-reviews.js?v=20260925f"></script>
 </body>
 </html>

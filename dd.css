@@ -419,6 +419,16 @@ section{padding:var(--s6) 0}
 .sec-head h2{max-width:24ch}
 .sec-head .legend{white-space:nowrap}
 
+/* termos.html: prosa jurídica, uma coluna estreita, PT/EN alternados por data-i18n/getLang() */
+.termos-versao{margin-top:6px}
+.termos-corpo{max-width:70ch;margin-top:var(--s4)}
+.termos-corpo h2{margin-top:var(--s5);margin-bottom:.6em}
+.termos-corpo h2:first-child{margin-top:0}
+.termos-corpo h3{margin-top:var(--s3);margin-bottom:.5em}
+.termos-corpo p{margin-bottom:1em}
+.termos-corpo ul,.termos-corpo ol{margin:0 0 1em 1.3em}
+.termos-corpo li{margin-bottom:.4em}
+
 .statement{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:var(--s5);align-items:end;padding:var(--s5) 0 var(--s6)}
 .spec{padding:24px 20px 18px}
 .spec dl{display:grid;gap:9px}
@@ -549,6 +559,12 @@ footer{margin-top:var(--s5);padding-top:var(--s3);border-top:1px solid var(--lan
 .form .key{width:100%}
 .form-row{display:flex;gap:12px;flex-wrap:wrap}
 .form-row .key{flex:1}
+/* caixa de aceite (Termos de Uso no cadastro, 24/09): alvo de toque >= 44px, texto em linha com
+   o quadrado, nunca em grid — sobrescreve ".form label{display:grid}" só para ".check". */
+.form label.check{display:flex;align-items:flex-start;gap:10px;min-height:44px;padding:6px 0;cursor:pointer}
+.form label.check input[type="checkbox"]{flex:none;width:20px;height:20px;margin-top:2px;accent-color:var(--orange);cursor:pointer}
+.form label.check span{font-size:var(--t-small);color:var(--silk-dim);line-height:1.45}
+.form label.check span a{color:var(--silk);text-decoration:underline;text-underline-offset:2px}
 .status-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .machines{list-style:none;display:grid;gap:10px;margin-top:12px}
 .machines li{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 12px;font-size:var(--t-small)}

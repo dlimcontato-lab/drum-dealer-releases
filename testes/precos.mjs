@@ -5,8 +5,13 @@
 // não rodou nesta task). Mesmo sem rede, dd-precos.js completa com PLANOS_PADRAO (a tabela
 // da spec de 23/09) quando loadPlans() falha, então a pílula troca preço, off%, linha do
 // período e href de verdade — não é decorativa.
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
 import { abrir } from './cdp.mjs';
 
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const RAIZ = join(__dirname, '..');
 const BASE = process.argv[2] || 'http://localhost:8123';
 const BLOQUEIO = ['*bwzngjvjxrqbalvoadpu.supabase.co*'];
 let falhas = 0;
@@ -142,6 +147,17 @@ const ok = (c, m) => { console.log((c ? 'ok: ' : 'FAIL: ') + m); if (!c) falhas+
     await s.esperar(1000);
     ok(s.erros.length === 0, `?renovar=1 sem console.error (${JSON.stringify(s.erros)})`);
   } finally { s.fechar(); }
+}
+
+// ---------- (i): cupom grátis (24/09) — asserção estática, sem servidor nem login ----------
+{
+  const i18n = readFileSync(join(RAIZ, 'dd-i18n.js'), 'utf8');
+  const admin = readFileSync(join(RAIZ, 'admin.html'), 'utf8');
+  const blocoPt = i18n.slice(0, i18n.indexOf('\n  en: {'));
+  const blocoEn = i18n.slice(i18n.indexOf('\n  en: {'));
+  ok(/'conta\.ativar-gratis':\s*'Ativar grátis'/.test(blocoPt), "dd-i18n.js (pt) tem 'conta.ativar-gratis'");
+  ok(/'conta\.ativar-gratis':\s*'Activate for free'/.test(blocoEn), "dd-i18n.js (en) tem 'conta.ativar-gratis'");
+  ok(admin.includes('12+ caracteres e usos máximos obrigatórios'), 'admin.html tem a legenda do cupom grátis');
 }
 
 console.log(falhas === 0 ? 'PRECOS: todos os testes passaram' : `${falhas} falhas`);

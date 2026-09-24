@@ -56,8 +56,11 @@ function traduzAuth(code, msg, status) {
   return msg || t('api.auth-generico');
 }
 
-export async function signUp(email, password) {
-  const json = await auth('signup', { email, password });
+// meta (opcional): metadados do usuário no Supabase Auth (ex.: aceite dos Termos de Uso).
+// A REST do GoTrue recebe esses dados no campo "data" do corpo de /signup — é o mesmo conteúdo
+// que o cliente supabase-js chamaria de options.data, só que aqui é fetch cru, sem SDK.
+export async function signUp(email, password, meta) {
+  const json = await auth('signup', meta ? { email, password, data: meta } : { email, password });
   if (json.access_token) { const s = fromAuth(json); save(s); return s; }
   // confirmação por e-mail ligada no projeto: sem sessão ainda
   return null;
