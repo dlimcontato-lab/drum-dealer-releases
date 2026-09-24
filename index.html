@@ -25,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Yellowtail&family=Montserrat:wght@300;500;700;800&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='4' y='4' width='92' height='92' rx='10' fill='%232a2a2c' stroke='%230e0e10' stroke-width='3'/><rect x='22' y='16' width='56' height='68' rx='6' fill='%23e0702a' stroke='%23844219' stroke-width='3'/><circle cx='50' cy='34' r='8' fill='%23ff3b2f'/><circle cx='50' cy='34' r='14' fill='%23ff3b2f' opacity='.3'/></svg>">
-<link rel="stylesheet" href="dd.css?v=20260923e">
+<link rel="stylesheet" href="dd.css?v=20260925d">
 </head>
 <body>
 <!-- impeccable direction contract · seed 4268164a (herdado do painel do plugin)
@@ -58,8 +58,13 @@ RISK: aço demais sem cor; a cor mora nas teclas e nos LEDs, nunca no fundo. -->
     <source src="video/apresentacao.mp4?v=3" type="video/mp4">
   </video>
   <div class="hero-ctrls">
-    <button class="key small" id="hero-sound" type="button" aria-label="Ligar o som do vídeo" data-i18n-attr="aria-label:hero.sound-on-aria"><span class="led" aria-hidden="true"></span><span data-i18n="hero.sound-label">Som</span></button>
-    <button class="key small" id="hero-toggle" type="button" aria-label="Pausar vídeo" data-i18n-attr="aria-label:hero.pause-aria" data-i18n="hero.pause-text">Pausar</button>
+    <button class="key sound" id="hero-sound" type="button" aria-label="Som" data-i18n-attr="aria-label:hero.sound-label">
+      <svg class="hero-sound-ico" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4 9v6h4l5 5V4L8 9H4z" fill="currentColor"/>
+        <g class="waves"><path d="M16.5 8.5a5 5 0 010 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M19 6a9 9 0 010 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></g>
+        <g class="mute-x"><path d="M16.5 9.5l5 5m0-5l-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></g>
+      </svg>
+    </button>
   </div>
 </div>
 
@@ -88,12 +93,12 @@ RISK: aço demais sem cor; a cor mora nas teclas e nos LEDs, nunca no fundo. -->
   </div>
 
   <p class="hero-note legend">
-    <span data-i18n="hero.note-1">Motor C++ do plugin em WebAssembly · samples de fábrica · não é vídeo, é o instrumento</span>
+    <span data-i18n="hero.note-1">Versão web de teste · é o mesmo BRDRUM do plugin, rodando aqui no navegador</span>
     <span data-i18n="hero.note-2">Arraste os knobs · duplo clique volta ao padrão · clique no nome do instrumento pra trocar o som</span>
   </p>
 </div>
 
-<script type="module" src="dd-main.js?v=20260925b"></script>
+<script type="module" src="dd-main.js?v=20260925d"></script>
 
 <!-- bloco novo "DAW + download" (23/09): a captura do plugin no Ableton à esquerda, os dois downloads
      empilhados e a fileira de DAWs à direita. Recebe a âncora #download; a antiga seção #download
@@ -107,12 +112,12 @@ RISK: aço demais sem cor; a cor mora nas teclas e nos LEDs, nunca no fundo. -->
       <a class="key cream dl" data-baixar="win" href="conta.html?baixar=win">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.9l7.6-1v7.2H3V5.9zm0 12.2l7.6 1v-7.1H3v6.1zm8.7 1.2L21 20.6v-8.6h-9.3v7.3zM11.7 4.2L21 3v8.2h-9.3V4.2z"/></svg>
         <span data-i18n="download.win-cta">Baixar para Windows</span>
-        <small data-i18n="download.win-sub">.exe · Windows 10/11, 64 bits</small>
+        <small data-i18n="download.win-sub">.zip · instalador .exe, tutorial PT/EN e LEIA-ME · Windows 10/11, 64 bits</small>
       </a>
       <a class="key cream dl" data-baixar="mac" href="conta.html?baixar=mac">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.4 12.8c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9s-1.8-.9-3-.8c-1.5 0-2.9.9-3.7 2.3-1.6 2.7-.4 6.8 1.1 9 .8 1.1 1.7 2.3 2.9 2.3 1.2 0 1.6-.7 3-.7s1.8.7 3 .7c1.3 0 2.1-1.1 2.8-2.2.9-1.2 1.3-2.5 1.3-2.5s-2.5-1-2.5-3.7zM14.2 5.7c.6-.8 1.1-1.9 1-3-.9 0-2.1.6-2.8 1.4-.6.7-1.2 1.8-1 2.9 1 .1 2.1-.5 2.8-1.3z"/></svg>
         <span data-i18n="download.mac-cta">Baixar para Mac</span>
-        <small data-i18n="download.mac-sub">.pkg · Intel e Apple Silicon · macOS 10.15+</small>
+        <small data-i18n="download.mac-sub">.zip · instalador .pkg, tutorial PT/EN e LEIA-ME · macOS 10.15+, Intel e Apple Silicon</small>
       </a>
     </div>
     <div class="daw-download-compat">
@@ -291,8 +296,8 @@ RISK: aço demais sem cor; a cor mora nas teclas e nos LEDs, nunca no fundo. -->
       <legend data-i18n="install.mac-legend">Mac</legend>
       <h3><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M16.4 12.8c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9s-1.8-.9-3-.8c-1.5 0-2.9.9-3.7 2.3-1.6 2.7-.4 6.8 1.1 9 .8 1.1 1.7 2.3 2.9 2.3 1.2 0 1.6-.7 3-.7s1.8.7 3 .7c1.3 0 2.1-1.1 2.8-2.2.9-1.2 1.3-2.5 1.3-2.5s-2.5-1-2.5-3.7zM14.2 5.7c.6-.8 1.1-1.9 1-3-.9 0-2.1.6-2.8 1.4-.6.7-1.2 1.8-1 2.9 1 .1 2.1-.5 2.8-1.3z"/></svg><span data-i18n="install.mac-h3">macOS 10.15 ou mais novo</span></h3>
       <ol>
-        <li data-i18n-html="install.mac-li1-html">Crie sua conta e baixe o <b>BRDRUM-macOS.pkg</b> no botão acima.</li>
-        <li data-i18n="install.mac-li2">Dê dois cliques no .pkg e siga o instalador (avançar, avançar, instalar).</li>
+        <li data-i18n-html="install.mac-li1-html">Crie sua conta e baixe o <b>BRDRUM-macOS.zip</b> no botão acima.</li>
+        <li data-i18n="install.mac-li2">Descompacte o zip e dê dois cliques no .pkg; siga o instalador (avançar, avançar, instalar).</li>
         <li data-i18n="install.mac-li3">Abra seu DAW e mande escanear os plugins de novo.</li>
         <li data-i18n-html="install.mac-li4-html">Procure <b>BRDRUM</b> nos instrumentos, arraste pra uma track MIDI e entre com sua conta.</li>
       </ol>
@@ -305,8 +310,8 @@ RISK: aço demais sem cor; a cor mora nas teclas e nos LEDs, nunca no fundo. -->
       <legend data-i18n="install.win-legend">Windows</legend>
       <h3><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5.9l7.6-1v7.2H3V5.9zm0 12.2l7.6 1v-7.1H3v6.1zm8.7 1.2L21 20.6v-8.6h-9.3v7.3zM11.7 4.2L21 3v8.2h-9.3V4.2z"/></svg><span data-i18n="install.win-h3">Windows 10 e 11, 64 bits</span></h3>
       <ol>
-        <li data-i18n-html="install.win-li1-html">Crie sua conta e baixe o <b>BRDRUM-Windows-Setup.exe</b> no botão acima.</li>
-        <li data-i18n-html="install.win-li2-html">Execute e siga o instalador. Se o SmartScreen avisar, clique em <b>Mais informações → Executar assim mesmo</b>.</li>
+        <li data-i18n-html="install.win-li1-html">Crie sua conta e baixe o <b>BRDRUM-Windows.zip</b> no botão acima.</li>
+        <li data-i18n-html="install.win-li2-html">Descompacte o zip e execute o .exe; siga o instalador. Se o SmartScreen avisar, clique em <b>Mais informações → Executar assim mesmo</b>.</li>
         <li data-i18n-html="install.win-li3-html">Abra seu DAW e mande escanear os plugins (o VST3 vai pra pasta padrão <code>C:\Program Files\Common Files\VST3</code>).</li>
         <li data-i18n-html="install.win-li4-html">Procure <b>BRDRUM</b> nos instrumentos, arraste pra uma track MIDI e entre com sua conta.</li>
       </ol>
@@ -347,8 +352,8 @@ RISK: aço demais sem cor; a cor mora nas teclas e nos LEDs, nunca no fundo. -->
     </div>
     <div class="close-dl">
       <p class="compat-title small" data-i18n-html="close.compat-title-html"><b>compatível</b> com todas as DAWs</p>
-      <a class="key cream dl" data-baixar="mac" href="conta.html?baixar=mac"><span data-i18n="download.mac-cta">Baixar para Mac</span><small data-i18n="download.mac-sub">.pkg · Intel e Apple Silicon · macOS 10.15+</small></a>
-      <a class="key cream dl" data-baixar="win" href="conta.html?baixar=win"><span data-i18n="download.win-cta">Baixar para Windows</span><small data-i18n="download.win-sub">.exe · Windows 10/11, 64 bits</small></a>
+      <a class="key cream dl" data-baixar="mac" href="conta.html?baixar=mac"><span data-i18n="download.mac-cta">Baixar para Mac</span><small data-i18n="download.mac-sub">.zip · instalador .pkg, tutorial PT/EN e LEIA-ME · macOS 10.15+, Intel e Apple Silicon</small></a>
+      <a class="key cream dl" data-baixar="win" href="conta.html?baixar=win"><span data-i18n="download.win-cta">Baixar para Windows</span><small data-i18n="download.win-sub">.zip · instalador .exe, tutorial PT/EN e LEIA-ME · Windows 10/11, 64 bits</small></a>
     </div>
   </div>
 </div>
@@ -375,8 +380,8 @@ RISK: aço demais sem cor; a cor mora nas teclas e nos LEDs, nunca no fundo. -->
   <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 6C12.4 6 4 13.6 4 23c0 4.8 2.3 9.1 6 12.2L8 42l9.6-4.2c2 .5 4.2.8 6.4.8 11.6 0 20-7.6 20-17S35.6 6 24 6z" fill="currentColor"/><circle cx="16" cy="23" r="2.6" fill="#1b1b1c"/><circle cx="24" cy="23" r="2.6" fill="#1b1b1c"/><circle cx="32" cy="23" r="2.6" fill="#1b1b1c"/></svg>
 </a>
 
-<script type="module" src="dd-topo.js?v=20260925b"></script>
-<script type="module" src="dd-precos.js?v=20260925b"></script>
-<script type="module" src="dd-reviews.js?v=20260925b"></script>
+<script type="module" src="dd-topo.js?v=20260925d"></script>
+<script type="module" src="dd-precos.js?v=20260925d"></script>
+<script type="module" src="dd-reviews.js?v=20260925d"></script>
 </body>
 </html>

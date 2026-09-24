@@ -2,7 +2,6 @@
 // Para adicionar um vídeo: coloque o arquivo em video/ e acrescente uma entrada aqui.
 // { src: 'video/produtor-1.mp4', poster: 'img/produtor-1.jpg', who: '@usuario' }
 // Para embutir direto do Instagram: { embed: 'https://www.instagram.com/reel/XXXX/embed', who: '@usuario' }
-import { t } from './dd-i18n.js';
 
 export const REVIEWS = [];
 
@@ -48,27 +47,16 @@ if ($('ajuda') && LINKS.ajuda) $('ajuda').href = LINKS.ajuda;
 const bubble = $('chat-bubble');
 if (bubble && LINKS.whatsapp) { bubble.href = LINKS.whatsapp; bubble.target = '_blank'; bubble.rel = 'noopener'; bubble.hidden = false; }
 
-// vídeo de apresentação: autoplay mudo em loop; respeita "reduzir movimento"
-const v = $('apresentacao'), tog = $('hero-toggle');
-if (v && tog) {
-  const reduz = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const pinta = () => {
-    tog.setAttribute('data-i18n', v.paused ? 'hero.play-text' : 'hero.pause-text');
-    tog.setAttribute('data-i18n-attr', v.paused ? 'aria-label:hero.play-aria' : 'aria-label:hero.pause-aria');
-    tog.textContent = t(v.paused ? 'hero.play-text' : 'hero.pause-text');
-    tog.setAttribute('aria-label', t(v.paused ? 'hero.play-aria' : 'hero.pause-aria'));
-  };
-  if (reduz) { v.removeAttribute('autoplay'); v.pause(); }
-  else v.play().catch(() => {});
-  v.addEventListener('play', pinta); v.addEventListener('pause', pinta);
-  tog.addEventListener('click', () => { v.paused ? v.play() : v.pause(); });
-  pinta();
+// vídeo de apresentação: autoplay mudo em loop, roda sempre (24/09, pedido do Diogo: o vídeo
+// nunca trava, só o som liga/desliga — sem tecla de pausar, sem lógica de "reduzir movimento"
+// parando o vídeo).
+const v = $('apresentacao');
+if (v) {
+  v.play().catch(() => {});
   const som = $('hero-sound');
   if (som) som.addEventListener('click', () => {
     v.muted = !v.muted;
     if (!v.muted && v.paused) v.play().catch(() => {});
     som.classList.toggle('on', !v.muted);
-    som.setAttribute('data-i18n-attr', 'aria-label:' + (v.muted ? 'hero.sound-on-aria' : 'hero.sound-off-aria'));
-    som.setAttribute('aria-label', t(v.muted ? 'hero.sound-on-aria' : 'hero.sound-off-aria'));
   });
 }

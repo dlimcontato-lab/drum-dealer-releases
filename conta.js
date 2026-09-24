@@ -5,12 +5,12 @@ import {
   signIn, signUp, signOut, getSession, select, call, loadPlans, loadProfile, saveProfile,
   uploadAvatar, changePassword, logoutAll, seats as fnSeats, quote, packDownload, loadPacks,
   precosDoPlano, BRL, ApiError, DOWNLOADS, TIPOS_PACK, publicUrl, primeiroNome,
-} from './dd-api.js?v=20260925b';
-import { montarTopo, avatarNode } from './dd-topo.js?v=20260925b';
+} from './dd-api.js?v=20260925d';
+import { montarTopo, avatarNode } from './dd-topo.js?v=20260925d';
 import {
   $, el, msg, aviso as avisoUI, confirmar, perguntar, recado, abas, quando, dataHora,
   statusPedidoLabel, corStatus, tamanho, copiar, recortarQuadrado,
-} from './dd-ui.js?v=20260925b';
+} from './dd-ui.js?v=20260925d';
 import { t, seatsLabel, seatWord, fmtDate } from './dd-i18n.js';
 
 const params = new URLSearchParams(location.search);
@@ -713,7 +713,37 @@ async function abrirConta(session) {
   if (renovar) $('panel-buy').scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
+// Dispara o download clicando num <a href> de verdade, sem `download=""` (o arquivo vem de
+// github.com com redirect pra objects.githubusercontent.com — outra origem, onde o atributo é
+// ignorado pelo navegador; quem decide se baixa ou abre é o cabeçalho Content-Disposition do
+// GitHub). É só a tentativa automática: nunca é a única forma de baixar (ver mostrarAvisoDownload).
+function dispararDownload(sistema) {
+  const a = document.createElement('a');
+  a.href = DOWNLOADS[sistema];
+  a.rel = 'noopener';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+
+// Aviso neutro com o link permanente de fallback — regra do Diogo (24/09): quem tem conta SEMPRE
+// consegue baixar, com ou sem licença; o aviso nunca fala de plano nem manda pra aba de compra.
+// Guarda o sistema pra repintar se o idioma mudar (dd-lang-changed, mais abaixo).
+let avisoDownloadAtivo = null;
+function mostrarAvisoDownload(sistema) {
+  avisoDownloadAtivo = sistema;
+  const status = t(sistema === 'mac' ? 'conta.instalador-mac-baixando' : 'conta.instalador-win-baixando');
+  const rotulo = t(sistema === 'mac' ? 'conta.baixar-mac' : 'conta.baixar-win');
+  const linkTexto = t('conta.download-nao-comecou');
+  aviso(`<p>${escapar(status)}</p><p class="dl-fallback">${escapar(linkTexto)} <a class="key cream small" href="${DOWNLOADS[sistema]}" rel="noopener">${escapar(rotulo)}</a></p>`, 'ok');
+}
+
 async function depoisDoLogin(session) {
+  // o mais cedo possível, antes de esperar a conta (await abrirConta faz várias chamadas de
+  // rede): Safari e o bloqueador de pop-up do Chrome descartam clique programático fora do gesto
+  // do usuário, e cada await depois do submit do formulário afasta mais o clique desse gesto.
+  // Mesmo assim, nunca é a única forma de baixar — o link permanente do aviso é que garante.
+  if (baixarPedido && DOWNLOADS[baixarPedido]) dispararDownload(baixarPedido);
   await abrirConta(session);
   if (planoPedido && plans.some((p) => p.id === planoPedido)) {
     history.replaceState(null, '', 'conta.html#licenca');
@@ -722,15 +752,9 @@ async function depoisDoLogin(session) {
     aviso(t('conta.pagamento-confirmado'), '');
   } else if (baixarPedido && DOWNLOADS[baixarPedido]) {
     history.replaceState(null, '', 'conta.html');
-    const a = document.createElement('a');
-    a.href = DOWNLOADS[baixarPedido]; a.download = ''; document.body.appendChild(a); a.click(); a.remove();
-    if (est.lic) {
-      aviso(t(baixarPedido === 'mac' ? 'conta.instalador-mac-baixando-com-licenca' : 'conta.instalador-win-baixando-com-licenca'), 'ok');
-    } else {
-      location.hash = '#licenca';
-      aviso(t(baixarPedido === 'mac' ? 'conta.instalador-mac-baixando-sem-licenca' : 'conta.instalador-win-baixando-sem-licenca'), 'ok');
-      $('panel-buy').scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
+    // com ou sem licença: o download sempre acontece, o aviso é sempre o mesmo (neutro), nunca
+    // manda pra aba de compra — ter conta já é o suficiente pra baixar o instalador
+    mostrarAvisoDownload(baixarPedido);
   }
 }
 
@@ -779,6 +803,6 @@ async function esperarLicenca() {
 
 // idioma: repinta a página logada (ou a tela de entrar) sem recarregar nem repetir chamadas de rede
 document.addEventListener('dd-lang-changed', () => {
-  if (est.session) pintarTudo();
+  if (est.session) { pintarTudo(); if (avisoDownloadAtivo) mostrarAvisoDownload(avisoDownloadAtivo); }
   else renderAuth();
 });

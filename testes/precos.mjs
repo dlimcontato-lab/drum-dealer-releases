@@ -33,9 +33,14 @@ const ok = (c, m) => { console.log((c ? 'ok: ' : 'FAIL: ') + m); if (!c) falhas+
         soloOffTexto: solo.querySelector('.off').textContent,
         offHidden: off.hidden, offTexto: off.textContent,
         ctaHrefs: ctas.map((a) => a.getAttribute('href')),
+        amountColor: getComputedStyle(solo.querySelector('.amount')).color,
+        centsColor: getComputedStyle(solo.querySelector('.cents')).color,
       };
     })()`);
     ok(antes.nOpts === 2, `#period-switch tem 2 .period-opt (${antes.nOpts})`);
+    // item 7 (24/09, pedido do Diogo): valor do plano em branco, sem o laranja/amarelo de alerta
+    ok(antes.amountColor === 'rgb(255, 255, 255)', `.amount em branco (${antes.amountColor})`);
+    ok(antes.centsColor === 'rgb(255, 255, 255)', `.cents em branco (${antes.centsColor})`);
     ok(antes.annualSel === true, 'a opção "annual" começa com .sel');
     ok(antes.soloAmount === '39' && antes.soloCents === ',90', `solo mostra 39,90 no anual (${antes.soloAmount}${antes.soloCents})`);
     ok(antes.soloOffHidden === false && antes.soloOffTexto === '-20%', `off do solo visível com -20% no anual (hidden=${antes.soloOffHidden} texto=${antes.soloOffTexto})`);

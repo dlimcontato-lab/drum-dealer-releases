@@ -98,10 +98,62 @@ try {
     if (largura === 390) {
       ok(r.larguraPagina === 390, `em 390px a página não rola na horizontal (scrollWidth=${r.larguraPagina})`);
       ok(r.caixaRight <= 390, `.aparelho-caixa cabe em 390px sem cortar (right=${r.caixaRight})`);
+
+      // item 6 (24/09, pedido do Diogo): no mobile o seletor PT|EN (.langsw) fica na mesma
+      // linha da nav, encostado à direita respeitando o gutter da .wrap-wide (12px)
+      const nav390 = await s.avaliar(`(() => {
+        const rect = (n) => { const r = n.getBoundingClientRect(); return { top: Math.round(r.top), right: Math.round(r.right) }; };
+        return { link: rect(document.querySelector('.topbar nav a')), lang: rect(document.querySelector('.langsw')), clientWidth: document.documentElement.clientWidth };
+      })()`);
+      ok(Math.abs(nav390.lang.top - nav390.link.top) <= 2,
+        `.langsw na mesma altura do primeiro link da nav em 390px (lang=${nav390.lang.top} link=${nav390.link.top})`);
+      ok(nav390.lang.right <= nav390.clientWidth - 12,
+        `.langsw encostado à direita respeitando o gutter de 12px em 390px (right=${nav390.lang.right}, limite=${nav390.clientWidth - 12})`);
+
+      // bug 24/09 (print do Diogo, iPhone): a captura do DAW, as teclas de download e o parágrafo
+      // do título iam até a borda da tela, sem o gutter de 16px que o resto da página respeita
+      // (.daw-download e .statement2 zeravam o padding horizontal do .wrap com o atalho
+      // "padding: A 0 B"). Confere os três com folga >= 16px de cada lado.
+      const gutter = await s.avaliar(`(() => {
+        const rect = (n) => { const r = n.getBoundingClientRect(); return { left: Math.round(r.left), right: Math.round(r.right) }; };
+        return {
+          img: rect(document.querySelector('.daw-download-shot img')),
+          teclas: [...document.querySelectorAll('.daw-download-panel .key')].map(rect),
+          lead: rect(document.querySelector('.statement2 .lead')),
+        };
+      })()`);
+      ok(gutter.img.left >= 16 && gutter.img.right <= 374,
+        `.daw-download-shot img respeita o gutter de 16px em 390px (${gutter.img.left}..${gutter.img.right})`);
+      ok(gutter.teclas.length > 0 && gutter.teclas.every((k) => k.left >= 16 && k.right <= 374),
+        `.daw-download-panel .key (DOWNLOAD FOR WINDOWS/MAC) respeitam o gutter de 16px em 390px (${JSON.stringify(gutter.teclas)})`);
+      ok(gutter.lead.left >= 16 && gutter.lead.right <= 374,
+        `.statement2 .lead respeita o gutter de 16px em 390px (${gutter.lead.left}..${gutter.lead.right})`);
     }
     if (largura === 320) {
       ok(r.larguraPagina === 320, `em 320px a página não rola na horizontal (scrollWidth=${r.larguraPagina})`);
     }
+  }
+  if (r) {
+    // item 8 (24/09, pedido do Diogo): só o botão de mudo no vídeo, sem tecla de pausar
+    const heroVideo = await s.avaliar(`(() => {
+      const wrap = document.getElementById('hero-video');
+      const botoes = [...wrap.querySelectorAll('button')];
+      const v = document.getElementById('apresentacao');
+      const antesMuted = v.muted, antesPaused = v.paused;
+      botoes[0].click();
+      return {
+        nBotoes: botoes.length,
+        temAriaLabel: botoes.every((b) => !!b.getAttribute('aria-label')),
+        temPausar: wrap.textContent.toUpperCase().includes('PAUSAR'),
+        antesMuted, antesPaused,
+        depoisMuted: v.muted, depoisPaused: v.paused,
+      };
+    })()`);
+    ok(heroVideo.nBotoes === 1, `.hero-video tem exatamente 1 button (${heroVideo.nBotoes})`);
+    ok(heroVideo.temAriaLabel, 'o botão do vídeo tem aria-label');
+    ok(!heroVideo.temPausar, 'nenhum texto "PAUSAR" dentro de .hero-video');
+    ok(heroVideo.antesMuted !== heroVideo.depoisMuted, `clicar alterna video.muted (${heroVideo.antesMuted} -> ${heroVideo.depoisMuted})`);
+    ok(heroVideo.depoisPaused === false, `video.paused continua false depois do clique (${heroVideo.depoisPaused})`);
   }
   if (r && !movel) {
     // STEPS 32 + BAR 2: os números do cabeçalho viram 17..32 (só o rótulo — o motor ainda é de

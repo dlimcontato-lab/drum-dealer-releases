@@ -502,10 +502,18 @@ export function montarPainel(raiz, L, params, palJson, ao) {
   const medidores = [L.meterL, L.meterR].map((b) => peca(peca(raiz, 'div', 'p-meter', b), 'i', ''));
   L.meterMarks.forEach((m) => { legenda(raiz, m.text, m.label, 'esq'); peca(raiz, 'i', 'p-tick', m.tick); });
 
-  // tela de pixels com o Pal
+  // tela de pixels com o Pal — a grade (cols x rows do pal.json) tem de caber inteira dentro da
+  // caixa (bug 24/09: célula fixa de 9px em dd.css vazava por cima e por baixo). cell = a maior
+  // célula quadrada que cabe nas duas dimensões; a caixa tem 1px de borda de cada lado
+  // (box-sizing:border-box em .p-abs), por isso o -2.
   const tela = peca(raiz, 'div', 'p-pixels', L.pixelScreen);
   tela.setAttribute('role', 'img');
   tela.setAttribute('aria-label', t('panel.pal-aria'));
+  const [, , palLargura, palAltura] = L.pixelScreen;
+  const BORDA_TELA = 2;
+  const celula = Math.min((palLargura - BORDA_TELA) / palJson.cols, (palAltura - BORDA_TELA) / palJson.rows);
+  tela.style.setProperty('--pal-cols', palJson.cols);
+  tela.style.setProperty('--pal-cell', celula + 'px');
   const pixels = [];
   for (let k = 0; k < palJson.cols * palJson.rows; k++) pixels.push(peca(tela, 'i', ''));
   pintarPal(pixels, palJson.sheet[0].join(''));

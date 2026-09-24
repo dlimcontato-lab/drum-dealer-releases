@@ -143,9 +143,11 @@ export function precosDoPlano(p) {
   return { mensal: precoEfetivo({ ...p, price_cents: mensal }), anualMes, anualTotal };
 }
 
+// 24/09: o download virou um zip (instalador + tutorial PT/EN + LEIA-ME). Os .pkg/.exe soltos
+// continuam existindo na release, mas o site só aponta pros zips a partir de agora.
 export const DOWNLOADS = {
-  mac: 'https://github.com/dlimcontato-lab/drum-dealer-releases/releases/latest/download/BRDRUM-macOS.pkg',
-  win: 'https://github.com/dlimcontato-lab/drum-dealer-releases/releases/latest/download/BRDRUM-Windows-Setup.exe',
+  mac: 'https://github.com/dlimcontato-lab/drum-dealer-releases/releases/latest/download/BRDRUM-macOS.zip',
+  win: 'https://github.com/dlimcontato-lab/drum-dealer-releases/releases/latest/download/BRDRUM-Windows.zip',
 };
 
 // ============================================================================

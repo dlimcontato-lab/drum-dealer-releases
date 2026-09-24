@@ -3,7 +3,7 @@
 const DT = 1 / 30;
 const EVENTOS = { click: 0, decision: 1, rand: 2, play: 3, stop: 4 };
 
-export function criarPal({ espelho: M, pixels, aparelho, lerEntradas }) {
+export function criarPal({ espelho: M, pixels, aparelho, lerEntradas, pixelScreen }) {
   M._web_pal_reset(0);
   const entrada = M._malloc(15 * 4);
   const saida = M._malloc(260);
@@ -11,12 +11,21 @@ export function criarPal({ espelho: M, pixels, aparelho, lerEntradas }) {
   const mouse = { nx: 0, ny: 0, dentro: false };
   let ultimoQuadro = '';
 
+  // O olhar mira o CENTRO DA TELA DE LED (o rosto do Pal), não o centro do painel inteiro —
+  // mesma regra do plugin (Source/UiLayout.h: kPalGazeCx/Cy = centro de kPixelScreen,
+  // kPalGazeReachX/Y = 400/240). pixelScreen vem de painel/layout.json, nunca constante fixa.
+  const [psx, psy, psw, psh] = pixelScreen;
+  const gazeCx = psx + psw / 2;
+  const gazeCy = psy + psh / 2;
+  const REACH_X = 400;
+  const REACH_Y = 240;
+
   aparelho.addEventListener('pointermove', (e) => {
     const r = aparelho.getBoundingClientRect();
     const x = ((e.clientX - r.left) / r.width) * 1600;
     const y = ((e.clientY - r.top) / r.height) * 1126;
-    mouse.nx = Math.max(-1, Math.min(1, (x - 800) / 800));
-    mouse.ny = Math.max(-1, Math.min(1, (y - 563) / 563));
+    mouse.nx = Math.max(-1, Math.min(1, (x - gazeCx) / REACH_X));
+    mouse.ny = Math.max(-1, Math.min(1, (y - gazeCy) / REACH_Y));
     mouse.dentro = true;
   });
   aparelho.addEventListener('pointerleave', () => { mouse.dentro = false; });
@@ -65,5 +74,6 @@ export function criarPal({ espelho: M, pixels, aparelho, lerEntradas }) {
     estado: () => M._web_pal_state(),
     quadro: () => ultimoQuadro,
     avancar(segundos) { for (let i = 0; i < Math.round(segundos * 30); i++) passo(); pinta(); },
+    mouseNormalizado: () => ({ nx: mouse.nx, ny: mouse.ny }),   // só leitura, pra teste (testes/pal.mjs)
   };
 }

@@ -8,21 +8,80 @@ const url = urlBase + (urlBase.includes('?') ? '&' : '?') + 'teste=1';
 let falhas = 0;
 const ok = (c, m) => { console.log((c ? 'ok: ' : 'FAIL: ') + m); if (!c) falhas++; };
 
-const s = await abrir(url, { largura: 1680, altura: 1400 });
+// Centro da tela de pixels (o rosto do Pal) em coordenadas reais de tela, e a escala do .aparelho
+// (transform:scale, dd-painel.js:escalar) — pra converter o alcance de 400/240 px do painel (espaço
+// de 1600) pra px de verdade na página.
+const centroTela = async (sessao) => sessao.avaliar(`(() => {
+  document.querySelector('.p-pixels').scrollIntoView({ block: 'center' });
+  const ap = document.getElementById('aparelho').getBoundingClientRect();
+  const [x, y, w, h] = __dd.layout.pixelScreen;
+  const escala = ap.width / 1600;
+  return { x: ap.left + (x + w / 2) * escala, y: ap.top + (y + h / 2) * escala, escala };
+})()`);
+
+const s = await abrir(url, { largura: 2000, altura: 1400 });
 try {
   await s.esperar(3000);
   ok(await s.avaliar('!!(__dd.pal)'), 'Pal carregado');
-  const [contente, olhaDireita] = await s.avaliar('fetch("painel/pal.json").then((r) => r.json()).then((p) => [p.sheet[0].join(""), p.sheet[2].join("")])');
+  const [contente, olhaEsquerda] = await s.avaliar('fetch("painel/pal.json").then((r) => r.json()).then((p) => [p.sheet[0].join(""), p.sheet[1].join("")])');
   ok([0, 4].includes(await s.avaliar('__dd.pal.estado()')), 'abre contente');
 
-  const alvo = await s.avaliar(`(() => { const a = document.getElementById('aparelho'); a.scrollIntoView({ block: 'center' });
-    const r = a.getBoundingClientRect(); return { x: r.right - 10, y: r.top + r.height / 2 }; })()`);
+  // (a) o sprite (células .on) nunca vaza da caixa .p-pixels — bug 24/09: célula fixa de 9px em
+  // dd.css fazia a cabeça e os pés do Pal saírem por cima e por baixo da telinha.
+  const contencao = await s.avaliar(`(() => {
+    const caixa = document.querySelector('.p-pixels').getBoundingClientRect();
+    const folga = 0.5; // arredondamento de subpixel
+    let fora = 0;
+    for (const n of document.querySelectorAll('.p-pixels i.on')) {
+      const r = n.getBoundingClientRect();
+      if (r.left < caixa.left - folga || r.right > caixa.right + folga ||
+          r.top < caixa.top - folga || r.bottom > caixa.bottom + folga) fora++;
+    }
+    return { fora, total: document.querySelectorAll('.p-pixels i.on').length };
+  })()`);
+  ok(contencao.total > 0 && contencao.fora === 0,
+    `sprite do Pal cabe inteiro dentro de .p-pixels (${contencao.total} células acesas, ${contencao.fora} fora)`);
+
+  // (b) mouse no centro da tela de pixels: nx/ny ~0 e o Pal olha de frente (mesmo quadro do
+  // "frente"/parado — pal.json sheet[0], igual ao roteiro "volta no stop": nx 0, ny 0)
+  const centro = await centroTela(s);
+  await s.cmd('Input.dispatchMouseEvent', { type: 'mouseMoved', x: centro.x, y: centro.y });
+  await s.esperar(500);
+  const { nx: nxCentro, ny: nyCentro } = await s.avaliar('__dd.pal.mouseNormalizado()');
+  ok(Math.abs(nxCentro) <= 0.02 && Math.abs(nyCentro) <= 0.02,
+    `mouse no centro do LCD: nx/ny ~0 (nx=${nxCentro.toFixed(3)}, ny=${nyCentro.toFixed(3)})`);
+  let deFrente = false;
+  for (let t = 0; t < 10 && !deFrente; t++) { deFrente = (await s.avaliar('__dd.pal.quadro()')) === contente; if (!deFrente) await new Promise((r) => setTimeout(r, 100)); }
+  ok(deFrente, 'mouse no centro do LCD: o Pal olha de frente (quadro igual ao "frente"/parado)');
+
+  // (c) mouse a 400 px (espaço do painel, igual ao kPalGazeReachX do plugin) à ESQUERDA do centro:
+  // nx ~-1 (clamp) e o Pal olha para o lado. Testado pra esquerda, não pra direita: o centro do
+  // olhar é o centro do LCD (x=1382 no espaço de 1600), e o painel (o próprio <div id="aparelho">,
+  // 1600 px) acaba 218 px depois disso — exatamente o que o comentário do plugin documenta
+  // (Source/UiLayout.h:271: "vira a cabeça (só cabe à esquerda: à direita o painel acaba a 218 px)").
+  // Um alcance de 400 px pra direita do centro do LCD, portanto, cai FORA do <div id="aparelho"> —
+  // não existe ponto de mouse real (nem no plugin, nem na demo) que produza nx=+1; só pra esquerda,
+  // onde o painel sobra (1382 px de folga), dá pra mover o mouse 400 px inteiros e testar o clamp.
+  const alvo = { x: centro.x - 400 * centro.escala, y: centro.y };
   await s.cmd('Input.dispatchMouseEvent', { type: 'mouseMoved', x: alvo.x, y: alvo.y });
   await s.esperar(800);
+  const { nx: nxEsquerda } = await s.avaliar('__dd.pal.mouseNormalizado()');
+  ok(nxEsquerda <= -0.95, `mouse 400 px (painel) à esquerda do centro do LCD: nx ~-1 (nx=${nxEsquerda.toFixed(3)})`);
   // a piscada (0,15 s a cada 3–6 s) pode cair no instante da leitura: tenta por até ~1 s
   let olhou = false;
-  for (let t = 0; t < 10 && !olhou; t++) { olhou = (await s.avaliar('__dd.pal.quadro()')) === olhaDireita; if (!olhou) await new Promise(r => setTimeout(r, 100)); }
-  ok(olhou, 'segue o mouse: olha para a direita');
+  for (let t = 0; t < 10 && !olhou; t++) { olhou = (await s.avaliar('__dd.pal.quadro()')) === olhaEsquerda; if (!olhou) await new Promise(r => setTimeout(r, 100)); }
+  ok(olhou, 'segue o mouse: olha para a esquerda');
+
+  // regressão do bug: no ponto real MAIS à direita que existe (a borda do próprio .aparelho), o
+  // alcance correto (400 px a partir do centro do LCD, não do painel inteiro) nunca deixa nx
+  // chegar a 1 — o bug antigo (centro/alcance do painel inteiro) deixava, e por isso o Pal virava
+  // a cabeça pra direita cedo demais, sem bater com o plugin.
+  const apRight = await s.avaliar(`document.getElementById('aparelho').getBoundingClientRect().right`);
+  await s.cmd('Input.dispatchMouseEvent', { type: 'mouseMoved', x: apRight - 2, y: centro.y });
+  await s.esperar(500);
+  const { nx: nxBordaDireita } = await s.avaliar('__dd.pal.mouseNormalizado()');
+  ok(nxBordaDireita > 0 && nxBordaDireita < 0.7,
+    `na borda direita real do painel, nx fica bem abaixo de 1 (nx=${nxBordaDireita.toFixed(3)}) — alcance de 400 px a partir do centro do LCD, não do painel inteiro`);
 
   // arrastar um knob da faixa (não do EDIT) manda Decision, igual ao PluginEditor.cpp:1101-1104
   const kdecay = await s.avaliar(`(() => { const r = document.querySelector('[aria-label="DECAY do KICK"]').getBoundingClientRect();
