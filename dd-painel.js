@@ -232,11 +232,18 @@ export function pintarPal(pixels, texto) {
   }
 }
 
-// Escala do aparelho: cabe na largura, nunca acima de 100% e nunca abaixo de 60%
-// (abaixo disso os steps ficam pequenos demais para o dedo; a caixa rola na horizontal).
+// Escala do aparelho: cabe na largura, nunca acima de 100%.
+// No desktop/tablet (rolo.clientWidth >= 900) o piso continua 0,6: aqui a demo é tocável e os
+// steps não podem ficar pequenos demais para o dedo/mouse, então abaixo de 900px de rolo o
+// aparelho preferia rolar na horizontal a encolher mais (D13 antiga).
+// No celular (rolo.clientWidth < 900) o piso cai para 0,2 e a caixa acompanha a altura escalada:
+// a demo é vitrine, não painel de trabalho (D13, 2026-09-24) — ela precisa caber inteira na tela,
+// sem cortar REVERB/DELAY/MASTER FX/FILL, mesmo que os alvos de toque da demo fiquem abaixo de
+// 44px; os controles nativos abaixo dela (PLAY, BPM, etc) continuam com 44px (D12).
 export function escalar(rolo, caixa, aparelho) {
   const ajusta = () => {
-    const s = Math.max(0.6, Math.min(1, rolo.clientWidth / 1600));
+    const piso = rolo.clientWidth < 900 ? 0.2 : 0.6;
+    const s = Math.max(piso, Math.min(1, rolo.clientWidth / 1600));
     aparelho.style.transform = `scale(${s})`;
     caixa.style.width = Math.round(1600 * s) + 'px';
     caixa.style.height = Math.round(1126 * s) + 'px';

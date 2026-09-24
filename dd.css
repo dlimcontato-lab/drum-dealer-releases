@@ -512,8 +512,9 @@ section{padding:var(--s6) 0}
 .feat .legend{margin-top:auto;padding-top:8px}
 
 /* ---------- instalação ---------- */
-.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:var(--s4)}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));gap:var(--s4)}
 .os{padding:26px 22px 22px}
+.os code{white-space:normal;overflow-wrap:anywhere}
 .os h3{display:flex;align-items:center;font-size:15px;margin-bottom:14px}
 .os ol{padding-left:0;list-style:none;display:grid;gap:12px;font-size:var(--t-small);counter-reset:passo}
 .os li{position:relative;padding-left:36px;line-height:1.45;min-height:22px}

@@ -19,7 +19,8 @@ try {
     // no celular a barrinha é sticky no pé da janela: medir com a demo inteira à vista,
     // senão ela aparece "sobre" o painel só porque o painel passa da altura da tela
     document.getElementById('demo').scrollIntoView({ block: 'end', behavior: 'instant' });
-    const caixa = document.getElementById('aparelho-caixa').getBoundingClientRect();
+    const caixaEl = document.getElementById('aparelho-caixa');
+    const caixa = caixaEl.getBoundingClientRect();
     const trans = document.getElementById('transporte').getBoundingClientRect();
     const visivel = (id) => {
       const el = document.getElementById(id);
@@ -37,8 +38,8 @@ try {
       selects: q(':scope > select'), teclas: t(':scope > button.key'),
       desabilitadas: [...a.querySelectorAll(':scope > button.key[disabled]')].map((n) => n.textContent.trim().toUpperCase()),
       textos: [...a.querySelectorAll(':scope > *')].map((n) => n.textContent).join(' ').toUpperCase(),
-      transporteAbaixo: trans.top >= caixa.bottom - 1 && !document.getElementById('aparelho-caixa').contains(document.getElementById('transporte')), escala: +a.dataset.escala,
-      larguraPagina: document.documentElement.scrollWidth, janela: innerWidth,
+      transporteAbaixo: trans.top >= caixa.bottom - 1 && !caixaEl.contains(document.getElementById('transporte')), escala: +a.dataset.escala,
+      larguraPagina: document.documentElement.scrollWidth, janela: innerWidth, caixaRight: caixa.right,
       rate: [...a.querySelectorAll('.p-leg')].some((n) => n.textContent === 'RATE OFF'),
       transAltura: trans.height, tallyVisivel: visivel('tally'), genStatusVisivel: visivel('gen-status'),
     };
@@ -62,12 +63,25 @@ try {
       ok(!r.textos.includes(proibido), `painel sem ${proibido}`);
     ok(r.transporteAbaixo, 'barrinha de transporte abaixo da moldura');
     ok(r.larguraPagina <= r.janela, `página sem rolagem horizontal (${r.larguraPagina} <= ${r.janela})`);
-    if (movel) ok(r.escala >= 0.6, `no celular o painel fica em escala >= 0,6 (${r.escala})`);
-    else ok(r.escala > 0.9 && r.escala <= 1, `no desktop o painel quase em 100% (${r.escala})`);
+    if (movel) {
+      // D13 (2026-09-24): abaixo de 900px de rolo a demo escala para caber, piso 0,2 (era 0,6
+      // fixo); no rolo >= 900px (tablet/desktop estreito) o piso antigo de 0,6 continua valendo.
+      const piso = largura < 900 ? 0.2 : 0.6;
+      ok(r.escala >= piso - 1e-6 && r.escala <= 1, `no celular (${largura}px) escala dentro do piso ${piso} (${r.escala})`);
+    } else {
+      ok(r.escala > 0.9 && r.escala <= 1, `no desktop o painel quase em 100% (${r.escala})`);
+    }
     if (movel) {
       ok(r.transAltura <= 52, `barrinha em 1 linha, altura <= 52px (${r.transAltura.toFixed(1)})`);
       ok(!r.tallyVisivel, '#tally não aparece na barrinha');
       ok(!r.genStatusVisivel, '#gen-status não aparece na barrinha');
+    }
+    if (largura === 390) {
+      ok(r.larguraPagina === 390, `em 390px a página não rola na horizontal (scrollWidth=${r.larguraPagina})`);
+      ok(r.caixaRight <= 390, `.aparelho-caixa cabe em 390px sem cortar (right=${r.caixaRight})`);
+    }
+    if (largura === 320) {
+      ok(r.larguraPagina === 320, `em 320px a página não rola na horizontal (scrollWidth=${r.larguraPagina})`);
     }
   }
   if (r && movel) {
@@ -90,8 +104,28 @@ try {
       }
       return { largura: alcance.esq + alcance.dir, altura: alcance.cima + alcance.baixo, alcance };
     })()`);
-    ok(hit.largura >= 24 && hit.altura >= 24,
-      `área de toque do LED do TONE X >= 24px na tela, escala 0,6 (${hit.largura.toFixed(1)}x${hit.altura.toFixed(1)})`);
+    // D13 (2026-09-24): abaixo de 900px de rolo a demo escala para caber (piso 0,2, sem piso de
+    // 44px de toque) — a demo virou vitrine, não fica mais garantido que o LED do TONE X tenha
+    // 24px de alvo de toque. A garantia de 24/44px continua valendo só onde o piso antigo (0,6)
+    // ainda se aplica (rolo >= 900px). Abaixo disso o teste só registra o número, não falha.
+    if (r.escala >= 0.6) {
+      ok(hit.largura >= 24 && hit.altura >= 24,
+        `área de toque do LED do TONE X >= 24px na tela, escala 0,6 (${hit.largura.toFixed(1)}x${hit.altura.toFixed(1)})`);
+    } else {
+      console.log(`info: área de toque do LED do TONE X na vitrine (escala ${r.escala}): ${hit.largura.toFixed(1)}x${hit.altura.toFixed(1)}px — aceito por D13, a demo não é alvo de toque preciso no celular`);
+    }
+    // D12: os controles NATIVOS (fora do `transform: scale()` da demo) não encolhem por causa
+    // da escala da demo — o que os limita é a barrinha compacta (`.transporte`, <=900px,
+    // pré-existente e fora do escopo desta correção), não a mudança do item 1. Conferido: PLAY e
+    // a tela de BPM medem 40px aqui (regra "barrinha em 1 linha, altura <= 52px" já testada
+    // acima), o mesmo valor de antes desta correção — não regrediu.
+    const nativos = await s.avaliar(`(() => {
+      const play = document.getElementById('play').getBoundingClientRect();
+      const bpm = document.querySelector('.bpm-box .screen').getBoundingClientRect();
+      return { playAltura: play.height, bpmAltura: bpm.height };
+    })()`);
+    ok(nativos.playAltura >= 40 && nativos.bpmAltura >= 40,
+      `PLAY/BPM da barrinha não encolheram por causa da escala da demo (pré-existente, ${nativos.playAltura.toFixed(1)}/${nativos.bpmAltura.toFixed(1)})`);
   }
 } finally {
   s.fechar();
