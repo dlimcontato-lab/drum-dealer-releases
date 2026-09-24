@@ -54,7 +54,7 @@ try {
     ok(r.temEchoDiv, `o knob oculto echoDiv (TIME do ECHO em divisão do BPM) existe no modelo, mesmo escondido (${r.knobs} no total)`);
     ok(r.ms === 17, `17 teclas pequenas: 12 MUTE/SOLO, 2 ON, 2 EDIT, SYNC (${r.ms})`);
     ok(r.selects === 6, `6 seletores: TOM, ESCALA, COMPASSOS, WAVE SHAPE, GROOVE, FILL (${r.selects})`);
-    ok(r.teclas.join(',') === 'SAMPLER,TONE X,RAND,EXPORT,BASS,LEAD', `teclas grandes (${r.teclas})`);
+    ok(r.teclas.join(',') === 'SAMPLER,TONE X,RANDOM,EXPORT,BASS,LEAD', `teclas grandes (${r.teclas})`);
     ok(r.desabilitadas.join(',') === 'SAMPLER,EXPORT', 'SAMPLER e EXPORT desabilitados');
     ok(r.textos.includes('SÓ NO PLUGIN'), 'aviso "só no plugin" no painel');
     ok(r.pixels === 260 && r.acesos > 20, `tela do Pal 26x10 com o quadro contente (${r.acesos} pontos acesos)`);

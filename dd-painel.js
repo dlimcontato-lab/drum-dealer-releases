@@ -303,7 +303,7 @@ export function montarPainel(raiz, L, params, palJson, ao) {
     classeOn: 'ligada', led: toneX.firstChild, rotulo: t('panel.tonex-rotulo'),
     aoMudar: (v) => { ao.pal('click'); ao.mudou('toneX20', v); },
   }));
-  const rand = peca(raiz, 'button', 'key orange', L.top.rand, 'Rand');
+  const rand = peca(raiz, 'button', 'key orange', L.top.rand, 'Random');
   rand.addEventListener('click', () => { ao.pal('rand'); ao.rand(); });
   // ordem no DOM igual à do painel: SAMPLER, TONE X, RAND, EXPORT (o EXPORT vai para depois do RAND)
   raiz.appendChild(raiz.querySelectorAll(':scope > button.key[disabled]')[1]);

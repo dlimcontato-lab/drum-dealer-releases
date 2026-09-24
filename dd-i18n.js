@@ -26,7 +26,7 @@ export const DICT = {
     'head.title': 'BRDRUM — Rhythm Composer - 001',
     'head.description': 'BRDRUM: sua bateria e baixo em 1 clique. Plugin para Mac e Windows (VST3 e AU). Toque aqui no navegador antes de comprar.',
     'head.og-description': 'Sua bateria e baixo em 1 clique. Plugin para Mac e Windows; a demo da página é o motor real do plugin rodando no navegador.',
-    'head.og-image-alt': 'O painel do BRDRUM em aço grafite: a marca BRDRUM Rhythm Composer - 001, a faixa listrada, as teclas TONE X e RAND, a grade de 16 passos em vermelho, laranja, amarelo e creme, o medidor de GAIN e a telinha com o Pal.',
+    'head.og-image-alt': 'O painel do BRDRUM em aço grafite: a marca BRDRUM Rhythm Composer - 001, a faixa listrada, as teclas TONE X e RANDOM, a grade de 16 passos em vermelho, laranja, amarelo e creme, o medidor de GAIN e a telinha com o Pal.',
     'head.twitter-description': 'Sua bateria e baixo em 1 clique. Toque antes de comprar.',
     'head.twitter-image-alt': 'O painel do BRDRUM: a grade de 16 passos colorida e a telinha com o Pal.',
 
@@ -76,7 +76,7 @@ export const DICT = {
     // ---------- afirmação / statement ----------
     // Título em imagem: fonte Nulshock (licença desktop da Typodermic permite imagem estática, não @font-face)
     'statement.h1-html': '<img src="img/headline-pt.png" alt="Drums infinitas com um clique" width="931" height="730">',
-    'statement.lead': 'Milhares de possibilidades com os seus samples e MIDIs, além dos pacotes que já vêm dentro. Aperta RAND e sai uma batida pronta; aperta BASS e ele sorteia um baixo da sua pasta de MIDIs, no tom certo.',
+    'statement.lead': 'Milhares de possibilidades com os seus samples e MIDIs, além dos pacotes que já vêm dentro. Aperta RANDOM e sai uma batida pronta; aperta BASS e ele sorteia um baixo da sua pasta de MIDIs, no tom certo.',
 
     // ---------- tabela de especificações ----------
     'spec.formatos-th': 'Formatos',
@@ -164,7 +164,7 @@ export const DICT = {
     'feats.title': 'O que tem dentro',
     'feats.legend': '232 samples de fábrica',
     'feats.batida-legend': 'Batida pronta',
-    'feats.batida-text-html': '<b>Aperta RAND e sai um groove completo</b>: bumbo, caixa, palma, chimbais e tom, já com os\n         sons escolhidos. Gostou, mantém. Não gostou, aperta de novo. Quer mexer? Cada tecla\n         colorida liga ou desliga uma batida.',
+    'feats.batida-text-html': '<b>Aperta RANDOM e sai um groove completo</b>: bumbo, caixa, palma, chimbais e tom, já com os\n         sons escolhidos. Gostou, mantém. Não gostou, aperta de novo. Quer mexer? Cada tecla\n         colorida liga ou desliga uma batida.',
     'feats.batida-tag': '1 clique',
     'feats.sons-legend': 'Seus sons',
     'feats.sons-text-html': 'Vem com <b>232 sons de bateria</b> prontos. Quer usar os seus? Joga os arquivos numa pasta\n         e eles entram no sorteio junto com os que já vêm. Milhares de combinações.',
@@ -601,7 +601,7 @@ export const DICT = {
     'head.title': 'BRDRUM — Rhythm Composer - 001',
     'head.description': 'BRDRUM: your drums and bass in 1 click. Plugin for Mac and Windows (VST3 and AU). Play it here in the browser before you buy.',
     'head.og-description': 'Your drums and bass in 1 click. Plugin for Mac and Windows; the demo on this page is the real plugin engine running in your browser.',
-    'head.og-image-alt': "The BRDRUM panel in graphite steel: the BRDRUM Rhythm Composer - 001 badge, the striped band, the TONE X and RAND keys, the 16-step grid in red, orange, yellow and cream, the GAIN meter and the little screen with the Pal.",
+    'head.og-image-alt': "The BRDRUM panel in graphite steel: the BRDRUM Rhythm Composer - 001 badge, the striped band, the TONE X and RANDOM keys, the 16-step grid in red, orange, yellow and cream, the GAIN meter and the little screen with the Pal.",
     'head.twitter-description': 'Your drums and bass in 1 click. Play it before you buy.',
     'head.twitter-image-alt': 'The BRDRUM panel: the colored 16-step grid and the little screen with the Pal.',
 
@@ -644,7 +644,7 @@ export const DICT = {
     'compat.title-small-html': '<b>compatible</b> with every DAW',
 
     'statement.h1-html': '<img src="img/headline-en.png" alt="Infinite drums in one click" width="810" height="730">',
-    'statement.lead': "Thousands of possibilities with your own samples and MIDIs, plus the packs that come built in. Hit RAND and a ready beat comes out; hit BASS and it draws a bassline from your MIDI folder, in the right key.",
+    'statement.lead': "Thousands of possibilities with your own samples and MIDIs, plus the packs that come built in. Hit RANDOM and a ready beat comes out; hit BASS and it draws a bassline from your MIDI folder, in the right key.",
 
     'spec.formatos-th': 'Formats',
     'spec.formatos-td': 'VST3 · AU',
@@ -724,7 +724,7 @@ export const DICT = {
     'feats.title': "What's inside",
     'feats.legend': '232 factory samples',
     'feats.batida-legend': 'Ready-made beat',
-    'feats.batida-text-html': "<b>Hit RAND and a full groove comes out</b>: kick, snare, clap, hats and tom, already with the\n         chosen sounds. Like it, keep it. Don't like it, hit it again. Want to tweak it? Each colored\n         key turns a hit on or off.",
+    'feats.batida-text-html': "<b>Hit RANDOM and a full groove comes out</b>: kick, snare, clap, hats and tom, already with the\n         chosen sounds. Like it, keep it. Don't like it, hit it again. Want to tweak it? Each colored\n         key turns a hit on or off.",
     'feats.batida-tag': '1 click',
     'feats.sons-legend': 'Your own sounds',
     'feats.sons-text-html': 'Comes with <b>232 drum sounds</b> ready to go. Want to use your own? Drop the files into a folder\n         and they join the draw alongside the factory ones. Thousands of combinations.',
