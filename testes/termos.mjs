@@ -16,12 +16,12 @@ const ok = (c, m) => { console.log((c ? 'ok: ' : 'FAIL: ') + m); if (!c) falhas+
       titulo: document.querySelector('h2[data-i18n="termos.titulo"]').textContent.trim(),
       ptHidden: document.getElementById('lang-pt').hidden,
       enHidden: document.getElementById('lang-en').hidden,
-      ptTemSecao1: document.getElementById('lang-pt').textContent.includes('Quem oferece o BRDRUM'),
+      ptTemSecao1: document.getElementById('lang-pt').textContent.includes('Aceitação dos termos'),
       semEndereco: !document.body.textContent.includes('{ENDERECO}'),
     }))()`);
     ok(r.titulo === 'Termos de Uso', `?lang=pt: título "Termos de Uso" (${r.titulo})`);
     ok(r.ptHidden === false && r.enHidden === true, `?lang=pt: seção PT visível, EN escondida (ptHidden=${r.ptHidden} enHidden=${r.enHidden})`);
-    ok(r.ptTemSecao1, 'seção PT tem o texto da cláusula 1');
+    ok(r.ptTemSecao1, 'seção PT tem o texto da cláusula 1 (Aceitação)');
     ok(r.semEndereco, 'sem {ENDERECO} sobrando na página');
     ok(s.erros.length === 0, `sem console.error em termos.html?lang=pt (${JSON.stringify(s.erros)})`);
   } finally { s.fechar(); }
@@ -36,11 +36,11 @@ const ok = (c, m) => { console.log((c ? 'ok: ' : 'FAIL: ') + m); if (!c) falhas+
       titulo: document.querySelector('h2[data-i18n="termos.titulo"]').textContent.trim(),
       ptHidden: document.getElementById('lang-pt').hidden,
       enHidden: document.getElementById('lang-en').hidden,
-      enTemSecao1: document.getElementById('lang-en').textContent.includes('Who offers BRDRUM'),
+      enTemSecao1: document.getElementById('lang-en').textContent.includes('Acceptance of these terms'),
     }))()`);
     ok(r.titulo === 'Terms of Use', `?lang=en: título "Terms of Use" (${r.titulo})`);
     ok(r.ptHidden === true && r.enHidden === false, `?lang=en: seção EN visível, PT escondida (ptHidden=${r.ptHidden} enHidden=${r.enHidden})`);
-    ok(r.enTemSecao1, 'seção EN tem o texto da clause 1');
+    ok(r.enTemSecao1, 'seção EN tem o texto da clause 1 (Acceptance)');
     ok(s.erros.length === 0, `sem console.error em termos.html?lang=en (${JSON.stringify(s.erros)})`);
   } finally { s.fechar(); }
 }
