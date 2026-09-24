@@ -219,7 +219,7 @@ export const DICT = {
 
     // ---------- fecho ----------
     'close.buy-cta': 'Comprar Studio',
-    'close.legend': 'Pagamento único, sem mensalidade. Pix, cartão ou boleto pelo Mercado Pago. A licença fica na sua conta.',
+    'close.legend': 'Pagamento único por período, sem renovação automática. Pix, cartão ou boleto pelo Mercado Pago. A licença fica na sua conta.',
     'close.compat-title-html': '<b>compatível</b> com todas as DAWs',
 
     // ---------- rodapé ----------
@@ -238,7 +238,7 @@ export const DICT = {
     'footer.pay-mp': 'Mercado Pago',
     'footer.signature': 'BRDRUM · Rhythm Composer - 001 · criado por Brazilian Waves',
     'footer.chat-aria': 'Falar com a gente',
-    'footer.payment-only': 'Pagamento único pelo Mercado Pago',
+    'footer.payment-only': 'Pagamento pelo Mercado Pago, sem renovação automática',
 
     // ---------- packs.html ----------
     // desligado 23/09 a pedido do Diogo: aviso estático no topo da página, sem link nenhum do site
@@ -352,7 +352,7 @@ export const DICT = {
     'conta.dispositivos-ajuda': 'Sair de todos os dispositivos encerra a sessão em todo navegador e em todo plugin que entrou com esta conta. As licenças e as chaves continuam valendo: na próxima abertura o plugin pede a senha de novo.',
     'conta.sair-de-tudo': 'Sair de todos os dispositivos',
     'conta.footer-signature': 'BRDRUM · Rhythm Composer - 001 · criado por Brazilian Waves',
-    'conta.footer-payment': 'Pagamento único pelo Mercado Pago',
+    'conta.footer-payment': 'Pagamento pelo Mercado Pago, sem renovação automática',
 
     // ---------- conta.js (dinâmico) ----------
     'conta.titulo-comprar': 'Entre ou crie a conta para comprar',
@@ -369,7 +369,7 @@ export const DICT = {
     'conta.buy-title-upgrade': 'Fazer upgrade',
     'conta.buy-title-planos': 'Planos',
     'conta.buy-text-upgrade': 'Você paga só a diferença entre o seu plano e o maior. A licença passa a valer o novo número de computadores na hora da confirmação.',
-    'conta.buy-text-normal': 'Pagamento único pelo Mercado Pago (Pix, cartão ou boleto). A licença cai nesta conta na hora da confirmação.',
+    'conta.buy-text-normal': 'Mensal ou anual, pago uma vez pelo Mercado Pago (Pix, cartão ou boleto), sem renovação automática. A licença cai nesta conta na hora da confirmação.',
     'conta.plano-e-acessos': '{nome} · {n}',
     'conta.upgrade-e-acessos': 'Fazer upgrade · {nome} · {n} acessos',
     'conta.renovar-e-acessos': 'Renovar {nome} · {n}',
@@ -401,7 +401,7 @@ export const DICT = {
     'conta.sem-licenca-status': '{email} · sem licença',
     'conta.licenca-ativa-status': '{email} · licença ativa',
     'conta.sem-licenca-texto': 'Esta conta ainda não tem licença.',
-    'conta.sem-licenca-sub': 'Escolha um plano abaixo. O pagamento é único e a licença aparece aqui assim que o Mercado Pago confirmar.',
+    'conta.sem-licenca-sub': 'Escolha um plano abaixo, mensal ou anual. Você paga uma vez pelo período e a licença aparece aqui assim que o Mercado Pago confirmar.',
     'conta.licenca-texto': '{plano} · {usadas} de {total} {acessos} em uso.',
     'conta.licenca-sub-cheia-html': 'Todos os acessos estão ocupados. Libere uma vaga abaixo ou <b>faça upgrade</b> para mais computadores.',
     'conta.licenca-sub-livre-html': 'Cada vaga é um computador. Você pode entrar com a conta dentro do plugin, ou <b>gerar uma chave</b> para outra pessoa ativar sem saber a sua senha.',
@@ -775,7 +775,7 @@ export const DICT = {
     'samples.p2-html': 'Press <b>SAMPLER</b> inside the plugin: it opens the <b>BRDRUM</b> folder with the samples, in the\n      subfolders <code>Kick</code>, <code>Snare</code>, <code>Clap</code>, <code>Hat</code> and\n      <code>Tom</code>. Drop your wavs there and they join the draw <b>alongside</b> the factory ones.\n      The same goes for the generator\'s MIDIs, in the <code>Bass</code> and <code>Lead</code> folders.',
 
     'close.buy-cta': 'Buy Studio',
-    'close.legend': 'One-time payment, no subscription. Pix, card or boleto through Mercado Pago. The license lives in your account.',
+    'close.legend': 'One payment per period, no auto-renewal. Pix, card or boleto through Mercado Pago. The license lives in your account.',
     'close.compat-title-html': '<b>compatible</b> with every DAW',
 
     'footer.horario-html': 'Support hours:<br>Monday to Saturday, 9am to 6:30pm (BRT)',
@@ -793,7 +793,7 @@ export const DICT = {
     'footer.pay-mp': 'Mercado Pago',
     'footer.signature': 'BRDRUM · Rhythm Composer - 001 · made by Brazilian Waves',
     'footer.chat-aria': 'Talk to us',
-    'footer.payment-only': 'One-time payment through Mercado Pago',
+    'footer.payment-only': 'Paid through Mercado Pago, no auto-renewal',
 
     'packs.desligado-titulo': 'The packs store is coming back soon',
     'packs.desligado-voltar': 'Back to the homepage',
@@ -903,7 +903,7 @@ export const DICT = {
     'conta.dispositivos-ajuda': "Signing out of every device ends the session in every browser and every plugin signed in with this account. Your licenses and keys stay valid: the plugin will just ask for the password again next time.",
     'conta.sair-de-tudo': 'Sign out of every device',
     'conta.footer-signature': 'BRDRUM · Rhythm Composer - 001 · made by Brazilian Waves',
-    'conta.footer-payment': 'One-time payment through Mercado Pago',
+    'conta.footer-payment': 'Paid through Mercado Pago, no auto-renewal',
 
     'conta.titulo-comprar': 'Sign in or create an account to buy',
     'conta.titulo-baixar': 'Create your account to download',
@@ -919,7 +919,7 @@ export const DICT = {
     'conta.buy-title-upgrade': 'Upgrade',
     'conta.buy-title-planos': 'Plans',
     'conta.buy-text-upgrade': 'You only pay the difference between your plan and the bigger one. The license takes on the new number of computers as soon as it\'s confirmed.',
-    'conta.buy-text-normal': 'One-time payment through Mercado Pago (Pix, card or boleto). The license lands on this account as soon as it\'s confirmed.',
+    'conta.buy-text-normal': 'Monthly or annual, paid once through Mercado Pago (Pix, card or boleto), no auto-renewal. The license lands on this account as soon as it is confirmed.',
     'conta.plano-e-acessos': '{nome} · {n}',
     'conta.upgrade-e-acessos': 'Upgrade · {nome} · {n} seats',
     'conta.renovar-e-acessos': 'Renew {nome} · {n}',
@@ -951,7 +951,7 @@ export const DICT = {
     'conta.sem-licenca-status': '{email} · no license',
     'conta.licenca-ativa-status': '{email} · active license',
     'conta.sem-licenca-texto': "This account doesn't have a license yet.",
-    'conta.sem-licenca-sub': "Pick a plan below. It's a one-time payment and the license shows up here as soon as Mercado Pago confirms it.",
+    'conta.sem-licenca-sub': 'Pick a plan below, monthly or annual. You pay once for the period and the license shows up here as soon as Mercado Pago confirms it.',
     'conta.licenca-texto': '{plano} · {usadas} of {total} {acessos} in use.',
     'conta.licenca-sub-cheia-html': 'Every seat is taken. Free one up below or <b>upgrade</b> for more computers.',
     'conta.licenca-sub-livre-html': 'Each seat is a computer. You can sign in with this account inside the plugin, or <b>generate a key</b> for someone else to activate without knowing your password.',
