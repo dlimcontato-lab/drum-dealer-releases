@@ -60,8 +60,6 @@ export const DICT = {
     'transporte.play-title': 'Tocar / pausar (Espaço, depois de clicar no aparelho)',
     'transporte.bpm-down': 'Diminuir BPM',
     'transporte.bpm-up': 'Aumentar BPM',
-    'transporte.dl-bass': 'Baixar bass .mid',
-    'transporte.dl-lead': 'Baixar lead .mid',
     'common.carregando': 'Carregando…',
 
     // ---------- compatibilidade (DAWs) ----------
@@ -646,8 +644,6 @@ export const DICT = {
     'transporte.play-title': 'Play / pause (Space, after clicking the panel)',
     'transporte.bpm-down': 'Decrease BPM',
     'transporte.bpm-up': 'Increase BPM',
-    'transporte.dl-bass': 'Download bass .mid',
-    'transporte.dl-lead': 'Download lead .mid',
     'common.carregando': 'Loading…',
 
     'compat.title-html': '<b>compatible</b> with every DAW',
