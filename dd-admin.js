@@ -4,13 +4,13 @@
 import {
   SUPABASE_URL, getSession, select, admin, ehAdmin, loadPlans, loadPacks, publicUrl,
   avatarUrl, BRL, iniciais, TIPOS_PACK, ApiError,
-} from './dd-api.js?v=20260925g';
-import { montarTopo } from './dd-topo.js?v=20260925g';
+} from './dd-api.js?v=20260925h';
+import { montarTopo } from './dd-topo.js?v=20260925h';
 import { fmtDate } from './dd-i18n.js';
 import {
   $, el, msg, aviso as avisoUI, confirmar, perguntar, recado, abas, dataHora, quando,
-  STATUS_PEDIDO, corStatus, tamanho,
-} from './dd-ui.js?v=20260925g';
+  STATUS_PEDIDO, corStatus, tamanho, copiar,
+} from './dd-ui.js?v=20260925h';
 
 const est = {
   session: null, plans: [], packs: [], packAtual: null,
@@ -517,6 +517,104 @@ const paraLocal = (iso) => {
   return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`;
 };
 
+// ---- texto do cupom p/ mandar ao cliente (WhatsApp/e-mail) ----------------------------------
+// Função pura: não toca no DOM, não depende de sessão nem de outro módulo do painel — dá pra
+// testar em Node isolado (testes/admin-cupom.mjs). O admin é só PT, então o formato de data e
+// moeda aqui é sempre pt-BR, sem depender do idioma detectado do navegador (dd-i18n `lang`).
+function dataCurtaBR(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '';
+  const p = (n) => String(n).padStart(2, '0');
+  return `${p(d.getDate())}/${p(d.getMonth() + 1)}/${d.getFullYear()}`;
+}
+
+function valorBRLCupom(cents) {
+  const v = (cents || 0) / 100;
+  return 'R$ ' + v.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+// cupom "grátis" de fato: 100% de desconto, ou fixo que cobre o plano mais barato (>= R$ 49,99)
+function cupomGratis(kind, value) {
+  return (kind === 'percent' && value >= 100) || (kind === 'fixed' && value >= 4999);
+}
+
+export function textoCupom(c) {
+  const kind = c.kind;
+  const value = c.value;
+  const gratis = cupomGratis(kind, value);
+  // valor "cru" (sem sufixo) pro passo 3 ("o desconto de 10% aparece..."); com sufixo pra
+  // primeira linha ("(10% de desconto)")
+  const valorCru = kind === 'fixed' ? valorBRLCupom(value) : `${value}%`;
+  const primeiraLinhaDesconto = gratis ? 'acesso grátis, 100% de desconto' : `${valorCru} de desconto`;
+  const passo2 = c.applies_to === 'packs'
+    ? 'Em Minha conta, na aba Packs, escolha o pack.'
+    : 'Em Minha conta, na aba Licença, escolha o plano (mensal ou anual).';
+  const passo4 = gratis
+    ? 'Clique em Ativar grátis.'
+    : 'Clique em Pagar (ou em Ativar grátis, quando o valor for zero).';
+
+  const rodape = [];
+  if (c.valid_until) rodape.push(`Válido até ${dataCurtaBR(c.valid_until)}.`);
+  if (c.max_uses) rodape.push('Cada cupom tem um número limitado de usos.');
+
+  const linhas = [
+    `Cupom BRDRUM: ${c.code} (${primeiraLinhaDesconto})`,
+    '',
+    'O BRDRUM é um plugin de bateria (VST3 e AU) que monta uma batida pronta com um clique, gera baixo e lead no tom certo e exporta os stems para o seu DAW.',
+    '',
+    'Como usar o cupom:',
+    '1. Crie sua conta em https://brdrum.com/conta.html (ou entre, se já tem).',
+    `2. ${passo2}`,
+    `3. Digite o código no campo Cupom e clique em Aplicar: o desconto de ${valorCru} aparece no valor.`,
+    `4. ${passo4}`,
+    '5. Baixe o BRDRUM em https://brdrum.com/#download, instale e entre com a sua conta dentro do plugin.',
+  ];
+  if (rodape.length) { linhas.push(''); linhas.push(rodape.join(' ')); }
+  return linhas.join('\n');
+}
+
+// diálogo de último recurso: clipboard falhou, o admin seleciona e copia à mão (Cmd+C)
+function mostrarTextoParaCopiar(texto) {
+  const back = el('div', 'dlg-back');
+  const fs = document.createElement('fieldset');
+  fs.className = 'panel dlg';
+  const lg = document.createElement('legend');
+  lg.textContent = 'Copiar à mão';
+  fs.appendChild(lg);
+  fs.appendChild(el('p', 'dlg-text', 'O navegador não deixou copiar sozinho. Selecione e copie (Cmd+C).'));
+  const ta = document.createElement('textarea');
+  ta.className = 'recess';
+  ta.readOnly = true;
+  ta.value = texto;
+  ta.style.width = '100%';
+  ta.style.minHeight = '220px';
+  ta.style.marginTop = '10px';
+  fs.appendChild(ta);
+  const row = el('div', 'dlg-row');
+  const bFechar = el('button', 'key green', 'Fechar'); bFechar.type = 'button';
+  row.appendChild(bFechar);
+  fs.appendChild(row);
+  back.appendChild(fs);
+  document.body.appendChild(back);
+  const fim = () => { back.remove(); document.removeEventListener('keydown', tecla); };
+  const tecla = (e) => { if (e.key === 'Escape') fim(); };
+  document.addEventListener('keydown', tecla);
+  back.addEventListener('click', (e) => { if (e.target === back) fim(); });
+  bFechar.addEventListener('click', fim);
+  ta.focus();
+  ta.select();
+}
+
+// pisca a linha do cupom recém-criado por 3 s (classe .nova, ver dd.css)
+function destacarLinhaCupom(code) {
+  const tb = $('tbl-cupons').querySelector('tbody');
+  const tr = Array.from(tb.querySelectorAll('tr')).find((r) => r.firstChild && r.firstChild.textContent === code);
+  if (!tr) return;
+  tr.classList.add('nova');
+  setTimeout(() => tr.classList.remove('nova'), 3000);
+}
+
 async function carregarCupons() {
   try {
     const rows = lista(await admin('coupons.list', {}));
@@ -534,6 +632,12 @@ async function carregarCupons() {
         el('td', null, c.active ? 'ativo' : 'desligado'),
       );
       const acts = el('td', 'acts');
+      acts.appendChild(teclinha('Copiar', 'cream', async () => {
+        const texto = textoCupom(c);
+        const ok = await copiar(texto);
+        if (ok) recado('Texto do cupom copiado.', 'ok');
+        else mostrarTextoParaCopiar(texto);
+      }));
       acts.appendChild(teclinha(c.active ? 'Desligar' : 'Ligar', c.active ? null : 'green', () =>
         acaoAdmin('coupons.update', { id: c.id, coupon_id: c.id, active: !c.active }, 'Cupom atualizado.', carregarCupons)));
       acts.appendChild(teclinha('Apagar', null, async () => {
@@ -567,7 +671,9 @@ $('form-cupom').addEventListener('submit', async (e) => {
     await admin('coupons.create', corpo);
     f.reset();
     msg($('msg-cupom'), 'Cupom criado.', 'ok');
+    recado('Cupom criado. Use Copiar na lista para mandar o texto ao cliente.', 'ok');
     await carregarCupons();
+    destacarLinhaCupom(corpo.code);
   } catch (err) { erro($('msg-cupom'), err); }
 });
 

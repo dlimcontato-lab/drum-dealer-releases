@@ -1015,6 +1015,8 @@ table.tbl td.acts .key{margin-left:6px}
 table.tbl .who{display:flex;align-items:center;gap:8px;min-width:0}
 table.tbl .who span.t{display:grid;min-width:0}
 table.tbl .who b{color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:220px}
+table.tbl tbody tr.nova{animation:linha-nova 3s ease-out forwards}
+@keyframes linha-nova{0%{background:rgba(54,212,118,.32)}100%{background:transparent}}
 .filtros{display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin-top:4px}
 .filtros label{display:grid;gap:5px}
 .filtros .recess{min-width:140px}
