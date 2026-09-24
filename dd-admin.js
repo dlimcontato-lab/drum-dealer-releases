@@ -6,6 +6,7 @@ import {
   avatarUrl, BRL, iniciais, TIPOS_PACK, ApiError,
 } from './dd-api.js?v=20260911p';
 import { montarTopo } from './dd-topo.js?v=20260911p';
+import { fmtDate } from './dd-i18n.js';
 import {
   $, el, msg, aviso as avisoUI, confirmar, perguntar, recado, abas, dataHora, quando,
   STATUS_PEDIDO, corStatus, tamanho,
@@ -172,6 +173,14 @@ function blocoTabela(titulo, colunas, linhas) {
   return box;
 }
 
+// ISO -> "AAAA-MM-DD HH:MM" na hora local (o que o admin digita no campo de vencimento)
+function dataLocalCurta(iso) {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return '';
+  const p = (n) => String(n).padStart(2, '0');
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;
+}
+
 function teclinha(rotulo, classe, fn) {
   const b = el('button', 'key small' + (classe ? ' ' + classe : ''), rotulo);
   b.type = 'button';
@@ -217,13 +226,30 @@ async function abrirUsuario(user_id, resumo) {
   const licLinha = el('div', 'status-row');
   licLinha.style.marginTop = '8px';
   if (lic) {
-    licLinha.appendChild(el('span', 'chip' + (lic.status === 'active' ? ' ok' : ' bad'), `${lic.seats} acesso${lic.seats > 1 ? 's' : ''} · ${lic.status === 'active' ? 'ativa' : 'revogada'}`));
+    licLinha.appendChild(el('span', 'chip' + (lic.status === 'active' ? ' ok' : ' bad'), `${lic.seats} acesso${lic.seats > 1 ? 's' : ''} · ${lic.status === 'active' ? 'ativa' : 'revogada'}${lic.expires_at ? ' · até ' + fmtDate(lic.expires_at) : ' · sem prazo'}`));
     licLinha.appendChild(teclinha('Mudar acessos', 'cream', async () => {
       const v = await perguntar({ titulo: 'Acessos da licença', rotulo: 'Número de acessos', valor: String(lic.seats), texto: 'Quantos computadores esta licença libera ao mesmo tempo.' });
       if (v == null) return;
       const n = parseInt(v, 10);
       if (!(n >= 1 && n <= 99)) return recado('Número de acessos inválido.', 'err');
       await acaoAdmin('licenses.set_seats', { license_id: lic.id, seats: n }, 'Acessos atualizados.', () => abrirUsuario(user_id, resumo));
+    }));
+    licLinha.appendChild(teclinha('Vencimento', 'cream', async () => {
+      const v = await perguntar({
+        titulo: 'Vencimento da licença',
+        rotulo: 'Data e hora (AAAA-MM-DD HH:MM, hora local) ou "sem prazo"',
+        valor: lic.expires_at ? dataLocalCurta(lic.expires_at) : '',
+        texto: 'Depois dessa data o plugin fica sem som e a conta pede renovação. "sem prazo" volta a licença para perpétua.',
+      });
+      if (v == null) return;
+      const txt = String(v).trim().toLowerCase();
+      if (txt === 'sem prazo') {
+        await acaoAdmin('licenses.set_expiry', { license_id: lic.id, clear_expiry: true }, 'Licença sem prazo.', () => abrirUsuario(user_id, resumo));
+        return;
+      }
+      const d = new Date(txt.replace(' ', 'T'));
+      if (Number.isNaN(d.getTime())) return recado('Data inválida. Use AAAA-MM-DD HH:MM.', 'err');
+      await acaoAdmin('licenses.set_expiry', { license_id: lic.id, expires_at: d.toISOString() }, 'Vencimento atualizado.', () => abrirUsuario(user_id, resumo));
     }));
     if (lic.status === 'active') {
       licLinha.appendChild(teclinha('Revogar licença', null, async () => {

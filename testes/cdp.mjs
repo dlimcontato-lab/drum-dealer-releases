@@ -7,7 +7,15 @@ import { join } from 'node:path';
 const CHROME = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const esperar = (ms) => new Promise((r) => setTimeout(r, ms));
 
-export async function abrir(url, { largura = 1680, altura = 1400, movel = false, reduzido = false, porta = 9333 } = {}) {
+// Bloqueia padrões de URL na rede da aba (Network.setBlockedURLs), pra rodar um teste sem
+// depender do banco estar no ar nem do estado da migração. Precisa ser chamado com o `cmd`
+// da aba ANTES do Page.navigate (por isso `abrir()` aceita a opção `bloquear`).
+export async function bloquearHosts(cmd, padroes) {
+  await cmd('Network.enable');
+  await cmd('Network.setBlockedURLs', { urls: padroes });
+}
+
+export async function abrir(url, { largura = 1680, altura = 1400, movel = false, reduzido = false, porta = 9333, bloquear = [] } = {}) {
   const perfil = mkdtempSync(join(tmpdir(), 'brdrum-cdp-'));
   const chrome = spawn(CHROME, ['--headless=new', `--remote-debugging-port=${porta}`, `--user-data-dir=${perfil}`,
     `--window-size=${largura},${altura}`, '--autoplay-policy=no-user-gesture-required', '--hide-scrollbars',
@@ -38,8 +46,19 @@ export async function abrir(url, { largura = 1680, altura = 1400, movel = false,
 
   await cmd('Page.enable');
   await cmd('Runtime.enable');
+  if (bloquear.length) await bloquearHosts(cmd, bloquear);
   if (movel) await cmd('Emulation.setDeviceMetricsOverride', { width: largura, height: altura, deviceScaleFactor: 2, mobile: true });
   if (reduzido) await cmd('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] });
+  // console.error e exceções não pegas da página, pra testes que precisam confirmar "sem erro no console"
+  const erros = [];
+  ouvintes.push((m) => {
+    if (m.method === 'Runtime.consoleAPICalled' && m.params.type === 'error') {
+      erros.push(m.params.args.map((a) => (a.value ?? a.description ?? '')).join(' '));
+    }
+    if (m.method === 'Runtime.exceptionThrown') {
+      erros.push(m.params.exceptionDetails.exception?.description || m.params.exceptionDetails.text);
+    }
+  });
   const carregou = new Promise((ok) => ouvintes.push((m) => { if (m.method === 'Page.loadEventFired') ok(); }));
   await cmd('Page.navigate', { url });
   await carregou;
@@ -64,5 +83,5 @@ export async function abrir(url, { largura = 1680, altura = 1400, movel = false,
     return p;
   };
   const fechar = () => { try { ws.close(); } catch { /* já fechado */ } chrome.kill(); };
-  return { avaliar, print, clicar, esperar, fechar, cmd };
+  return { avaliar, print, clicar, esperar, fechar, cmd, erros };
 }

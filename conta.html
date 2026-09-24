@@ -137,6 +137,10 @@
       <fieldset class="panel" id="panel-buy">
         <legend id="buy-title" data-i18n="conta.comprar-legend">Comprar</legend>
         <p class="dim" id="buy-text" style="font-size:var(--t-small)"></p>
+        <div class="period-switch small" id="period-switch-conta" role="tablist" aria-label="Período" data-i18n-attr="aria-label:plans.period-aria">
+          <button type="button" class="period-opt" role="tab" data-period="monthly" aria-selected="false" data-i18n="conta.periodo-mensal">Mensal</button>
+          <button type="button" class="period-opt sel" role="tab" data-period="annual" aria-selected="true" data-i18n="conta.periodo-anual">Anual</button>
+        </div>
         <div class="upgrade" id="upgrade"></div>
         <div id="cupom-box" hidden>
           <div class="cupom">
@@ -213,7 +217,7 @@
   </div>
 </div>
 
-<script type="module" src="dd-topo.js?v=20260923a"></script>
-<script type="module" src="conta.js?v=20260923a"></script>
+<script type="module" src="dd-topo.js?v=20260924a"></script>
+<script type="module" src="conta.js?v=20260924a"></script>
 </body>
 </html>

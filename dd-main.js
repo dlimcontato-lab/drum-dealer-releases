@@ -1,7 +1,7 @@
 // Demo do topo: o painel do plugin (dd-painel.js + dd-edit.js) tocando o motor C++ do plugin em WASM.
 import { montarPainel, escalar, desenharRolo, GRADE_INICIAL, INST_IDS } from './dd-painel.js?v=20260923c';
-import { montarEdit } from './dd-edit.js?v=20260923a';
-import { criarAudio, carregarEspelho, escreverMidi } from './dd-audio.js?v=20260923a';
+import { montarEdit } from './dd-edit.js?v=20260924a';
+import { criarAudio, carregarEspelho, escreverMidi } from './dd-audio.js?v=20260924a';
 import { criarPal } from './dd-pal.js?v=20260917c';
 import { t } from './dd-i18n.js';
 

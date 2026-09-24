@@ -1,7 +1,7 @@
 // Barra do topo de todas as páginas: logado vira avatar + primeiro nome; deslogado,
 // "Entrar". Admin ganha o link "Admin". O avatar é plástico: foto dentro de um disco
 // com lábio de luz, ou as iniciais gravadas quando não há foto. Também monta o botão PT | EN.
-import { getSession, loadProfile, avatarUrl, ehAdmin, iniciais, primeiroNome } from './dd-api.js?v=20260923a';
+import { getSession, loadProfile, avatarUrl, ehAdmin, iniciais, primeiroNome } from './dd-api.js?v=20260924a';
 import { t, montarSeletorIdioma } from './dd-i18n.js';
 
 export function avatarNode(perfil, user, classe = '') {

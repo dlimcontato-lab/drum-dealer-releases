@@ -123,14 +123,24 @@ export function formatBRL(cents) {
 }
 
 export async function loadPlans() {
-  // o banco pode ainda não ter as colunas de promoção (migração 0003): cai para o select antigo
-  try {
-    return await select('plans',
-      'select=id,name,seats,price_cents,promo_price_cents,promo_starts_at,promo_ends_at,badge,sort&active=eq.true&order=sort.asc',
-      { auth: false });
-  } catch {
-    return select('plans', 'select=id,name,seats,price_cents,badge,sort&active=eq.true&order=sort.asc', { auth: false });
+  const base = 'active=eq.true&order=sort.asc';
+  const tentativas = [
+    'select=id,name,seats,price_cents,monthly_cents,annual_month_cents,annual_cents,promo_price_cents,promo_starts_at,promo_ends_at,badge,sort',
+    'select=id,name,seats,price_cents,promo_price_cents,promo_starts_at,promo_ends_at,badge,sort',
+    'select=id,name,seats,price_cents,badge,sort',
+  ];
+  let erro;
+  for (const sel of tentativas) {
+    try { return await select('plans', `${sel}&${base}`, { auth: false }); } catch (e) { erro = e; }
   }
+  throw erro;
+}
+// os três valores de um plano; o servidor é quem cobra, aqui é só para mostrar
+export function precosDoPlano(p) {
+  const mensal = p.monthly_cents ?? p.price_cents;
+  const anualMes = p.annual_month_cents ?? mensal;
+  const anualTotal = p.annual_cents ?? anualMes * 12;
+  return { mensal: precoEfetivo({ ...p, price_cents: mensal }), anualMes, anualTotal };
 }
 
 export const DOWNLOADS = {

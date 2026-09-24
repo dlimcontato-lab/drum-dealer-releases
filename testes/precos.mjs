@@ -1,0 +1,143 @@
+// Seletor MENSAL | ANUAL nos preços (home) e na conta. Roda sem rede para o Supabase
+// (Network.setBlockedURLs bloqueia *bwzngjvjxrqbalvoadpu.supabase.co*, via o helper
+// bloquearHosts de cdp.mjs, chamado antes do Page.navigate): assim o teste não depende do
+// banco ter (ou não) as colunas de período (migração do bloco "planos mensal e anual" ainda
+// não rodou nesta task). Mesmo sem rede, dd-precos.js completa com PLANOS_PADRAO (a tabela
+// da spec de 23/09) quando loadPlans() falha, então a pílula troca preço, off%, linha do
+// período e href de verdade — não é decorativa.
+import { abrir } from './cdp.mjs';
+
+const BASE = process.argv[2] || 'http://localhost:8123';
+const BLOQUEIO = ['*bwzngjvjxrqbalvoadpu.supabase.co*'];
+let falhas = 0;
+const ok = (c, m) => { console.log((c ? 'ok: ' : 'FAIL: ') + m); if (!c) falhas++; };
+
+// ---------- (a)-(e): home em pt, sem rede ----------
+{
+  const s = await abrir(`${BASE}/index.html?lang=pt`, { largura: 1440, altura: 1400, bloquear: BLOQUEIO, porta: 9333 });
+  try {
+    await s.esperar(1000);
+
+    const antes = await s.avaliar(`(() => {
+      const opts = [...document.querySelectorAll('#period-switch .period-opt')];
+      const solo = document.querySelector('.plan2[data-plan="solo"]');
+      const studio = document.querySelector('.plan2[data-plan="studio"]');
+      const off = studio.querySelector('.off');
+      const ctas = [...document.querySelectorAll('.plan2 a.key')];
+      return {
+        nOpts: opts.length,
+        annualSel: opts.find((b) => b.dataset.period === 'annual').classList.contains('sel'),
+        soloAmount: solo.querySelector('.amount').textContent,
+        soloCents: solo.querySelector('.cents').textContent,
+        soloOffHidden: solo.querySelector('.off').hidden,
+        soloOffTexto: solo.querySelector('.off').textContent,
+        offHidden: off.hidden, offTexto: off.textContent,
+        ctaHrefs: ctas.map((a) => a.getAttribute('href')),
+      };
+    })()`);
+    ok(antes.nOpts === 2, `#period-switch tem 2 .period-opt (${antes.nOpts})`);
+    ok(antes.annualSel === true, 'a opção "annual" começa com .sel');
+    ok(antes.soloAmount === '39' && antes.soloCents === ',90', `solo mostra 39,90 no anual (${antes.soloAmount}${antes.soloCents})`);
+    ok(antes.soloOffHidden === false && antes.soloOffTexto === '-20%', `off do solo visível com -20% no anual (hidden=${antes.soloOffHidden} texto=${antes.soloOffTexto})`);
+    ok(antes.offHidden === false && antes.offTexto === '-15%', `off do studio visível com -15% no anual (hidden=${antes.offHidden} texto=${antes.offTexto})`);
+    ok(antes.ctaHrefs.every((h) => h && h.includes('periodo=annual')), `os 3 CTAs têm periodo=annual no href (${antes.ctaHrefs.join(' | ')})`);
+
+    await s.clicar('#period-switch .period-opt[data-period="monthly"]');
+    await s.esperar(500);
+
+    const depois = await s.avaliar(`(() => {
+      const opts = [...document.querySelectorAll('#period-switch .period-opt')];
+      const solo = document.querySelector('.plan2[data-plan="solo"]');
+      const studio = document.querySelector('.plan2[data-plan="studio"]');
+      const off = studio.querySelector('.off');
+      const ctas = [...document.querySelectorAll('.plan2 a.key')];
+      return {
+        monthlySel: opts.find((b) => b.dataset.period === 'monthly').classList.contains('sel'),
+        annualSel: opts.find((b) => b.dataset.period === 'annual').classList.contains('sel'),
+        ariaMonthly: opts.find((b) => b.dataset.period === 'monthly').getAttribute('aria-selected'),
+        soloAmount: solo.querySelector('.amount').textContent,
+        soloCents: solo.querySelector('.cents').textContent,
+        soloOffHidden: solo.querySelector('.off').hidden,
+        soloLine: solo.querySelector('[data-period-line]').textContent,
+        offHidden: off.hidden,
+        ctaHrefs: ctas.map((a) => a.getAttribute('href')),
+        salvouStorage: localStorage.getItem('dd-period'),
+      };
+    })()`);
+    ok(depois.monthlySel === true && depois.annualSel === false, 'clicar em "monthly" move a seleção da pílula');
+    ok(depois.ariaMonthly === 'true', 'aria-selected acompanha o clique');
+    ok(depois.salvouStorage === 'monthly', 'o período escolhido fica em localStorage (dd-period)');
+    // mesmo sem rede pro Supabase, PLANOS_PADRAO (fallback local, tabela da spec) alimenta o
+    // recálculo: a pílula não é decorativa.
+    ok(depois.soloAmount === '49' && depois.soloCents === ',99',
+      `no mensal o solo recalcula pra 49,99 mesmo sem rede (${depois.soloAmount}${depois.soloCents})`);
+    ok(depois.soloOffHidden === true, 'no mensal o off do solo fica hidden');
+    ok(depois.offHidden === true, 'no mensal o off do studio fica hidden');
+    ok(depois.soloLine.includes('por mês'), `a linha do período do solo é a de mensal (${depois.soloLine})`);
+    ok(depois.ctaHrefs.every((h) => h && h.includes('periodo=monthly')), `os 3 CTAs passam a ter periodo=monthly no href (${depois.ctaHrefs.join(' | ')})`);
+    ok(s.erros.length === 0, `sem console.error na home (${JSON.stringify(s.erros)})`);
+
+    await s.clicar('#period-switch .period-opt[data-period="annual"]');
+    await s.esperar(500);
+    const volta = await s.avaliar(`(() => {
+      const solo = document.querySelector('.plan2[data-plan="solo"]');
+      return {
+        amount: solo.querySelector('.amount').textContent, cents: solo.querySelector('.cents').textContent,
+        offHidden: solo.querySelector('.off').hidden, offTexto: solo.querySelector('.off').textContent,
+        href: solo.querySelector('a.key')?.getAttribute('href'),
+      };
+    })()`);
+    ok(volta.amount === '39' && volta.cents === ',90', `voltando pro anual o solo mostra 39,90 de novo (${volta.amount}${volta.cents})`);
+    ok(volta.offHidden === false && volta.offTexto === '-20%', `voltando pro anual o off do solo mostra -20% de novo (hidden=${volta.offHidden} texto=${volta.offTexto})`);
+    ok(volta.href && volta.href.includes('periodo=annual'), `voltando pro anual o href do solo volta a periodo=annual (${volta.href})`);
+  } finally { s.fechar(); }
+}
+
+// ---------- (f): home em en ----------
+{
+  const s = await abrir(`${BASE}/index.html?lang=en`, { largura: 1440, altura: 1400, bloquear: BLOQUEIO, porta: 9336 });
+  try {
+    await s.esperar(1000);
+    const r = await s.avaliar(`(() => ({
+      monthly: document.querySelector('#period-switch .period-opt[data-period="monthly"]').textContent.trim(),
+      annual: document.querySelector('#period-switch .period-opt[data-period="annual"]').textContent.trim(),
+    }))()`);
+    ok(r.monthly === 'Monthly' && r.annual === 'Annual', `em ?lang=en a pílula lê Monthly/Annual (${r.monthly}/${r.annual})`);
+    ok(s.erros.length === 0, `sem console.error na home em inglês (${JSON.stringify(s.erros)})`);
+  } finally { s.fechar(); }
+}
+
+// ---------- (g): conta.html deslogado com plano e período na URL ----------
+{
+  const s = await abrir(`${BASE}/conta.html?plano=studio&periodo=monthly&lang=pt`, { largura: 1440, altura: 1400, bloquear: BLOQUEIO, porta: 9337 });
+  try {
+    await s.esperar(1000);
+    const r = await s.avaliar(`(() => {
+      const sw = document.getElementById('period-switch-conta');
+      return {
+        existe: !!sw,
+        nOpts: sw ? sw.querySelectorAll('.period-opt').length : 0,
+        viewAuthHidden: document.getElementById('view-auth').hidden,
+        viewAccountHidden: document.getElementById('view-account').hidden,
+      };
+    })()`);
+    ok(r.existe && r.nOpts === 2, `#period-switch-conta existe com 2 opções (${r.nOpts})`);
+    // deslogado: a tela de entrar aparece e a conta (onde mora a pílula) fica escondida atrás do
+    // login — pintarSeletorConta() só roda depois de logar (dentro de pintarCompra()), por isso
+    // a pílula da conta só reflete o ?periodo= da URL depois que a pessoa entra.
+    ok(r.viewAuthHidden === false && r.viewAccountHidden === true, 'deslogado: tela de entrar visível, conta escondida');
+    ok(s.erros.length === 0, `sem console.error na conta deslogada (${JSON.stringify(s.erros)})`);
+  } finally { s.fechar(); }
+}
+
+// ---------- (h): conta.html?renovar=1 ----------
+{
+  const s = await abrir(`${BASE}/conta.html?renovar=1`, { largura: 1440, altura: 1400, bloquear: BLOQUEIO, porta: 9338 });
+  try {
+    await s.esperar(1000);
+    ok(s.erros.length === 0, `?renovar=1 sem console.error (${JSON.stringify(s.erros)})`);
+  } finally { s.fechar(); }
+}
+
+console.log(falhas === 0 ? 'PRECOS: todos os testes passaram' : `${falhas} falhas`);
+process.exit(falhas === 0 ? 0 : 1);

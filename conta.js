@@ -4,25 +4,32 @@
 import {
   signIn, signUp, signOut, getSession, select, call, loadPlans, loadProfile, saveProfile,
   uploadAvatar, changePassword, logoutAll, seats as fnSeats, quote, packDownload, loadPacks,
-  precoEfetivo, BRL, ApiError, DOWNLOADS, TIPOS_PACK, publicUrl, primeiroNome,
-} from './dd-api.js?v=20260923a';
-import { montarTopo, avatarNode } from './dd-topo.js?v=20260923a';
+  precosDoPlano, BRL, ApiError, DOWNLOADS, TIPOS_PACK, publicUrl, primeiroNome,
+} from './dd-api.js?v=20260924a';
+import { montarTopo, avatarNode } from './dd-topo.js?v=20260924a';
 import {
   $, el, msg, aviso as avisoUI, confirmar, perguntar, recado, abas, quando, dataHora,
   statusPedidoLabel, corStatus, tamanho, copiar, recortarQuadrado,
-} from './dd-ui.js?v=20260923a';
-import { t, seatsLabel, seatWord } from './dd-i18n.js';
+} from './dd-ui.js?v=20260924a';
+import { t, seatsLabel, seatWord, fmtDate } from './dd-i18n.js';
 
 const params = new URLSearchParams(location.search);
 const planoPedido = params.get('plano');
 const pagamento = params.get('pagamento');
 const baixarPedido = params.get('baixar');   // 'mac' | 'win': veio do botão de download
+const renovar = params.get('renovar') === '1';
 
 let plans = [];
 const est = {                 // estado da página
   session: null, perfil: null, lic: null, vagas: null, vagasErro: null,
-  orders: [], packs: [], cupom: '', cotacoes: new Map(), planoSel: null,
+  orders: [], packs: [], cupom: '', cotacoes: new Map(), planoSel: null, periodo: 'annual',
 };
+
+const periodoUrl = new URLSearchParams(location.search).get('periodo');
+if (periodoUrl === 'monthly' || periodoUrl === 'annual') est.periodo = periodoUrl;
+const chaveCotacao = (planId) => planId + '|' + est.periodo + '|' + est.cupom;
+const licVencida = (lic) => !!lic && !!lic.expires_at && Date.parse(lic.expires_at) < Date.now();
+const licPerpetua = (lic) => !!lic && !lic.expires_at;
 
 const aviso = (texto, tipo) => avisoUI($('aviso'), texto, tipo);
 
@@ -35,19 +42,22 @@ const nomePlano = (id) => (plans.find((p) => p.id === id) || {}).name || id || '
 
 // ============================ compra ============================
 async function cotar(planId) {
-  const chave = planId + '|' + est.cupom;
+  const chave = chaveCotacao(planId);
   if (est.cotacoes.has(chave)) return est.cotacoes.get(chave);
   const plano = plans.find((p) => p.id === planId);
   let r;
   try {
-    r = await quote(est.cupom ? { plan_id: planId, coupon_code: est.cupom } : { plan_id: planId });
+    const corpo = { plan_id: planId, period: est.periodo };
+    if (est.cupom) corpo.coupon_code = est.cupom;
+    r = await quote(corpo);
   } catch (e) {
     if (est.cupom && e.code === 'invalid_coupon') throw e;
-    // servidor sem /quote ainda: estimativa local só para mostrar o valor
-    const atual = plans.filter((p) => est.lic && p.seats <= est.lic.seats).sort((a, b) => b.seats - a.seats)[0];
-    const cheio = precoEfetivo(plano);
-    const dif = est.lic && atual ? Math.max(cheio - precoEfetivo(atual), 99) : cheio;
-    r = { list_price_cents: cheio, discount_cents: 0, final_cents: dif, is_upgrade: !!est.lic, estimado: true };
+    if (e.code === 'plan_smaller_than_current' || e.code === 'plan_not_upgrade') throw e;
+    // servidor fora: estimativa local só para mostrar o valor (sem crédito, decisão 23/09)
+    const v = precosDoPlano(plano);
+    const cheio = est.periodo === 'annual' ? v.anualTotal : v.mensal;
+    r = { list_price_cents: cheio, discount_cents: 0, final_cents: cheio, period: est.periodo,
+          is_upgrade: !!est.lic && plano.seats > est.lic.seats, is_renewal: !!est.lic && !licPerpetua(est.lic), estimado: true };
   }
   est.cotacoes.set(chave, r);
   return r;
@@ -56,7 +66,8 @@ async function cotar(planId) {
 async function comprar(planId) {
   msg($('msg-buy'), t('conta.abrindo-pagamento'));
   try {
-    const corpo = est.cupom ? { plan_id: planId, coupon_code: est.cupom } : { plan_id: planId };
+    const corpo = { plan_id: planId, period: est.periodo };
+    if (est.cupom) corpo.coupon_code = est.cupom;
     const r = await call('checkout', corpo);
     if (r.simulated) {
       msg($('msg-buy'), '');
@@ -74,6 +85,7 @@ async function comprar(planId) {
 }
 
 async function pintarCompra() {
+  pintarSeletorConta();
   const up = $('upgrade');
   up.innerHTML = '';
   const lic = est.lic;
@@ -82,6 +94,8 @@ async function pintarCompra() {
   $('cupom-box').hidden = false;
   $('buy-text').textContent = lic ? t('conta.buy-text-upgrade') : t('conta.buy-text-normal');
 
+  const vencida = licVencida(lic), perpetua = licPerpetua(lic);
+  if (lic && vencida) $('buy-text').textContent = t('conta.plano-vencido-renove', { data: fmtDate(lic.expires_at) });
   for (const p of plans) {
     const b = document.createElement('button');
     b.type = 'button';
@@ -90,38 +104,32 @@ async function pintarCompra() {
     const dir = el('span', null, '…');
     b.append(esq, dir);
 
-    if (lic && p.seats === seats) {
-      b.disabled = true; b.className = 'key';
-      dir.textContent = t('plans.seu-plano');
-      up.appendChild(b);
-      continue;
-    }
-    if (lic && p.seats < seats) {
-      b.disabled = true; b.className = 'key';
-      dir.textContent = t('conta.menor-que-o-seu');
-      up.appendChild(b);
-      continue;
-    }
+    const desabilita = (texto) => { b.disabled = true; b.className = 'key'; dir.textContent = texto; up.appendChild(b); };
+    if (lic && perpetua && p.seats === seats) { desabilita(t('plans.seu-plano')); continue; }
+    if (lic && perpetua && p.seats < seats) { desabilita(t('conta.menor-que-o-seu')); continue; }
+    if (lic && !perpetua && !vencida && p.seats < seats) { desabilita(t('conta.menor-que-o-seu')); continue; }
+
     b.dataset.plano = p.id;
     b.classList.toggle('sel', est.planoSel === p.id);
     up.appendChild(b);
     cotar(p.id).then((q) => {
       const valor = BRL(q.final_cents);
-      if (q.is_upgrade || lic) {
-        esq.textContent = t('conta.upgrade-e-acessos', { nome: p.name, n: p.seats });
-        dir.textContent = valor;
-      } else {
-        dir.textContent = valor;
-      }
-      if (q.discount_cents > 0) dir.innerHTML = `<span class="was">${BRL(q.list_price_cents)}</span> ${valor}`;
+      if (lic && p.seats > seats) esq.textContent = t('conta.upgrade-e-acessos', { nome: p.name, n: p.seats });
+      else if (lic && !perpetua) esq.textContent = t('conta.renovar-e-acessos', { nome: p.name, n: seatsLabel(p.seats) });
+      const legenda = est.periodo === 'annual'
+        ? t('conta.periodo-anual-legend')
+        : t('conta.periodo-mensal-legend');
+      dir.innerHTML = (q.discount_cents > 0 ? `<span class="was">${BRL(q.list_price_cents)}</span> ` : '')
+        + `${valor} <span class="legend">${legenda}</span>`;
     }).catch((e) => {
-      dir.textContent = BRL(precoEfetivo(p));
+      const v = precosDoPlano(p);
+      dir.textContent = BRL(est.periodo === 'annual' ? v.anualTotal : v.mensal);
       if (e.code === 'invalid_coupon') msg($('msg-buy'), e.message, 'err');
     });
     b.addEventListener('click', () => selecionarPlano(p.id));
   }
 
-  if (lic && !plans.some((p) => p.seats > seats)) {
+  if (lic && perpetua && !plans.some((p) => p.seats > seats)) {
     $('buy-title').textContent = t('conta.maior-plano-title');
     $('buy-text').textContent = t('conta.maior-plano-text');
     $('cupom-box').hidden = true;
@@ -146,11 +154,12 @@ async function mostrarValor() {
   try {
     const q = await cotar(plano.id);
     const valor = BRL(q.final_cents);
+    const prefixoPeriodo = t(est.periodo === 'annual' ? 'conta.periodo-anual' : 'conta.periodo-mensal') + ' · ';
     v.hidden = false;
     v.innerHTML = q.discount_cents > 0
-      ? `<span class="legend">${t('conta.valor-com-cupom', { nome: plano.name, codigo: q.coupon ? q.coupon.code : est.cupom })}</span>
+      ? `<span class="legend">${prefixoPeriodo}${t('conta.valor-com-cupom', { nome: plano.name, codigo: q.coupon ? q.coupon.code : est.cupom })}</span>
          <span class="was">${BRL(q.list_price_cents)}</span><span class="agora">${valor}</span>`
-      : `<span class="legend">${t('conta.valor-normal', { nome: plano.name, n: seatsLabel(plano.seats) })}</span><span class="agora">${valor}</span>`;
+      : `<span class="legend">${prefixoPeriodo}${t('conta.valor-normal', { nome: plano.name, n: seatsLabel(plano.seats) })}</span><span class="agora">${valor}</span>`;
     pagar.textContent = t('conta.pagar-valor', { valor });
     pagar.hidden = false;
   } catch (e) {
@@ -160,6 +169,21 @@ async function mostrarValor() {
 }
 
 $('btn-pagar').addEventListener('click', () => { if (est.planoSel) comprar(est.planoSel); });
+
+function pintarSeletorConta() {
+  for (const b of $('period-switch-conta').querySelectorAll('.period-opt')) {
+    const on = b.dataset.period === est.periodo;
+    b.classList.toggle('sel', on);
+    b.setAttribute('aria-selected', on ? 'true' : 'false');
+  }
+}
+$('period-switch-conta').addEventListener('click', (e) => {
+  const b = e.target.closest('.period-opt');
+  if (!b || b.dataset.period === est.periodo) return;
+  est.periodo = b.dataset.period;
+  est.cotacoes.clear();
+  pintarCompra();
+});
 
 $('btn-cupom').addEventListener('click', async () => {
   const code = $('cupom').value.trim().toUpperCase();
@@ -174,7 +198,7 @@ $('btn-cupom').addEventListener('click', async () => {
     if (code && est.planoSel) await cotar(est.planoSel); // valida o cupom antes de repintar
     await pintarCompra();
     if (!code) return;
-    const q = est.planoSel ? est.cotacoes.get(est.planoSel + '|' + code) : null;
+    const q = est.planoSel ? est.cotacoes.get(chaveCotacao(est.planoSel)) : null;
     if (q && q.discount_cents > 0) msg($('msg-buy'), t('conta.cupom-aplicado'), 'ok');
     else msg($('msg-buy'), t('conta.cupom-sem-efeito'), '');
   } catch (e) {
@@ -293,11 +317,19 @@ function pintarLicenca() {
     return;
   }
 
-  setStatus(t('conta.licenca-ativa-status', { email: est.session.user.email }), true);
-  $('lic-text').textContent = t('conta.licenca-texto', { plano: nomePlano(v && v.plan_id), usadas, total, acessos: seatWord(total) });
-  $('lic-sub').innerHTML = usadas >= total
-    ? t('conta.licenca-sub-cheia-html')
-    : t('conta.licenca-sub-livre-html');
+  const vencida = licVencida(lic);
+  const prazo = lic.expires_at
+    ? t('conta.licenca-valida-ate', { data: fmtDate(lic.expires_at), periodo: t(lic.period === 'annual' ? 'conta.periodo-anual' : 'conta.periodo-mensal') })
+    : t('conta.licenca-sem-prazo');
+  if (vencida) {
+    setStatus(t('conta.licenca-vencida-status', { email: est.session.user.email }), false);
+    $('lic-text').textContent = t('conta.licenca-vencida-texto', { data: fmtDate(lic.expires_at) });
+    $('lic-sub').textContent = t('conta.licenca-vencida-sub');
+  } else {
+    setStatus(t('conta.licenca-ativa-status', { email: est.session.user.email }), true);
+    $('lic-text').textContent = t('conta.licenca-texto', { plano: nomePlano(v && v.plan_id), usadas, total, acessos: seatWord(total) });
+    $('lic-sub').innerHTML = (usadas >= total ? t('conta.licenca-sub-cheia-html') : t('conta.licenca-sub-livre-html')) + ` <span class="legend">${prazo}</span>`;
+  }
 
   if (est.vagasErro) {
     $('slots-empty').hidden = true;
@@ -334,6 +366,13 @@ function pintarLicenca() {
     bt.addEventListener('click', () => {
       $('panel-buy').scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
+    acts.appendChild(bt);
+  }
+
+  if (lic.expires_at) {
+    acts.hidden = false;
+    const bt = el('button', vencida ? 'key orange' : 'key cream', t('conta.renovar')); bt.type = 'button';
+    bt.addEventListener('click', () => $('panel-buy').scrollIntoView({ behavior: 'smooth', block: 'center' }));
     acts.appendChild(bt);
   }
 }
@@ -486,7 +525,8 @@ function pintarPedidos() {
     const tr = document.createElement('tr');
     const item = o.kind === 'pack'
       ? (o.pack && o.pack.title ? t('conta.pedido-pack-titulo', { titulo: o.pack.title }) : t('conta.pedido-pack-fallback'))
-      : `${o.is_upgrade ? t('conta.pedido-upgrade-prefixo') : ''}${nomePlano(o.plan_id)}${o.seats ? t('conta.pedido-acessos-sufixo', { n: seatsLabel(o.seats) }) : ''}`;
+      : `${o.is_upgrade ? t('conta.pedido-upgrade-prefixo') : ''}${nomePlano(o.plan_id)}${o.seats ? t('conta.pedido-acessos-sufixo', { n: seatsLabel(o.seats) }) : ''}`
+        + (o.period ? ' · ' + t(o.period === 'annual' ? 'conta.pedido-periodo-anual' : 'conta.pedido-periodo-mensal') : '');
     const cells = [
       dataHora(o.created_at),
       item,
@@ -569,7 +609,7 @@ async function carregarPedidos() {
   // a tabela `coupons` não é legível pelo comprador (RLS), então o código do cupom
   // só aparece quando o servidor mandar `coupon_code` junto do pedido
   try {
-    return await select('orders', `select=id,kind,plan_id,pack_id,seats,amount_cents,list_price_cents,discount_cents,is_upgrade,status,created_at,coupon_id,pack:packs(title)&${base}`);
+    return await select('orders', `select=id,kind,plan_id,pack_id,seats,amount_cents,list_price_cents,discount_cents,is_upgrade,status,created_at,coupon_id,period,months,pack:packs(title)&${base}`);
   } catch {}
   try {
     return await select('orders', `select=id,kind,plan_id,pack_id,seats,amount_cents,discount_cents,is_upgrade,status,created_at&${base}`);
@@ -604,7 +644,7 @@ async function carregarMeusPacks() {
 async function carregar() {
   const [perfil, lics, orders, packs] = await Promise.all([
     loadProfile(est.session.user.id),
-    select('licenses', 'select=id,seats,status,created_at&limit=1').catch(() => []),
+    select('licenses', 'select=id,seats,status,created_at,expires_at,period&limit=1').catch(() => []),
     carregarPedidos(),
     carregarMeusPacks(),
   ]);
@@ -670,6 +710,7 @@ async function abrirConta(session) {
   $('titulo').textContent = t('conta.titulo');
   await carregar();
   pintarTudo();
+  if (renovar) $('panel-buy').scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 async function depoisDoLogin(session) {
@@ -712,7 +753,7 @@ async function esperarLicenca() {
     '#packs': { node: $('pane-packs') },
     '#pedidos': { node: $('pane-pedidos') },
     '#seguranca': { node: $('pane-seguranca') },
-  }, planoPedido || baixarPedido ? '#licenca' : '#perfil');
+  }, planoPedido || baixarPedido || renovar ? '#licenca' : '#perfil');
 
   try { plans = await loadPlans(); } catch { plans = []; }
   await montarTopo();
