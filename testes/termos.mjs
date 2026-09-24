@@ -87,7 +87,7 @@ const ok = (c, m) => { console.log((c ? 'ok: ' : 'FAIL: ') + m); if (!c) falhas+
     })()`);
     ok(r.temLink, 'rodapé da home tem link para termos.html');
     ok(r.textoLink === 'Termos de Uso', `link do rodapé lê "Termos de Uso" (${r.textoLink})`);
-    ok(!r.rodapeTexto.includes("CPF") && !r.rodapeTexto.includes("Diogo"), "rodapé da home não mostra CPF nem nome pessoal");
+    ok(!r.rodapeTexto.includes("CPF") && !r.rodapeTexto.includes("Diogo") && !r.rodapeTexto.includes("@"), "rodapé da home não mostra CPF, nome pessoal nem e-mail");
     ok(s.erros.length === 0, `sem console.error na home (${JSON.stringify(s.erros)})`);
   } finally { s.fechar(); }
 }
