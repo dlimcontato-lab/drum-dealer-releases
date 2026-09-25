@@ -1342,3 +1342,23 @@ select.recess.p-abs{font-size:11px;padding:0 20px 0 6px;background-position:righ
 @media (min-width:860px){.oferta-conta .oc-grid{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);align-items:center;gap:32px}}
 /* botões de compra: tinta sobre o laranja (serigrafia dava 2,58:1; tinta dá 5,99:1) */
 .plan2.oferta .key.orange,#close-buy-cta.key.orange,.oferta-conta #btn-pagar{--txt:var(--ink);--engrave:rgba(255,255,255,.3)}
+
+/* 25/09: preço da conta por mês (grande) e total cobrado (linha de baixo), igual à home */
+.oferta-conta .valor{flex-direction:column;align-items:flex-start;gap:4px}
+.oferta-conta .valor .agora .por-mes{font-family:var(--punch-font);font-weight:700;font-size:1.05rem;color:var(--silk-dim);margin-left:4px}
+.oferta-conta .valor .oc-linha{font-size:var(--t-small);color:var(--silk-dim)}
+
+/* 25/09: chamada do "Comprar licença" na home. Um reflexo passa pela tecla e um halo laranja
+   acende e apaga (a luz do LED), ~1 s de movimento e ~2 s de descanso. Para com o ponteiro ou o
+   foco no botão (o clique continua com a resposta de tecla) e some com redução de movimento. */
+.key.chamada{overflow:hidden;animation:cta-halo 3.2s ease-out 1.2s infinite}
+.key.chamada::after{content:'';position:absolute;top:0;bottom:0;left:0;width:34%;pointer-events:none;
+     background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.5),rgba(255,255,255,0));
+     transform:translateX(-130%) skewX(-20deg);animation:cta-brilho 3.2s ease-in-out 1.2s infinite}
+@keyframes cta-brilho{0%{transform:translateX(-130%) skewX(-20deg)}28%,100%{transform:translateX(330%) skewX(-20deg)}}
+@keyframes cta-halo{0%,100%{box-shadow:0 3px 0 var(--body),var(--sh-key),0 0 0 0 rgba(224,112,42,0)}
+     14%{box-shadow:0 3px 0 var(--body),var(--sh-key),0 0 0 5px rgba(224,112,42,.35)}
+     36%{box-shadow:0 3px 0 var(--body),var(--sh-key),0 0 0 12px rgba(224,112,42,0)}}
+.key.chamada:hover,.key.chamada:focus-visible,.key.chamada:active{animation:none}
+.key.chamada:hover::after,.key.chamada:focus-visible::after,.key.chamada:active::after{animation:none;opacity:0}
+@media (prefers-reduced-motion:reduce){.key.chamada,.key.chamada::after{animation:none}.key.chamada::after{opacity:0}}

@@ -5,14 +5,14 @@ import {
   signIn, signUp, signOut, getSession, select, call, loadPlans, loadProfile, saveProfile,
   uploadAvatar, changePassword, logoutAll, seats as fnSeats, quote, packDownload, loadPacks,
   precosDoPlano, BRL, ApiError, DOWNLOADS, TIPOS_PACK, publicUrl, nomeNoTopo, nomePlanoBonito, PLANOS_PADRAO,
-} from './dd-api.js?v=20260925p7';
-import { montarTopo, avatarNode } from './dd-topo.js?v=20260925p7';
+} from './dd-api.js?v=20260925p11';
+import { montarTopo, avatarNode } from './dd-topo.js?v=20260925p11';
 import {
   $, el, msg, aviso as avisoUI, confirmar, perguntar, recado, abas, quando, dataHora,
   statusPedidoLabel, corStatus, tamanho, copiar, recortarQuadrado,
-} from './dd-ui.js?v=20260925p7';
+} from './dd-ui.js?v=20260925p11';
 import { t, seatsLabel, seatWord, fmtDate, getLang, fmtBRLCompact } from './dd-i18n.js';
-import { textoChave } from './dd-textos.js?v=20260925p7';
+import { textoChave } from './dd-textos.js?v=20260925p11';
 
 const params = new URLSearchParams(location.search);
 const planoPedido = params.get('plano');
@@ -281,9 +281,12 @@ async function mostrarValor() {
     v.innerHTML = q.discount_cents > 0
       ? `<span class="legend">${prefixoPeriodo}${t('conta.valor-com-cupom', { nome: plano.name, codigo: q.coupon ? q.coupon.code : est.cupom })}</span>
          <span class="was">${BRL(q.list_price_cents)}</span><span class="agora">${valor}</span>`
-      : `<span class="agora">${valor}</span><span class="legend">${est.periodo === 'annual'
-          ? t('conta.valor-anual-legend', { mes: BRL(precosDoPlano(plano).anualMes) })
-          : t('conta.valor-mensal-legend')}</span>`;
+      // 25/09 (Diogo + designer): o número grande é o preço por mês, como na home; o total cobrado
+      // fica na linha de baixo e no botão Pagar, que é onde a pessoa se compromete
+      : `<span class="agora">${BRL(est.periodo === 'annual' ? Math.round(q.final_cents / 12) : q.final_cents)}<small class="por-mes">${t('plans.por-mes')}</small></span>
+         <span class="oc-linha">${est.periodo === 'annual'
+          ? t('plans.period-line-annual', { total: valor })
+          : t('plans.period-line-monthly')}</span>`;
     pagar.textContent = gratis ? t('conta.ativar-gratis') : t('conta.pagar-valor', { valor });
     // mesma linha de economia da home (e o mesmo formato, sem centavos quando redondo)
     const eco = $('economia-conta');

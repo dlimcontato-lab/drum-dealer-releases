@@ -2,11 +2,11 @@
 // Seletor MENSAL | ANUAL (referência de 23/09): o anual é o padrão. A etiqueta -N% é a
 // economia do anual sobre o mensal; o bullet "% por computador em relação ao Solo" é
 // calculado do período mostrado. Quem já tem licença vê Renovar/Upgrade/Seu plano.
-import { loadPlans, getSession, select, quote, precosDoPlano, emPromocao, BRL, PLANOS_PADRAO, nomePlanoBonito } from './dd-api.js?v=20260925p7';
+import { loadPlans, getSession, select, quote, precosDoPlano, emPromocao, BRL, PLANOS_PADRAO, nomePlanoBonito } from './dd-api.js?v=20260925p11';
 import { t, seatsLabel, fmtBRLCompact, getLang, DICT } from './dd-i18n.js';
 
 let periodo = 'annual';
-try { const s = localStorage.getItem('dd-period'); if (s === 'monthly' || s === 'annual') periodo = s; } catch { /* sem storage */ }
+// 25/09 (Diogo): a home abre sempre no anual (R$ 29,90/mês); o período clicado não é mais lembrado
 
 // PLANOS_PADRAO (fallback sem rede) mora em dd-api.js desde a Task 2 da jornada de compra
 // (24/09): conta.html também precisa dele pro resumo do plano antes do cadastro.
@@ -201,7 +201,6 @@ document.getElementById('period-switch')?.addEventListener('click', (e) => {
   const b = e.target.closest('.period-opt');
   if (!b) return;
   periodo = b.dataset.period;
-  try { localStorage.setItem('dd-period', periodo); } catch { /* sem storage */ }
   pintarTudo();
 });
 

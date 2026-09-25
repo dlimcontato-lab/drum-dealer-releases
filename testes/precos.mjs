@@ -83,7 +83,7 @@ const ok = (c, m) => { console.log((c ? 'ok: ' : 'FAIL: ') + m); if (!c) falhas+
     })()`);
     ok(depois.monthlySel === true && depois.annualSel === false, 'clicar em "monthly" move a seleção da pílula');
     ok(depois.ariaMonthly === 'true', 'aria-selected acompanha o clique');
-    ok(depois.salvouStorage === 'monthly', 'o período escolhido fica em localStorage (dd-period)');
+    ok(depois.salvouStorage === null, 'o período clicado não é guardado: a home sempre abre no anual');
     // mesmo sem rede pro Supabase, PLANOS_PADRAO (fallback local, tabela da spec) alimenta o
     // recálculo: a pílula não é decorativa.
     ok(depois.soloAmount === '39' && depois.soloCents === ',90',
