@@ -25,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Yellowtail&family=Montserrat:wght@300;500;700;800&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='4' y='4' width='92' height='92' rx='10' fill='%232a2a2c' stroke='%230e0e10' stroke-width='3'/><rect x='22' y='16' width='56' height='68' rx='6' fill='%23e0702a' stroke='%23844219' stroke-width='3'/><circle cx='50' cy='34' r='8' fill='%23ff3b2f'/><circle cx='50' cy='34' r='14' fill='%23ff3b2f' opacity='.3'/></svg>">
-<link rel="stylesheet" href="dd.css?v=20260925p1">
+<link rel="stylesheet" href="dd.css?v=20260925p3">
 </head>
 <body>
 <!-- impeccable direction contract · seed 4268164a (herdado do painel do plugin)
@@ -96,7 +96,7 @@ RISK: aço demais sem cor; a cor mora nas teclas e nos LEDs, nunca no fundo. -->
   </p>
 </div>
 
-<script type="module" src="dd-main.js?v=20260925p1"></script>
+<script type="module" src="dd-main.js?v=20260925p3"></script>
 
 <!-- bloco novo "DAW + download" (23/09): a captura do plugin no Ableton à esquerda, os dois downloads
      empilhados e a fileira de DAWs à direita. Recebe a âncora #download; a antiga seção #download
@@ -155,26 +155,39 @@ RISK: aço demais sem cor; a cor mora nas teclas e nos LEDs, nunca no fundo. -->
 </section>
 
 <section class="wrap" id="precos">
-  <div class="period-switch" id="period-switch" role="tablist" aria-label="Período" data-i18n-attr="aria-label:plans.period-aria">
-    <button type="button" class="period-opt" role="tab" data-period="monthly" aria-selected="false" data-i18n="plans.period-monthly">Mensal</button>
-    <button type="button" class="period-opt sel" role="tab" data-period="annual" aria-selected="true" data-i18n="plans.period-annual">Anual</button>
+  <div class="sec-head">
+    <h2 data-i18n="plans.title">Uma licença, tudo liberado</h2>
+    <span class="legend" data-i18n="plans.legend">Todos os recursos em qualquer período</span>
   </div>
   <div class="plans plans-um" id="plans">
-    <article class="plan2" data-plan="solo">
-      <h3 data-i18n="plans.solo-name">Solo</h3>
-      <span class="off">-25%</span>
-      <p class="big-price"><small>R$</small><span class="amount">29</span><sup class="cents">,90</sup></p>
-      <p class="period-line" data-period-line>por mês · R$ 358,80 cobrado uma vez, 12 meses</p>
-      <p class="per-line"><span class="per-seat">R$ 29,90</span> <span data-i18n="plans.per-computador">por computador</span> · <span class="seats-n">1 computador</span></p>
-      <ul>
-        <li data-i18n="plans.solo-li1">1 computador ativo por vez</li>
-        <li data-i18n="plans.solo-li2">VST3 e AU, Mac e Windows</li>
-        <li data-i18n="plans.solo-li3">232 samples de fábrica e todas as atualizações</li>
-      </ul>
-      <a class="key green" href="conta.html?plano=solo&periodo=annual" data-i18n="plans.solo-cta">Comprar Solo</a>
+    <article class="plan2 oferta" data-plan="solo">
+      <figure class="oferta-produto">
+        <picture><source srcset="img/painel-brdrum.webp" type="image/webp"><img src="img/painel-brdrum.jpg" width="1200" height="844" loading="lazy" alt="Painel do BRDRUM: 16 passos para 6 instrumentos, MIDI GEN com baixo e melodia, Master FX" data-i18n-attr="alt:plans.img-alt"></picture>
+      </figure>
+      <div class="compra">
+        <div class="period-switch" id="period-switch" role="tablist" aria-label="Período" data-i18n-attr="aria-label:plans.period-aria">
+          <button type="button" class="period-opt" role="tab" data-period="monthly" aria-selected="false" data-i18n="plans.period-monthly">Mensal</button>
+          <button type="button" class="period-opt sel" role="tab" data-period="annual" aria-selected="true" data-i18n="plans.period-annual">Anual</button>
+        </div>
+        <p class="big-price"><small>R$</small><span class="amount">29</span><sup class="cents">,90</sup><span class="por-mes" data-i18n="plans.por-mes">/mês</span></p>
+        <p class="period-line" data-period-line>R$ 358,80 cobrado uma vez, vale 12 meses</p>
+        <p class="economia" data-economia>Economize R$ 120 em relação ao mensal</p>
+        <a class="key orange big" href="conta.html?plano=solo&periodo=annual" data-i18n="plans.cta">Comprar licença</a>
+        <p class="garantia" data-i18n="plans.garantia">Pix, cartão ou boleto · sem renovação automática</p>
+      </div>
+      <div class="detalhe">
+        <p class="inclui-tit" data-i18n="plans.inclui-tit">O que vem na licença</p>
+        <ul class="inclui">
+          <li data-i18n-html="plans.inclui1-html"><b>Batida pronta em um clique</b> e baixo ou melodia no tom da batida, arrastáveis para o DAW</li>
+          <li data-i18n-html="plans.inclui2-html"><b>232 samples de fábrica</b>, mais os seus, no mesmo sorteio</li>
+          <li data-i18n-html="plans.inclui3-html"><b>Export em stems</b>: um wav por instrumento, efeitos e o mix</li>
+          <li data-i18n="plans.inclui4">VST3 e AU, Mac e Windows, em 1 computador por vez</li>
+          <li data-i18n="plans.inclui5">Todas as atualizações durante o período</li>
+        </ul>
+        <p class="ja-tem" data-i18n-html="plans.ja-tem-html">Ainda na dúvida? <a href="#demo">Toque a demo</a>: é o mesmo motor do plugin. Já comprou? <a href="conta.html">Entrar na conta</a></p>
+      </div>
     </article>
   </div>
-  <p class="plans-note" data-i18n-html="plans.note-html">Pagamento pelo Mercado Pago (Pix, cartão ou boleto).</p>
 </section>
 
 <!-- vídeos de produtores usando o BRDRUM (lista em dd-reviews.js; a seção só aparece quando houver vídeo) -->
@@ -315,7 +328,7 @@ RISK: aço demais sem cor; a cor mora nas teclas e nos LEDs, nunca no fundo. -->
 <div class="close">
   <div class="wrap close-grid">
     <div class="close-buy">
-      <a class="key green big" id="close-buy-cta" href="conta.html?plano=solo" data-i18n="close.buy-cta">Comprar Solo</a>
+      <a class="key orange big" id="close-buy-cta" href="conta.html?plano=solo" data-i18n="close.buy-cta">Comprar licença</a>
       <p class="legend" id="close-legend" data-i18n="close.legend">Pagamento único por período, sem renovação automática. Pix, cartão ou boleto pelo Mercado Pago.</p>
     </div>
     <div class="close-dl">
@@ -349,8 +362,8 @@ RISK: aço demais sem cor; a cor mora nas teclas e nos LEDs, nunca no fundo. -->
   <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 6C12.4 6 4 13.6 4 23c0 4.8 2.3 9.1 6 12.2L8 42l9.6-4.2c2 .5 4.2.8 6.4.8 11.6 0 20-7.6 20-17S35.6 6 24 6z" fill="currentColor"/><circle cx="16" cy="23" r="2.6" fill="#1b1b1c"/><circle cx="24" cy="23" r="2.6" fill="#1b1b1c"/><circle cx="32" cy="23" r="2.6" fill="#1b1b1c"/></svg>
 </a>
 
-<script type="module" src="dd-topo.js?v=20260925p1"></script>
-<script type="module" src="dd-precos.js?v=20260925p1"></script>
-<script type="module" src="dd-reviews.js?v=20260925p1"></script>
+<script type="module" src="dd-topo.js?v=20260925p3"></script>
+<script type="module" src="dd-precos.js?v=20260925p3"></script>
+<script type="module" src="dd-reviews.js?v=20260925p3"></script>
 </body>
 </html>

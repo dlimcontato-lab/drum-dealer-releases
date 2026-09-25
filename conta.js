@@ -5,14 +5,14 @@ import {
   signIn, signUp, signOut, getSession, select, call, loadPlans, loadProfile, saveProfile,
   uploadAvatar, changePassword, logoutAll, seats as fnSeats, quote, packDownload, loadPacks,
   precosDoPlano, BRL, ApiError, DOWNLOADS, TIPOS_PACK, publicUrl, nomeNoTopo, nomePlanoBonito, PLANOS_PADRAO,
-} from './dd-api.js?v=20260925p1';
-import { montarTopo, avatarNode } from './dd-topo.js?v=20260925p1';
+} from './dd-api.js?v=20260925p3';
+import { montarTopo, avatarNode } from './dd-topo.js?v=20260925p3';
 import {
   $, el, msg, aviso as avisoUI, confirmar, perguntar, recado, abas, quando, dataHora,
   statusPedidoLabel, corStatus, tamanho, copiar, recortarQuadrado,
-} from './dd-ui.js?v=20260925p1';
-import { t, seatsLabel, seatWord, fmtDate, getLang } from './dd-i18n.js';
-import { textoChave } from './dd-textos.js?v=20260925p1';
+} from './dd-ui.js?v=20260925p3';
+import { t, seatsLabel, seatWord, fmtDate, getLang, fmtBRLCompact } from './dd-i18n.js';
+import { textoChave } from './dd-textos.js?v=20260925p3';
 
 const params = new URLSearchParams(location.search);
 const planoPedido = params.get('plano');
@@ -88,6 +88,7 @@ async function comprar(planId) {
     }
     if (aba) {
       aba.location.href = r.init_point;
+      abaPagamento = aba;
       msg($('msg-buy'), '');
       aviso(t('conta.pagamento-outra-aba'), '');
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -103,22 +104,84 @@ async function comprar(planId) {
 }
 
 // Sonda a licença a cada 5 s por até 20 min enquanto o pagamento corre na outra aba; qualquer
-// mudança (licença nova, mais computadores, vencimento estendido) repinta e avisa.
+// mudança (licença nova, mais computadores, vencimento estendido) repinta, avisa e fecha a aba
+// do Mercado Pago. 25/09 (Diogo pagou e a aba do MP ficou aberta): a sonda roda também com esta
+// aba em segundo plano (antes pulava com document.hidden, e quem está pagando está na outra aba),
+// e quem fecha a aba do MP é esta, que guardou a referência do window.open.
 const retratoLicenca = (lic) => (lic ? `${lic.seats}|${lic.expires_at || ''}|${lic.status}` : '');
 let sondaPagamento = 0;
+let abaPagamento = null;
+// ligado só entre o clique em Pagar e a confirmação (ou o fim da sonda); é o que autoriza esta
+// aba a responder à aba de volta do MP (revisão Fable 25/09: um contador nunca voltava a "não
+// estou esperando" e uma aba antiga respondia a qualquer ?pagamento=sucesso futuro)
+let aguardandoPagamento = false;
+let retratoAntesDaCompra = '';
+function fecharAbaPagamento() {
+  try { if (abaPagamento && !abaPagamento.closed) abaPagamento.close(); } catch { /* já fechada */ }
+  abaPagamento = null;
+}
+function pagamentoConfirmadoAqui() {
+  sondaPagamento++;
+  aguardandoPagamento = false;
+  fecharAbaPagamento();
+  pintarTudo();
+  aviso(t('conta.pagamento-confirmado-lic'), 'ok');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+// retrato leve: só a licença (a sonda roda a cada 5 s, inclusive em segundo plano; o carregar()
+// completo, com perfil, pedidos e packs, só roda quando o retrato muda)
+async function retratoNoServidor() {
+  const lics = await select('licenses', 'select=seats,status,expires_at&limit=1');
+  return retratoLicenca(lics.find((l) => l.status === 'active') || null);
+}
 async function aguardarPagamentoEmOutraAba() {
   const minha = ++sondaPagamento;
-  const antes = retratoLicenca(est.lic);
+  aguardandoPagamento = true;
+  retratoAntesDaCompra = retratoLicenca(est.lic);
   for (let i = 0; i < 240 && minha === sondaPagamento; i++) {
     await new Promise((r) => setTimeout(r, 5000));
-    if (minha !== sondaPagamento || document.hidden) continue;
+    if (minha !== sondaPagamento) return;
+    let agora;
+    try { agora = await retratoNoServidor(); } catch { continue; }
+    if (minha !== sondaPagamento) return;
+    if (agora === retratoAntesDaCompra) continue;
     try { await carregar(); } catch { continue; }
-    if (retratoLicenca(est.lic) !== antes) {
-      pintarTudo();
-      aviso(t('conta.pagamento-confirmado-lic'), 'ok');
-      return;
-    }
+    if (minha !== sondaPagamento) return;
+    pagamentoConfirmadoAqui();
+    return;
   }
+  if (minha === sondaPagamento) aguardandoPagamento = false;
+}
+
+// Quando o Mercado Pago devolve para conta.html?pagamento=sucesso na aba dele, essa aba avisa a
+// aba original (a que clicou em Pagar) por BroadcastChannel. A original só responde se está
+// esperando um pagamento E a licença mudou em relação a antes da compra (renovação com webhook
+// atrasado, Pix pendente ou compra de pack em outra aba não contam). Sem resposta, a aba de volta
+// fica aberta com a própria confirmação e a sonda da original segue.
+const canalPagamento = (() => { try { return new BroadcastChannel('dd-pagamento'); } catch { return null; } })();
+if (canalPagamento) {
+  canalPagamento.addEventListener('message', async (e) => {
+    const m = e.data || {};
+    if (m.tipo !== 'licenca-confirmada' || !aguardandoPagamento || !est.session) return;
+    let agora;
+    try { agora = await retratoNoServidor(); } catch { return; }
+    if (!aguardandoPagamento || agora === retratoAntesDaCompra) return;
+    canalPagamento.postMessage({ tipo: 'recebido', id: m.id });
+    try { await carregar(); } catch { /* repinta com o que tem */ }
+    if (aguardandoPagamento) pagamentoConfirmadoAqui();
+  });
+}
+function avisarAbaOriginalEFechar() {
+  if (!canalPagamento) return;
+  const id = Math.random().toString(36).slice(2);
+  const ouvir = (e) => {
+    if ((e.data || {}).tipo === 'recebido' && e.data.id === id) {
+      canalPagamento.removeEventListener('message', ouvir);
+      setTimeout(() => { try { window.close(); } catch { /* aba não aberta por script: fica */ } }, 400);
+    }
+  };
+  canalPagamento.addEventListener('message', ouvir);
+  canalPagamento.postMessage({ tipo: 'licenca-confirmada', id });
 }
 
 async function pintarCompra() {
@@ -127,12 +190,33 @@ async function pintarCompra() {
   up.innerHTML = '';
   const lic = est.lic;
   const seats = lic ? lic.seats : 0;
-  $('buy-title').textContent = lic ? t('conta.buy-title-upgrade') : t('conta.buy-title-planos');
+  $('buy-title').textContent = lic ? t('conta.buy-title-upgrade') : t('conta.licenca-brdrum');
   $('cupom-box').hidden = false;
-  $('buy-text').textContent = lic ? t('conta.buy-text-upgrade') : t('conta.buy-text-normal');
+  $('buy-text').textContent = lic ? t('conta.buy-text-upgrade') : '';
+  $('buy-text').hidden = !lic;
+  // 25/09: com um plano à venda não há o que escolher; o plano já vem selecionado e o Pagar
+  // aparece direto (menos um clique). Quem tem licença perpétua continua vendo o botão
+  // desabilitado "Seu plano"/"menor que o seu".
+  // Revisão Fable 25/09: quem tem licença ativa com mais computadores do que o plano à venda
+  // continua vendo o botão desabilitado "menor que o seu" (sem pré-seleção de um downgrade).
+  const unico = plans.length === 1 && !licPerpetua(lic) && !(lic && !licVencida(lic) && plans[0].seats < lic.seats);
+  if (unico) est.planoSel = plans[0].id;
+  up.hidden = unico;
 
   const vencida = licVencida(lic), perpetua = licPerpetua(lic);
   if (lic && vencida) $('buy-text').textContent = t('conta.plano-vencido-renove', { data: fmtDate(lic.expires_at) });
+  // com um plano só, quem já tem licença com prazo está renovando, não fazendo upgrade
+  if (unico && lic && !perpetua) {
+    $('buy-title').textContent = t('conta.renovar-title');
+    $('buy-text').textContent = t(vencida ? 'conta.renovar-text-vencida' : 'conta.renovar-text', { data: fmtDate(lic.expires_at) });
+  }
+  // licença ativa com mais computadores do que qualquer plano à venda (Studio/Equipe de antes de
+  // 25/09): não há upgrade nem renovação pelo site; diz que o plano segue valendo
+  if (lic && !perpetua && !vencida && !plans.some((p) => p.seats >= seats)) {
+    $('buy-title').textContent = t('conta.licenca-legend');
+    $('buy-text').textContent = t('conta.plano-maior-ativo', { data: fmtDate(lic.expires_at) });
+    $('cupom-box').hidden = true;
+  }
   for (const p of plans) {
     const b = document.createElement('button');
     b.type = 'button';
@@ -197,8 +281,16 @@ async function mostrarValor() {
     v.innerHTML = q.discount_cents > 0
       ? `<span class="legend">${prefixoPeriodo}${t('conta.valor-com-cupom', { nome: plano.name, codigo: q.coupon ? q.coupon.code : est.cupom })}</span>
          <span class="was">${BRL(q.list_price_cents)}</span><span class="agora">${valor}</span>`
-      : `<span class="legend">${prefixoPeriodo}${t('conta.valor-normal', { nome: plano.name, n: seatsLabel(plano.seats) })}</span><span class="agora">${valor}</span>`;
+      : `<span class="agora">${valor}</span><span class="legend">${est.periodo === 'annual'
+          ? t('conta.valor-anual-legend', { mes: BRL(precosDoPlano(plano).anualMes) })
+          : t('conta.valor-mensal-legend')}</span>`;
     pagar.textContent = gratis ? t('conta.ativar-gratis') : t('conta.pagar-valor', { valor });
+    // mesma linha de economia da home (e o mesmo formato, sem centavos quando redondo)
+    const eco = $('economia-conta');
+    const pv = precosDoPlano(plano);
+    const poupa = pv.mensal * 12 - pv.anualTotal;
+    eco.hidden = !(est.periodo === 'annual' && poupa > 0 && !(q.discount_cents > 0));
+    eco.textContent = t('plans.economia', { valor: fmtBRLCompact(poupa) });
     pagar.hidden = false;
   } catch (e) {
     v.hidden = true; v.innerHTML = ''; pagar.hidden = true;
@@ -847,7 +939,7 @@ async function esperarLicenca() {
   for (let i = 0; i < 12; i++) {
     await carregar();
     pintarTudo();
-    if (est.lic) { aviso(t('conta.pagamento-confirmado-lic'), 'ok'); return; }
+    if (est.lic) { aviso(t('conta.pagamento-confirmado-lic'), 'ok'); if (pagamento === 'sucesso') avisarAbaOriginalEFechar(); return; }
     await new Promise((r) => setTimeout(r, 2500));
   }
   aviso(t('conta.pagamento-recebido-sem-lic'));

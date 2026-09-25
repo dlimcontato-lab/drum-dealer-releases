@@ -1300,3 +1300,49 @@ select.recess.p-abs{font-size:11px;padding:0 20px 0 6px;background-position:righ
 
 /* Título da marca em imagem (fonte Nulshock, 23/09) */
 .punch-img img{display:block;width:100%;max-width:560px;height:auto}
+
+/* 25/09: oferta única (home) e compra na conta, com a imagem do painel e cor única de compra */
+#precos .sec-head{margin-bottom:var(--s4)}
+.plans.plans-um{max-width:880px;margin-inline:auto}
+.plan2.oferta{max-width:480px;margin-inline:auto;gap:12px;padding:0 32px 26px;overflow:hidden}
+.plan2.oferta .oferta-produto{margin:0 -32px 8px;padding:0;background:#141416}
+.plan2.oferta .oferta-produto img{display:block;width:100%;height:auto}
+.plan2.oferta .compra,.plan2.oferta .detalhe{display:flex;flex-direction:column;gap:12px}
+.plan2.oferta .period-switch{margin:0 auto 6px}
+.plan2.oferta .por-mes{font-family:var(--punch-font);font-weight:700;font-size:1.1rem;color:var(--silk-dim);align-self:flex-end;margin:0 0 6px -18px}
+.plan2.oferta .period-line{margin:0}
+.plan2.oferta .economia,.oferta-conta .economia{font-family:var(--silk-font);font-weight:700;font-size:.95rem;color:var(--led-green);margin:0}
+.plan2.oferta .economia[hidden],.oferta-conta .economia[hidden]{display:none}
+.plan2.oferta .key.big{margin-top:8px;width:100%}
+.plan2.oferta .garantia{font-size:var(--t-small);color:var(--silk-dim);margin:0;max-width:none}
+.plan2.oferta .detalhe{border-top:1px solid rgba(233,230,222,.08);padding-top:18px;margin-top:6px}
+.plan2.oferta .inclui-tit{font-family:var(--silk-font);font-weight:700;font-size:.75rem;letter-spacing:.08em;text-transform:uppercase;color:var(--silk-dim);margin:0;text-align:left}
+.plan2.oferta .inclui{margin:0}
+.plan2.oferta .ja-tem{font-size:var(--t-small);color:var(--silk-dim);margin:4px 0 0;line-height:1.6;text-align:left;max-width:none}
+.plan2.oferta .ja-tem a{color:var(--silk);text-decoration:underline;text-underline-offset:3px}
+@media (min-width:860px){
+  .plan2.oferta{max-width:none;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0;padding:0}
+  .plan2.oferta .oferta-produto{grid-column:1 / -1;margin:0;padding:28px 36px 0;background:none}
+  .plan2.oferta .oferta-produto img{border-radius:6px;box-shadow:0 10px 28px rgba(0,0,0,.55)}
+  .plan2.oferta .compra{padding:32px 36px;justify-content:center}
+  .plan2.oferta .detalhe{padding:32px 36px;margin:0;border-top:0;border-left:1px solid rgba(233,230,222,.08)}
+  .plan2.oferta .ja-tem{margin-top:auto}
+}
+.oferta-conta .oc-grid{display:grid;gap:22px;margin-top:6px}
+.oferta-conta .oc-produto{margin:0}
+.oferta-conta .oc-produto img{display:block;width:100%;height:auto;border-radius:6px;box-shadow:0 10px 28px rgba(0,0,0,.55)}
+.oferta-conta figcaption{margin-top:10px;font-size:var(--t-small);color:var(--silk-dim)}
+.oferta-conta .oc-compra{display:flex;flex-direction:column;gap:10px;min-width:0}
+.oferta-conta .period-switch{margin:0}
+.oferta-conta .upgrade[hidden]{display:none}
+.oferta-conta #cupom-box{display:flex;flex-direction:column;gap:10px}
+.oferta-conta #cupom-box[hidden]{display:none}
+.oferta-conta .valor{margin-top:4px}
+.oferta-conta .valor .agora{color:#fff;text-shadow:none;font-size:34px}
+.oferta-conta #btn-pagar{margin-top:6px}
+.oferta-conta .oc-termos{font-size:var(--t-small);color:var(--silk-dim);margin:0}
+.oferta-conta .oc-cupom summary{cursor:pointer;font-size:var(--t-small);color:var(--silk);text-decoration:underline;text-underline-offset:3px;min-height:44px;display:flex;align-items:center;width:max-content}
+.oferta-conta .oc-cupom .cupom{margin-top:4px}
+@media (min-width:860px){.oferta-conta .oc-grid{grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);align-items:center;gap:32px}}
+/* botões de compra: tinta sobre o laranja (serigrafia dava 2,58:1; tinta dá 5,99:1) */
+.plan2.oferta .key.orange,#close-buy-cta.key.orange,.oferta-conta #btn-pagar{--txt:var(--ink);--engrave:rgba(255,255,255,.3)}

@@ -33,8 +33,8 @@ const ok = (c, m) => { console.log((c ? 'ok: ' : 'FAIL: ') + m); if (!c) falhas+
         annualSel: opts.find((b) => b.dataset.period === 'annual').classList.contains('sel'),
         soloAmount: solo.querySelector('.amount').textContent,
         soloCents: solo.querySelector('.cents').textContent,
-        soloOffHidden: solo.querySelector('.off').hidden,
-        soloOffTexto: solo.querySelector('.off').textContent,
+        soloOffHidden: solo.querySelector('[data-economia]').hidden,
+        soloOffTexto: solo.querySelector('[data-economia]').textContent.replace(/\\s/g, ' '),
         nCards,
         ctaHrefs: ctas.map((a) => a.getAttribute('href')),
         amountColor: getComputedStyle(solo.querySelector('.amount')).color,
@@ -48,8 +48,15 @@ const ok = (c, m) => { console.log((c ? 'ok: ' : 'FAIL: ') + m); if (!c) falhas+
     ok(antes.annualSel === true, 'a opção "annual" começa com .sel');
     // 25/09 (Diogo): só o Solo à venda. Anual 29,90/mês, mensal 39,90.
     ok(antes.nCards === 1, `só um card de plano na home, o Solo (${antes.nCards})`);
+    // 25/09 (designer): a compra é laranja (mesma cor do Pagar da conta) e o card mostra o painel do plugin
+    const oferta = await s.avaliar(`(() => { const c = document.querySelector('.plan2[data-plan="solo"]'); const b = c.querySelector('a.key');
+      return { laranja: b.classList.contains('orange'), verde: b.classList.contains('green'), img: !!c.querySelector('.oferta-produto img[src*="painel-brdrum"]'),
+               fecho: document.getElementById('close-buy-cta').classList.contains('orange'), txt: getComputedStyle(b).color }; })()`);
+    ok(oferta.laranja && !oferta.verde && oferta.fecho, 'botões de compra da home em laranja, nenhum verde');
+    ok(oferta.img, 'o card de preços mostra a imagem do painel');
+    ok(oferta.txt === 'rgb(14, 14, 16)', `texto do botão em tinta sobre o laranja (${oferta.txt})`);
     ok(antes.soloAmount === '29' && antes.soloCents === ',90', `solo mostra 29,90 no anual (${antes.soloAmount}${antes.soloCents})`);
-    ok(antes.soloOffHidden === false && antes.soloOffTexto === '-25%', `off do solo visível com -25% no anual (hidden=${antes.soloOffHidden} texto=${antes.soloOffTexto})`);
+    ok(antes.soloOffHidden === false && antes.soloOffTexto === 'Economize R$ 120 em relação ao mensal', `economia do anual visível em reais (hidden=${antes.soloOffHidden} texto=${antes.soloOffTexto})`);
     ok(antes.ctaHrefs.length === 1 && antes.ctaHrefs.every((h) => h && h.includes('plano=solo') && h.includes('periodo=annual')), `o CTA tem plano=solo e periodo=annual no href (${antes.ctaHrefs.join(' | ')})`);
 
     await s.clicar('#period-switch .period-opt[data-period="monthly"]');
@@ -66,7 +73,7 @@ const ok = (c, m) => { console.log((c ? 'ok: ' : 'FAIL: ') + m); if (!c) falhas+
         ariaMonthly: opts.find((b) => b.dataset.period === 'monthly').getAttribute('aria-selected'),
         soloAmount: solo.querySelector('.amount').textContent,
         soloCents: solo.querySelector('.cents').textContent,
-        soloOffHidden: solo.querySelector('.off').hidden,
+        soloOffHidden: solo.querySelector('[data-economia]').hidden,
         soloLine: solo.querySelector('[data-period-line]').textContent,
         nCards,
         ctaHrefs: ctas.map((a) => a.getAttribute('href')),
@@ -80,8 +87,8 @@ const ok = (c, m) => { console.log((c ? 'ok: ' : 'FAIL: ') + m); if (!c) falhas+
     // recálculo: a pílula não é decorativa.
     ok(depois.soloAmount === '39' && depois.soloCents === ',90',
       `no mensal o solo recalcula pra 39,90 mesmo sem rede (${depois.soloAmount}${depois.soloCents})`);
-    ok(depois.soloOffHidden === true, 'no mensal o off do solo fica hidden');
-    ok(depois.soloLine.includes('por mês'), `a linha do período do solo é a de mensal (${depois.soloLine})`);
+    ok(depois.soloOffHidden === true, 'no mensal a linha de economia some');
+    ok(depois.soloLine.includes('vale 1 mês'), `a linha do período do solo é a de mensal (${depois.soloLine})`);
     ok(depois.ctaHrefs.every((h) => h && h.includes('periodo=monthly')), `o CTA passa a ter periodo=monthly no href (${depois.ctaHrefs.join(' | ')})`);
     ok(s.erros.length === 0, `sem console.error na home (${JSON.stringify(s.erros)})`);
 
@@ -91,12 +98,12 @@ const ok = (c, m) => { console.log((c ? 'ok: ' : 'FAIL: ') + m); if (!c) falhas+
       const solo = document.querySelector('.plan2[data-plan="solo"]');
       return {
         amount: solo.querySelector('.amount').textContent, cents: solo.querySelector('.cents').textContent,
-        offHidden: solo.querySelector('.off').hidden, offTexto: solo.querySelector('.off').textContent,
+        offHidden: solo.querySelector('[data-economia]').hidden, offTexto: solo.querySelector('[data-economia]').textContent.replace(/\\s/g, ' '),
         href: solo.querySelector('a.key')?.getAttribute('href'),
       };
     })()`);
     ok(volta.amount === '29' && volta.cents === ',90', `voltando pro anual o solo mostra 29,90 de novo (${volta.amount}${volta.cents})`);
-    ok(volta.offHidden === false && volta.offTexto === '-25%', `voltando pro anual o off do solo mostra -25% de novo (hidden=${volta.offHidden} texto=${volta.offTexto})`);
+    ok(volta.offHidden === false && volta.offTexto === 'Economize R$ 120 em relação ao mensal', `voltando pro anual a economia volta (hidden=${volta.offHidden} texto=${volta.offTexto})`);
     ok(volta.href && volta.href.includes('periodo=annual'), `voltando pro anual o href do solo volta a periodo=annual (${volta.href})`);
   } finally { s.fechar(); }
 }

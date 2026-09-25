@@ -2,7 +2,7 @@
 // Seletor MENSAL | ANUAL (referência de 23/09): o anual é o padrão. A etiqueta -N% é a
 // economia do anual sobre o mensal; o bullet "% por computador em relação ao Solo" é
 // calculado do período mostrado. Quem já tem licença vê Renovar/Upgrade/Seu plano.
-import { loadPlans, getSession, select, quote, precosDoPlano, emPromocao, BRL, PLANOS_PADRAO, nomePlanoBonito } from './dd-api.js?v=20260925p1';
+import { loadPlans, getSession, select, quote, precosDoPlano, emPromocao, BRL, PLANOS_PADRAO, nomePlanoBonito } from './dd-api.js?v=20260925p3';
 import { t, seatsLabel, fmtBRLCompact, getLang, DICT } from './dd-i18n.js';
 
 let periodo = 'annual';
@@ -115,8 +115,17 @@ async function pintarTudo() {
     const v = precosDoPlano(p);
     const cents = precoMostrado(p);
     pintarPreco(card, cents);
-    card.querySelector('.per-seat').textContent = fmtBRLCompact(cents / p.seats);
-    card.querySelector('.seats-n').textContent = seatsLabel(p.seats);
+    const ps = card.querySelector('.per-seat');
+    if (ps) ps.textContent = fmtBRLCompact(cents / p.seats);
+    const sn = card.querySelector('.seats-n');
+    if (sn) sn.textContent = seatsLabel(p.seats);
+    // 25/09: a economia do anual em reais (12 × mensal − anual), só no anual
+    const eco = card.querySelector('[data-economia]');
+    if (eco) {
+      const poupa = v.mensal * 12 - v.anualTotal;
+      eco.hidden = !(periodo === 'annual' && poupa > 0);
+      eco.textContent = t('plans.economia', { valor: fmtBRLCompact(poupa) });
+    }
     card.querySelector('[data-period-line]').textContent = periodo === 'annual'
       ? t('plans.period-line-annual', { total: BRL(v.anualTotal) })
       : t('plans.period-line-monthly');
