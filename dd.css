@@ -1304,9 +1304,7 @@ select.recess.p-abs{font-size:11px;padding:0 20px 0 6px;background-position:righ
 /* 25/09: oferta única (home) e compra na conta, com a imagem do painel e cor única de compra */
 #precos .sec-head{margin-bottom:var(--s4)}
 .plans.plans-um{max-width:880px;margin-inline:auto}
-.plan2.oferta{max-width:480px;margin-inline:auto;gap:12px;padding:0 32px 26px;overflow:hidden}
-.plan2.oferta .oferta-produto{margin:0 -32px 8px;padding:0;background:#141416}
-.plan2.oferta .oferta-produto img{display:block;width:100%;height:auto}
+.plan2.oferta{max-width:480px;margin-inline:auto;gap:12px;padding:28px 32px 26px;overflow:hidden}
 .plan2.oferta .compra,.plan2.oferta .detalhe{display:flex;flex-direction:column;gap:12px}
 .plan2.oferta .period-switch{margin:0 auto 6px}
 .plan2.oferta .por-mes{font-family:var(--punch-font);font-weight:700;font-size:1.1rem;color:var(--silk-dim);align-self:flex-end;margin:0 0 6px -18px}
@@ -1322,8 +1320,6 @@ select.recess.p-abs{font-size:11px;padding:0 20px 0 6px;background-position:righ
 .plan2.oferta .ja-tem a{color:var(--silk);text-decoration:underline;text-underline-offset:3px}
 @media (min-width:860px){
   .plan2.oferta{max-width:none;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0;padding:0}
-  .plan2.oferta .oferta-produto{grid-column:1 / -1;margin:0;padding:28px 36px 0;background:none}
-  .plan2.oferta .oferta-produto img{border-radius:6px;box-shadow:0 10px 28px rgba(0,0,0,.55)}
   .plan2.oferta .compra{padding:32px 36px;justify-content:center}
   .plan2.oferta .detalhe{padding:32px 36px;margin:0;border-top:0;border-left:1px solid rgba(233,230,222,.08)}
   .plan2.oferta .ja-tem{margin-top:auto}

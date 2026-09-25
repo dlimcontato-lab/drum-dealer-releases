@@ -3,9 +3,9 @@
 import {
   getSession, select, call, loadPacks, meusPacks, packDownload, quote, publicUrl,
   precoEfetivo, emPromocao, BRL, TIPOS_PACK,
-} from './dd-api.js?v=20260925p3';
-import { montarTopo } from './dd-topo.js?v=20260925p3';
-import { $, el, msg, aviso, recado, previa, pararPrevia, tamanho } from './dd-ui.js?v=20260925p3';
+} from './dd-api.js?v=20260925p5';
+import { montarTopo } from './dd-topo.js?v=20260925p5';
+import { $, el, msg, aviso, recado, previa, pararPrevia, tamanho } from './dd-ui.js?v=20260925p5';
 import { t } from './dd-i18n.js';
 
 const est = { session: null, lic: null, packs: [], meus: new Map(), atual: null, cupom: '' };

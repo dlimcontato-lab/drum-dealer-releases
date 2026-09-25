@@ -53,7 +53,8 @@ const ok = (c, m) => { console.log((c ? 'ok: ' : 'FAIL: ') + m); if (!c) falhas+
       return { laranja: b.classList.contains('orange'), verde: b.classList.contains('green'), img: !!c.querySelector('.oferta-produto img[src*="painel-brdrum"]'),
                fecho: document.getElementById('close-buy-cta').classList.contains('orange'), txt: getComputedStyle(b).color }; })()`);
     ok(oferta.laranja && !oferta.verde && oferta.fecho, 'botões de compra da home em laranja, nenhum verde');
-    ok(oferta.img, 'o card de preços mostra a imagem do painel');
+    // 25/09 (Diogo): a imagem do painel saiu do card da home (a demo tocável já está no topo); fica só na conta
+    ok(!oferta.img, 'o card de preços da home não repete a imagem do painel');
     ok(oferta.txt === 'rgb(14, 14, 16)', `texto do botão em tinta sobre o laranja (${oferta.txt})`);
     ok(antes.soloAmount === '29' && antes.soloCents === ',90', `solo mostra 29,90 no anual (${antes.soloAmount}${antes.soloCents})`);
     ok(antes.soloOffHidden === false && antes.soloOffTexto === 'Economize R$ 120 em relação ao mensal', `economia do anual visível em reais (hidden=${antes.soloOffHidden} texto=${antes.soloOffTexto})`);
