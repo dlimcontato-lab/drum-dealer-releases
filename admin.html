@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Yellowtail&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='4' y='4' width='92' height='92' rx='10' fill='%232a2a2c' stroke='%230e0e10' stroke-width='3'/><rect x='22' y='16' width='56' height='68' rx='6' fill='%23e0702a' stroke='%23844219' stroke-width='3'/><circle cx='50' cy='34' r='8' fill='%23ff3b2f'/><circle cx='50' cy='34' r='14' fill='%23ff3b2f' opacity='.3'/></svg>">
-<link rel="stylesheet" href="dd.css?v=20260925p11">
+<link rel="stylesheet" href="dd.css?v=20260925p13">
 </head>
 <body>
 
@@ -62,6 +62,32 @@
         </div>
         <div class="stats" id="stats" style="margin-top:16px"></div>
         <p class="msg" id="msg-visao" aria-live="polite" style="min-height:1.3em;font-size:var(--t-small)"></p>
+      </fieldset>
+
+      <!-- 25/09: visitas e funil (Edge Function funil, só admin; dd-admin-funil.js) -->
+      <fieldset class="panel" id="panel-funil" hidden style="margin-top:22px">
+        <legend>Visitas e funil</legend>
+        <div class="adm-head">
+          <p class="sub">Cada passo da home até o pagamento. Sessões anônimas, sem dado pessoal.</p>
+          <div class="adm-head">
+            <div class="period-switch small" id="funil-periodo" role="tablist" aria-label="Período">
+              <button type="button" class="period-opt sel" role="tab" aria-selected="true" data-dias="7">7 dias</button>
+              <button type="button" class="period-opt" role="tab" aria-selected="false" data-dias="30">30 dias</button>
+              <button type="button" class="period-opt" role="tab" aria-selected="false" data-dias="90">90 dias</button>
+            </div>
+            <button class="key small" type="button" id="btn-funil">Atualizar</button>
+          </div>
+        </div>
+        <div class="funil" id="funil-barras" role="list" aria-label="Funil de compra no período"></div>
+        <p class="sub" id="funil-receita"></p>
+        <p class="funil-nota">Visitas e cliques vêm do navegador e não contam robôs nem quem pede para não ser rastreado. "Criou conta" e "Pagou" vêm do banco: todas as contas criadas e as licenças pagas no dia. A contagem de visitas começou em 25/09/2026. Os números de visita são indicativos: não dependem de login e podem ser simulados.</p>
+        <div class="tbl-wrap recess">
+          <table class="tbl" id="tbl-funil">
+            <thead><tr><th>Dia</th><th>Visitas</th><th>Clicou comprar</th><th>Criou conta</th><th>Clicou pagar</th><th>Pagou</th><th>Receita</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p class="msg" id="msg-funil" aria-live="polite" style="min-height:1.3em;font-size:var(--t-small)"></p>
       </fieldset>
     </div>
 
@@ -267,7 +293,8 @@
   </div>
 </div>
 
-<script type="module" src="dd-topo.js?v=20260925p11"></script>
-<script type="module" src="dd-admin.js?v=20260925p11"></script>
+<script type="module" src="dd-topo.js?v=20260925p13"></script>
+<script type="module" src="dd-admin.js?v=20260925p13"></script>
+<script type="module" src="dd-admin-funil.js?v=20260925p13"></script>
 </body>
 </html>

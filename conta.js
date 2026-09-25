@@ -5,14 +5,14 @@ import {
   signIn, signUp, signOut, getSession, select, call, loadPlans, loadProfile, saveProfile,
   uploadAvatar, changePassword, logoutAll, seats as fnSeats, quote, packDownload, loadPacks,
   precosDoPlano, BRL, ApiError, DOWNLOADS, TIPOS_PACK, publicUrl, nomeNoTopo, nomePlanoBonito, PLANOS_PADRAO,
-} from './dd-api.js?v=20260925p11';
-import { montarTopo, avatarNode } from './dd-topo.js?v=20260925p11';
+} from './dd-api.js?v=20260925p13';
+import { montarTopo, avatarNode } from './dd-topo.js?v=20260925p13';
 import {
   $, el, msg, aviso as avisoUI, confirmar, perguntar, recado, abas, quando, dataHora,
   statusPedidoLabel, corStatus, tamanho, copiar, recortarQuadrado,
-} from './dd-ui.js?v=20260925p11';
+} from './dd-ui.js?v=20260925p13';
 import { t, seatsLabel, seatWord, fmtDate, getLang, fmtBRLCompact } from './dd-i18n.js';
-import { textoChave } from './dd-textos.js?v=20260925p11';
+import { textoChave } from './dd-textos.js?v=20260925p13';
 
 const params = new URLSearchParams(location.search);
 const planoPedido = params.get('plano');
@@ -71,6 +71,8 @@ async function cotar(planId) {
 // aba fica sondando a licença e se atualiza sozinha quando o pagamento confirmar.
 async function comprar(planId) {
   msg($('msg-buy'), t('conta.abrindo-pagamento'));
+  // funil (25/09): clique em Pagar, anônimo; nunca atrasa nem quebra a compra
+  import('./dd-funil.js?v=20260925p13').then((m) => m.registrar('clique_pagar')).catch(() => {});
   let aba = null;
   try { aba = window.open('', '_blank'); if (aba) aba.opener = null; } catch { aba = null; }
   try {

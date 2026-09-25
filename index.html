@@ -25,7 +25,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Yellowtail&family=Montserrat:wght@300;500;700;800&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='4' y='4' width='92' height='92' rx='10' fill='%232a2a2c' stroke='%230e0e10' stroke-width='3'/><rect x='22' y='16' width='56' height='68' rx='6' fill='%23e0702a' stroke='%23844219' stroke-width='3'/><circle cx='50' cy='34' r='8' fill='%23ff3b2f'/><circle cx='50' cy='34' r='14' fill='%23ff3b2f' opacity='.3'/></svg>">
-<link rel="stylesheet" href="dd.css?v=20260925p11">
+<link rel="stylesheet" href="dd.css?v=20260925p13">
 </head>
 <body>
 <!-- impeccable direction contract · seed 4268164a (herdado do painel do plugin)
@@ -96,7 +96,13 @@ RISK: aço demais sem cor; a cor mora nas teclas e nos LEDs, nunca no fundo. -->
   </p>
 </div>
 
-<script type="module" src="dd-main.js?v=20260925p11"></script>
+<script type="module" src="dd-main.js?v=20260925p13"></script>
+<script type="module">
+  // 25/09: visitas e funil (dd-funil.js): uma visita por sessão por dia e o clique nos "Comprar licença"
+  import { registrar } from './dd-funil.js?v=20260925p13';
+  registrar('visita');
+  document.addEventListener('click', (e) => { if (e.target.closest('a.key.chamada')) registrar('clique_comprar'); });
+</script>
 
 <section class="wrap" id="precos">
   <div class="sec-head">
@@ -359,8 +365,8 @@ RISK: aço demais sem cor; a cor mora nas teclas e nos LEDs, nunca no fundo. -->
   <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 6C12.4 6 4 13.6 4 23c0 4.8 2.3 9.1 6 12.2L8 42l9.6-4.2c2 .5 4.2.8 6.4.8 11.6 0 20-7.6 20-17S35.6 6 24 6z" fill="currentColor"/><circle cx="16" cy="23" r="2.6" fill="#1b1b1c"/><circle cx="24" cy="23" r="2.6" fill="#1b1b1c"/><circle cx="32" cy="23" r="2.6" fill="#1b1b1c"/></svg>
 </a>
 
-<script type="module" src="dd-topo.js?v=20260925p11"></script>
-<script type="module" src="dd-precos.js?v=20260925p11"></script>
-<script type="module" src="dd-reviews.js?v=20260925p11"></script>
+<script type="module" src="dd-topo.js?v=20260925p13"></script>
+<script type="module" src="dd-precos.js?v=20260925p13"></script>
+<script type="module" src="dd-reviews.js?v=20260925p13"></script>
 </body>
 </html>

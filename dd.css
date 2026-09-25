@@ -1362,3 +1362,14 @@ select.recess.p-abs{font-size:11px;padding:0 20px 0 6px;background-position:righ
 .key.chamada:hover,.key.chamada:focus-visible,.key.chamada:active{animation:none}
 .key.chamada:hover::after,.key.chamada:focus-visible::after,.key.chamada:active::after{animation:none;opacity:0}
 @media (prefers-reduced-motion:reduce){.key.chamada,.key.chamada::after{animation:none}.key.chamada::after{opacity:0}}
+
+/* 25/09: painel › visitas e funil. Uma série só: barra em verde LED (valor), número e taxa em texto */
+.funil{display:grid;gap:10px;margin-top:16px}
+.funil-linha{display:grid;grid-template-columns:150px minmax(0,1fr) 190px;align-items:center;gap:12px}
+.funil-nome{font-size:var(--t-small);color:var(--silk)}
+.funil-trilho{height:14px;border-radius:4px;background:rgba(233,230,222,.06);overflow:hidden}
+.funil-barra{display:block;height:100%;border-radius:0 4px 4px 0;background:var(--led-green)}
+.funil-valor{font-size:var(--t-small);color:var(--silk-dim);white-space:nowrap}
+.funil-valor b{color:var(--silk);font-size:1rem}
+.funil-nota{font-size:var(--t-small);color:var(--silk-dim);margin:10px 0 0}
+@media (max-width:700px){.funil-linha{grid-template-columns:1fr auto}.funil-trilho{grid-column:1 / -1;grid-row:2}}
