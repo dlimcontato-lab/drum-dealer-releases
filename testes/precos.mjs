@@ -26,8 +26,7 @@ const ok = (c, m) => { console.log((c ? 'ok: ' : 'FAIL: ') + m); if (!c) falhas+
     const antes = await s.avaliar(`(() => {
       const opts = [...document.querySelectorAll('#period-switch .period-opt')];
       const solo = document.querySelector('.plan2[data-plan="solo"]');
-      const studio = document.querySelector('.plan2[data-plan="studio"]');
-      const off = studio.querySelector('.off');
+      const nCards = document.querySelectorAll('.plan2').length;
       const ctas = [...document.querySelectorAll('.plan2 a.key')];
       return {
         nOpts: opts.length,
@@ -36,7 +35,7 @@ const ok = (c, m) => { console.log((c ? 'ok: ' : 'FAIL: ') + m); if (!c) falhas+
         soloCents: solo.querySelector('.cents').textContent,
         soloOffHidden: solo.querySelector('.off').hidden,
         soloOffTexto: solo.querySelector('.off').textContent,
-        offHidden: off.hidden, offTexto: off.textContent,
+        nCards,
         ctaHrefs: ctas.map((a) => a.getAttribute('href')),
         amountColor: getComputedStyle(solo.querySelector('.amount')).color,
         centsColor: getComputedStyle(solo.querySelector('.cents')).color,
@@ -47,10 +46,11 @@ const ok = (c, m) => { console.log((c ? 'ok: ' : 'FAIL: ') + m); if (!c) falhas+
     ok(antes.amountColor === 'rgb(255, 255, 255)', `.amount em branco (${antes.amountColor})`);
     ok(antes.centsColor === 'rgb(255, 255, 255)', `.cents em branco (${antes.centsColor})`);
     ok(antes.annualSel === true, 'a opção "annual" começa com .sel');
-    ok(antes.soloAmount === '39' && antes.soloCents === ',90', `solo mostra 39,90 no anual (${antes.soloAmount}${antes.soloCents})`);
-    ok(antes.soloOffHidden === false && antes.soloOffTexto === '-20%', `off do solo visível com -20% no anual (hidden=${antes.soloOffHidden} texto=${antes.soloOffTexto})`);
-    ok(antes.offHidden === false && antes.offTexto === '-15%', `off do studio visível com -15% no anual (hidden=${antes.offHidden} texto=${antes.offTexto})`);
-    ok(antes.ctaHrefs.every((h) => h && h.includes('periodo=annual')), `os 3 CTAs têm periodo=annual no href (${antes.ctaHrefs.join(' | ')})`);
+    // 25/09 (Diogo): só o Solo à venda. Anual 29,90/mês, mensal 39,90.
+    ok(antes.nCards === 1, `só um card de plano na home, o Solo (${antes.nCards})`);
+    ok(antes.soloAmount === '29' && antes.soloCents === ',90', `solo mostra 29,90 no anual (${antes.soloAmount}${antes.soloCents})`);
+    ok(antes.soloOffHidden === false && antes.soloOffTexto === '-25%', `off do solo visível com -25% no anual (hidden=${antes.soloOffHidden} texto=${antes.soloOffTexto})`);
+    ok(antes.ctaHrefs.length === 1 && antes.ctaHrefs.every((h) => h && h.includes('plano=solo') && h.includes('periodo=annual')), `o CTA tem plano=solo e periodo=annual no href (${antes.ctaHrefs.join(' | ')})`);
 
     await s.clicar('#period-switch .period-opt[data-period="monthly"]');
     await s.esperar(500);
@@ -58,8 +58,7 @@ const ok = (c, m) => { console.log((c ? 'ok: ' : 'FAIL: ') + m); if (!c) falhas+
     const depois = await s.avaliar(`(() => {
       const opts = [...document.querySelectorAll('#period-switch .period-opt')];
       const solo = document.querySelector('.plan2[data-plan="solo"]');
-      const studio = document.querySelector('.plan2[data-plan="studio"]');
-      const off = studio.querySelector('.off');
+      const nCards = document.querySelectorAll('.plan2').length;
       const ctas = [...document.querySelectorAll('.plan2 a.key')];
       return {
         monthlySel: opts.find((b) => b.dataset.period === 'monthly').classList.contains('sel'),
@@ -69,7 +68,7 @@ const ok = (c, m) => { console.log((c ? 'ok: ' : 'FAIL: ') + m); if (!c) falhas+
         soloCents: solo.querySelector('.cents').textContent,
         soloOffHidden: solo.querySelector('.off').hidden,
         soloLine: solo.querySelector('[data-period-line]').textContent,
-        offHidden: off.hidden,
+        nCards,
         ctaHrefs: ctas.map((a) => a.getAttribute('href')),
         salvouStorage: localStorage.getItem('dd-period'),
       };
@@ -79,12 +78,11 @@ const ok = (c, m) => { console.log((c ? 'ok: ' : 'FAIL: ') + m); if (!c) falhas+
     ok(depois.salvouStorage === 'monthly', 'o período escolhido fica em localStorage (dd-period)');
     // mesmo sem rede pro Supabase, PLANOS_PADRAO (fallback local, tabela da spec) alimenta o
     // recálculo: a pílula não é decorativa.
-    ok(depois.soloAmount === '49' && depois.soloCents === ',99',
-      `no mensal o solo recalcula pra 49,99 mesmo sem rede (${depois.soloAmount}${depois.soloCents})`);
+    ok(depois.soloAmount === '39' && depois.soloCents === ',90',
+      `no mensal o solo recalcula pra 39,90 mesmo sem rede (${depois.soloAmount}${depois.soloCents})`);
     ok(depois.soloOffHidden === true, 'no mensal o off do solo fica hidden');
-    ok(depois.offHidden === true, 'no mensal o off do studio fica hidden');
     ok(depois.soloLine.includes('por mês'), `a linha do período do solo é a de mensal (${depois.soloLine})`);
-    ok(depois.ctaHrefs.every((h) => h && h.includes('periodo=monthly')), `os 3 CTAs passam a ter periodo=monthly no href (${depois.ctaHrefs.join(' | ')})`);
+    ok(depois.ctaHrefs.every((h) => h && h.includes('periodo=monthly')), `o CTA passa a ter periodo=monthly no href (${depois.ctaHrefs.join(' | ')})`);
     ok(s.erros.length === 0, `sem console.error na home (${JSON.stringify(s.erros)})`);
 
     await s.clicar('#period-switch .period-opt[data-period="annual"]');
@@ -97,8 +95,8 @@ const ok = (c, m) => { console.log((c ? 'ok: ' : 'FAIL: ') + m); if (!c) falhas+
         href: solo.querySelector('a.key')?.getAttribute('href'),
       };
     })()`);
-    ok(volta.amount === '39' && volta.cents === ',90', `voltando pro anual o solo mostra 39,90 de novo (${volta.amount}${volta.cents})`);
-    ok(volta.offHidden === false && volta.offTexto === '-20%', `voltando pro anual o off do solo mostra -20% de novo (hidden=${volta.offHidden} texto=${volta.offTexto})`);
+    ok(volta.amount === '29' && volta.cents === ',90', `voltando pro anual o solo mostra 29,90 de novo (${volta.amount}${volta.cents})`);
+    ok(volta.offHidden === false && volta.offTexto === '-25%', `voltando pro anual o off do solo mostra -25% de novo (hidden=${volta.offHidden} texto=${volta.offTexto})`);
     ok(volta.href && volta.href.includes('periodo=annual'), `voltando pro anual o href do solo volta a periodo=annual (${volta.href})`);
   } finally { s.fechar(); }
 }
@@ -119,7 +117,7 @@ const ok = (c, m) => { console.log((c ? 'ok: ' : 'FAIL: ') + m); if (!c) falhas+
 
 // ---------- (g): conta.html deslogado com plano e período na URL ----------
 {
-  const s = await abrir(`${BASE}/conta.html?plano=studio&periodo=monthly&lang=pt`, { largura: 1440, altura: 1400, bloquear: BLOQUEIO, porta: 9337 });
+  const s = await abrir(`${BASE}/conta.html?plano=solo&periodo=monthly&lang=pt`, { largura: 1440, altura: 1400, bloquear: BLOQUEIO, porta: 9337 });
   try {
     await s.esperar(1000);
     const r = await s.avaliar(`(() => {

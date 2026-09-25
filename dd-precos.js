@@ -2,7 +2,7 @@
 // Seletor MENSAL | ANUAL (referência de 23/09): o anual é o padrão. A etiqueta -N% é a
 // economia do anual sobre o mensal; o bullet "% por computador em relação ao Solo" é
 // calculado do período mostrado. Quem já tem licença vê Renovar/Upgrade/Seu plano.
-import { loadPlans, getSession, select, quote, precosDoPlano, emPromocao, BRL, PLANOS_PADRAO, nomePlanoBonito } from './dd-api.js?v=20260925i';
+import { loadPlans, getSession, select, quote, precosDoPlano, emPromocao, BRL, PLANOS_PADRAO, nomePlanoBonito } from './dd-api.js?v=20260925p1';
 import { t, seatsLabel, fmtBRLCompact, getLang, DICT } from './dd-i18n.js';
 
 let periodo = 'annual';
@@ -60,7 +60,7 @@ function pintarFaixaFinal(lic, plansAtual) {
 
   if (estado.modo === 'comprar') {
     if (licP) licP.remove();
-    if (btn) { btn.hidden = false; btn.textContent = t('close.buy-cta'); btn.href = 'conta.html?plano=studio&periodo=' + periodo; }
+    if (btn) { btn.hidden = false; btn.textContent = t('close.buy-cta'); btn.href = 'conta.html?plano=solo&periodo=' + periodo; }
     if (legend) legend.textContent = t('close.legend');
     return;
   }

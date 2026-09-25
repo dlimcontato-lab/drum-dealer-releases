@@ -5,14 +5,14 @@ import {
   signIn, signUp, signOut, getSession, select, call, loadPlans, loadProfile, saveProfile,
   uploadAvatar, changePassword, logoutAll, seats as fnSeats, quote, packDownload, loadPacks,
   precosDoPlano, BRL, ApiError, DOWNLOADS, TIPOS_PACK, publicUrl, nomeNoTopo, nomePlanoBonito, PLANOS_PADRAO,
-} from './dd-api.js?v=20260925i';
-import { montarTopo, avatarNode } from './dd-topo.js?v=20260925i';
+} from './dd-api.js?v=20260925p1';
+import { montarTopo, avatarNode } from './dd-topo.js?v=20260925p1';
 import {
   $, el, msg, aviso as avisoUI, confirmar, perguntar, recado, abas, quando, dataHora,
   statusPedidoLabel, corStatus, tamanho, copiar, recortarQuadrado,
-} from './dd-ui.js?v=20260925i';
+} from './dd-ui.js?v=20260925p1';
 import { t, seatsLabel, seatWord, fmtDate, getLang } from './dd-i18n.js';
-import { textoChave } from './dd-textos.js?v=20260925i';
+import { textoChave } from './dd-textos.js?v=20260925p1';
 
 const params = new URLSearchParams(location.search);
 const planoPedido = params.get('plano');

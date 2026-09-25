@@ -130,9 +130,8 @@ export function formatBRL(cents) {
 // Movido de dd-precos.js (24/09, Task 2 da jornada de compra) para servir também o resumo do
 // plano em conta.html antes do cadastro (view-auth), sem depender de rede.
 export const PLANOS_PADRAO = [
-  { id: 'solo',   name: 'Solo',   seats: 1, price_cents: 4999,  monthly_cents: 4999,  annual_month_cents: 3990,  annual_cents: 47880,  badge: null,          sort: 1 },
-  { id: 'studio', name: 'Studio', seats: 3, price_cents: 12999, monthly_cents: 12999, annual_month_cents: 10990, annual_cents: 131880, badge: 'RECOMENDADO', sort: 2 },
-  { id: 'team',   name: 'Equipe', seats: 5, price_cents: 20999, monthly_cents: 20999, annual_month_cents: 17999, annual_cents: 215988, badge: null,          sort: 3 },
+  // 25/09: só o Solo fica à venda (Studio e Equipe desativados no banco). Mensal 39,90; anual 29,90/mês.
+  { id: 'solo',   name: 'Solo',   seats: 1, price_cents: 3990,  monthly_cents: 3990,  annual_month_cents: 2990,  annual_cents: 35880,  badge: null,          sort: 1 },
 ];
 
 export async function loadPlans() {

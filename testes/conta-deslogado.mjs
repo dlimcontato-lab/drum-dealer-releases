@@ -20,7 +20,7 @@ mkdirSync(join(RAIZ, '.ciclo'), { recursive: true });
 for (const largura of [390, 1440]) {
   const altura = largura === 390 ? 900 : 1400;
   const porta = largura === 390 ? 9480 : 9481;
-  const s = await abrir(`${BASE}/conta.html?plano=studio&periodo=annual`, { largura, altura, bloquear: BLOQUEIO, porta });
+  const s = await abrir(`${BASE}/conta.html?plano=solo&periodo=annual`, { largura, altura, bloquear: BLOQUEIO, porta });
   try {
     await s.esperar(900);
     const r = await s.avaliar(`(() => {
@@ -41,9 +41,9 @@ for (const largura of [390, 1440]) {
     ok(r.viewAuthHidden === false && r.viewAccountHidden === true, `[${largura}px] deslogado: tela de entrar visível, conta escondida`);
     ok(r.temEscolhido, `[${largura}px] .panel.escolhido existe`);
     ok(r.escolhidoAntes, `[${largura}px] .panel.escolhido vem antes de #form-login`);
-    ok(r.textoEscolhido.includes('Studio'), `[${largura}px] resumo cita "Studio" (${r.textoEscolhido})`);
-    ok(r.textoEscolhido.includes('1.318,80'), `[${largura}px] resumo cita "1.318,80" (${r.textoEscolhido})`);
-    ok(r.textoEscolhido.includes('3 computadores'), `[${largura}px] resumo cita "3 computadores" (${r.textoEscolhido})`);
+    ok(r.textoEscolhido.includes('Solo'), `[${largura}px] resumo cita "Solo" (${r.textoEscolhido})`);
+    ok(r.textoEscolhido.includes('358,80'), `[${largura}px] resumo cita "358,80" (${r.textoEscolhido})`);
+    ok(r.textoEscolhido.includes('1 computador'), `[${largura}px] resumo cita "1 computador" (${r.textoEscolhido})`);
     ok(r.maiorQueViewport.length === 0, `[${largura}px] nenhum elemento passa de innerWidth (${JSON.stringify(r.maiorQueViewport)})`);
     ok(s.erros.length === 0, `[${largura}px] sem console.error (${JSON.stringify(s.erros)})`);
     await s.print(join(RAIZ, `.ciclo/f1-t2-${largura}.png`));

@@ -93,7 +93,7 @@ export const DICT = {
     'spec.export-th': 'Export',
     'spec.export-td': 'um wav por instrumento (bumbo, caixa, palma, chimbais, tom) + um wav só dos efeitos (reverb e delay) + o mix completo',
     'spec.licenca-th': 'Licença',
-    'spec.licenca-td': 'por conta · 1, 3 ou 5 computadores',
+    'spec.licenca-td': 'por conta · 1 computador',
 
     // ---------- download ----------
     // download.title/legend/step1-3/manual-* ficaram sem uso na home 23/09 (a seção #download
@@ -213,7 +213,7 @@ export const DICT = {
     'samples.p2-html': 'Aperte <b>SAMPLER</b> dentro do plugin: abre a pasta <b>BRDRUM</b> com os samples, nas\n      subpastas <code>Kick</code>, <code>Snare</code>, <code>Clap</code>, <code>Hat</code> e\n      <code>Tom</code>. Jogue seus wavs lá e eles entram no sorteio <b>junto</b> com os de fábrica.\n      O mesmo vale pros MIDIs do gerador, nas pastas <code>Bass</code> e <code>Lead</code>.',
 
     // ---------- fecho ----------
-    'close.buy-cta': 'Comprar Studio',
+    'close.buy-cta': 'Comprar Solo',
     'close.legend': 'Pagamento único por período, sem renovação automática. Pix, cartão ou boleto pelo Mercado Pago.',
     'close.compat-title-html': '<b>compatível</b> com todas as DAWs',
     'close.licenca-valida': 'Sua licença {plano} vale até {data}',
@@ -685,7 +685,7 @@ export const DICT = {
     'spec.export-th': 'Export',
     'spec.export-td': 'one wav per instrument (kick, snare, clap, hats, tom) + one wav with just the effects (reverb and delay) + the full mix',
     'spec.licenca-th': 'License',
-    'spec.licenca-td': 'per account · 1, 3 or 5 computers',
+    'spec.licenca-td': 'per account · 1 computer',
 
     'download.daw-shot-alt': 'BRDRUM open in Ableton Live, with the bass and lead MIDI generator and the audio clips beside it',
     'download.title': 'Download the installer',
@@ -794,7 +794,7 @@ export const DICT = {
     'samples.p1': 'The installer already sets up the factory library. Nothing to configure.',
     'samples.p2-html': 'Press <b>SAMPLER</b> inside the plugin: it opens the <b>BRDRUM</b> folder with the samples, in the\n      subfolders <code>Kick</code>, <code>Snare</code>, <code>Clap</code>, <code>Hat</code> and\n      <code>Tom</code>. Drop your wavs there and they join the draw <b>alongside</b> the factory ones.\n      The same goes for the generator\'s MIDIs, in the <code>Bass</code> and <code>Lead</code> folders.',
 
-    'close.buy-cta': 'Buy Studio',
+    'close.buy-cta': 'Buy Solo',
     'close.legend': 'One payment per period, no auto-renewal. Pix, card or boleto through Mercado Pago.',
     'close.compat-title-html': '<b>compatible</b> with every DAW',
     'close.licenca-valida': 'Your {plano} license is valid until {data}',
