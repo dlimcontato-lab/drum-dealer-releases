@@ -137,6 +137,16 @@
         <p class="msg" id="msg-lic" aria-live="polite" style="min-height:1.3em;font-size:var(--t-small);margin-top:8px"></p>
       </fieldset>
 
+      <!-- 26/09: presente de boas-vindas -->
+      <fieldset class="panel presente-conta" id="panel-presente" hidden>
+        <legend data-i18n="presente.legenda">Presente de boas-vindas</legend>
+        <p class="lead" id="presente-conta-texto"></p>
+        <p class="dim" data-i18n="presente.conta-sub">Um teste por conta e por computador. O prazo começa agora, ao ativar.</p>
+        <button class="key orange big" type="button" id="btn-ativar-presente" data-i18n="presente.conta-ativar">Ativar teste</button>
+        <p class="msg" id="msg-presente" aria-live="polite"></p>
+      </fieldset>
+      <p class="presente-desconto" id="presente-desconto" aria-live="polite" hidden></p>
+
       <fieldset class="panel oferta-conta" id="panel-buy">
         <legend id="buy-title" data-i18n="conta.licenca-brdrum">Licença BRDRUM</legend>
         <div class="oc-grid">

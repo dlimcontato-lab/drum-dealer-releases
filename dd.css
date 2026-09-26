@@ -1390,3 +1390,5 @@ select.recess.p-abs{font-size:11px;padding:0 20px 0 6px;background-position:righ
 .presente-dias{font-size:var(--t-small);color:var(--silk-dim);margin-bottom:16px}
 .presente .key.big{width:100%;margin-top:6px;--txt:var(--ink);--engrave:rgba(255,255,255,.3)}
 .presente-regra{font-size:.8rem;color:var(--silk-dim);margin-top:12px}
+.presente-conta .key.big{--txt:var(--ink);--engrave:rgba(255,255,255,.3);margin-top:10px}
+.presente-desconto{margin:0 0 16px;padding:12px 16px;border-radius:8px;border:1px solid rgba(54,212,118,.35);color:var(--led-green);font-weight:700}

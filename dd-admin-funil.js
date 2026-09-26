@@ -69,12 +69,15 @@ function pintar(linhas) {
     barras.appendChild(linha);
   });
   $('funil-receita').textContent = receita > 0 ? `Receita de licenças no período: ${BRL(receita)}` : 'Nenhuma licença paga no período.';
+  const ganhos = linhas.reduce((s, l) => s + (l.presente_ganho || 0), 0);
+  const ativados = linhas.reduce((s, l) => s + (l.presente_ativado || 0), 0);
+  $('funil-presentes').textContent = `Presentes no período: ${num(ganhos)} ganhos, ${num(ativados)} testes ativados.`;
 
   const tb = $('tbl-funil').querySelector('tbody');
   tb.innerHTML = '';
   for (const l of linhas) {
     const tr = document.createElement('tr');
-    for (const c of [dia(l.day), num(l.visitas), num(l.clique_comprar), num(l.conta_criada), num(l.clique_pagar), num(l.pagos), l.receita_cents ? BRL(l.receita_cents) : '—']) {
+    for (const c of [dia(l.day), num(l.visitas), num(l.presente_ganho), num(l.presente_ativado), num(l.clique_comprar), num(l.conta_criada), num(l.clique_pagar), num(l.pagos), l.receita_cents ? BRL(l.receita_cents) : '—']) {
       const td = document.createElement('td'); td.textContent = c; tr.appendChild(td);
     }
     tb.appendChild(tr);
