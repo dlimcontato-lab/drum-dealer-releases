@@ -1373,3 +1373,20 @@ select.recess.p-abs{font-size:11px;padding:0 20px 0 6px;background-position:righ
 .funil-valor b{color:var(--silk);font-size:1rem}
 .funil-nota{font-size:var(--t-small);color:var(--silk-dim);margin:10px 0 0}
 @media (max-width:700px){.funil-linha{grid-template-columns:1fr auto}.funil-trilho{grid-column:1 / -1;grid-row:2}}
+
+/* 26/09: presente de boas-vindas. Teclas de step; a luz é a do playhead (creme) e o prêmio acende
+   o LED verde (valor). Laranja só no botão que age (Girar / Ativar), com texto em tinta (5,99:1). */
+.presente{max-width:520px;width:calc(100% - 32px);border:1px solid rgba(14,14,16,.9);border-radius:18px;padding:28px 28px 22px;
+  background:linear-gradient(180deg,#262628,#1b1b1d);color:var(--silk);box-shadow:0 30px 80px rgba(0,0,0,.6);text-align:center}
+.presente::backdrop{background:rgba(8,8,10,.72)}
+.presente h2{font-family:var(--punch-font);font-size:1.7rem;margin:6px 0 8px;color:#fff}
+.presente p{margin:0 auto;max-width:none}
+.presente .presente-x{position:absolute;top:14px;right:14px;width:44px;height:44px;font-size:20px}
+.presente-steps{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;margin:20px 0 6px}
+.presente-step{display:grid;place-items:center;height:56px;border-radius:4px;font-family:var(--punch-font);font-weight:800;font-size:1.3rem;
+  color:var(--ink);background:linear-gradient(180deg,#efebdd,#dfd9ca);box-shadow:0 3px 0 #98948a}
+.presente-step.luz{background:linear-gradient(180deg,#fff7e6,#f1e7cf);box-shadow:0 3px 0 #98948a,0 0 14px rgba(255,236,190,.55)}
+.presente-step.ganho{background:linear-gradient(180deg,#5adc8f,#33c86f);box-shadow:0 3px 0 #23894c,0 0 18px rgba(54,212,118,.55)}
+.presente-dias{font-size:var(--t-small);color:var(--silk-dim);margin-bottom:16px}
+.presente .key.big{width:100%;margin-top:6px;--txt:var(--ink);--engrave:rgba(255,255,255,.3)}
+.presente-regra{font-size:.8rem;color:var(--silk-dim);margin-top:12px}
