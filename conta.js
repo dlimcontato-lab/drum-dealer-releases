@@ -24,7 +24,6 @@ let plans = [];
 const est = {                 // estado da página
   session: null, perfil: null, lic: null, vagas: null, vagasErro: null,
   orders: [], packs: [], cupom: '', cotacoes: new Map(), planoSel: null, periodo: 'annual',
-  presente: null, presenteUsado: false,
 };
 
 const periodoUrl = new URLSearchParams(location.search).get('periodo');
@@ -187,63 +186,6 @@ function avisarAbaOriginalEFechar() {
   canalPagamento.postMessage({ tipo: 'licenca-confirmada', id });
 }
 
-// ===== presente de boas-vindas (26/09) =====
-const CODIGO_RE = /^[A-Z0-9]{10}$/;
-function presenteGuardado() {
-  if (est.presenteUsado) return null;
-  const daUrl = (params.get('presente') || '').toUpperCase();
-  let salvo = null;
-  try { salvo = JSON.parse(localStorage.getItem('dd.presente') || 'null'); } catch { salvo = null; }
-  if (salvo && CODIGO_RE.test(salvo.code || '') && (!daUrl || daUrl === salvo.code)) return salvo;
-  if (CODIGO_RE.test(daUrl)) return { code: daUrl, days: null, expires_at: null };
-  return null;
-}
-async function pintarPresente() {
-  const painel = $('panel-presente'), desc = $('presente-desconto');
-  painel.hidden = true; desc.hidden = true;
-  let st;
-  try { st = await call('presente', { action: 'status' }); } catch { return; }
-  est.presente = st;
-  const g = presenteGuardado();
-  const temAtiva = est.lic && !licVencida(est.lic);
-  if (st.estado === 'nunca' && g && !temAtiva) {
-    $('presente-conta-texto').textContent = g.days
-      ? t(g.days === 1 ? 'presente.conta-texto-1' : 'presente.conta-texto-n', { n: g.days })
-      : t('presente.conta-texto-sem-dias');
-    painel.hidden = false;
-  }
-  const c = st.coupon;
-  const agora = Date.now();
-  if (st.estado === 'vencido' && c && !c.usado && Date.parse(c.valid_from) <= agora && Date.parse(c.valid_until) > agora) {
-    desc.textContent = t('presente.desconto', { data: fmtDate(c.valid_until) });
-    desc.hidden = false;
-    est.cupom = c.code;
-    $('cupom').value = c.code;
-    est.cotacoes.clear();
-    await pintarCompra();
-  }
-}
-$('btn-ativar-presente').addEventListener('click', async () => {
-  const g = presenteGuardado();
-  if (!g) return;
-  const b = $('btn-ativar-presente');
-  b.disabled = true;
-  msg($('msg-presente'), t('presente.ativando'));
-  try {
-    await call('presente', { action: 'claim', code: g.code });
-    est.presenteUsado = true;
-    try { localStorage.removeItem('dd.presente'); } catch { /* sem storage */ }
-    history.replaceState(null, '', 'conta.html#licenca');
-    await carregar();
-    pintarTudo();
-    await pintarPresente();
-    aviso(t('presente.ativado'), 'ok');
-  } catch (e) {
-    msg($('msg-presente'), e.message, 'err');
-    b.disabled = false;
-  }
-});
-
 async function pintarCompra() {
   pintarSeletorConta();
   const up = $('upgrade');
@@ -267,11 +209,8 @@ async function pintarCompra() {
   if (lic && vencida) $('buy-text').textContent = t('conta.plano-vencido-renove', { data: fmtDate(lic.expires_at) });
   // com um plano só, quem já tem licença com prazo está renovando, não fazendo upgrade
   if (unico && lic && !perpetua) {
-    const teste = lic.period === 'trial' && !vencida;
-    $('buy-title').textContent = teste ? t('conta.licenca-brdrum') : t('conta.renovar-title');
-    $('buy-text').textContent = teste
-      ? t('presente.comprar-durante')
-      : t(vencida ? 'conta.renovar-text-vencida' : 'conta.renovar-text', { data: fmtDate(lic.expires_at) });
+    $('buy-title').textContent = t('conta.renovar-title');
+    $('buy-text').textContent = t(vencida ? 'conta.renovar-text-vencida' : 'conta.renovar-text', { data: fmtDate(lic.expires_at) });
   }
   // licença ativa com mais computadores do que qualquer plano à venda (Studio/Equipe de antes de
   // 25/09): não há upgrade nem renovação pelo site; diz que o plano segue valendo
@@ -514,10 +453,8 @@ function pintarLicenca() {
   }
 
   const vencida = licVencida(lic);
-  const rotuloPeriodo = lic.period === 'trial' ? t('presente.periodo-teste')
-    : t(lic.period === 'annual' ? 'conta.periodo-anual' : 'conta.periodo-mensal');
   const prazo = lic.expires_at
-    ? t('conta.licenca-valida-ate', { data: fmtDate(lic.expires_at), periodo: rotuloPeriodo })
+    ? t('conta.licenca-valida-ate', { data: fmtDate(lic.expires_at), periodo: t(lic.period === 'annual' ? 'conta.periodo-anual' : 'conta.periodo-mensal') })
     : t('conta.licenca-sem-prazo');
   if (vencida) {
     setStatus(t('conta.licenca-vencida-status', { email: est.session.user.email }), false);
@@ -542,20 +479,15 @@ function pintarLicenca() {
 
   for (const s of lista) ul.appendChild(linhaVaga(s));
 
-  // vagas livres: uma linha por vaga, com "Gerar chave" (teste grátis não gera chave: um
-  // computador por conta, ativa entrando direto no plugin)
-  const testeAtivo = lic.period === 'trial';
+  // vagas livres: uma linha por vaga, com "Gerar chave"
   for (let i = lista.length; i < total; i++) {
     const li = el('li', 'recess free');
     const who = el('span', 'who');
-    who.append(el('b', null, t('conta.vaga-livre')), el('span', 'legend', t(testeAtivo ? 'presente.vaga-legenda-teste' : 'conta.vaga-livre-legend')));
-    li.append(who);
-    if (!testeAtivo) {
-      const bt = el('button', 'key small cream', t('conta.gerar-chave')); bt.type = 'button';
-      bt.addEventListener('click', () => gerarChave(bt));
-      const acts2 = el('span', 'acts'); acts2.appendChild(bt);
-      li.append(acts2);
-    }
+    who.append(el('b', null, t('conta.vaga-livre')), el('span', 'legend', t('conta.vaga-livre-legend')));
+    const bt = el('button', 'key small cream', t('conta.gerar-chave')); bt.type = 'button';
+    bt.addEventListener('click', () => gerarChave(bt));
+    const acts2 = el('span', 'acts'); acts2.appendChild(bt);
+    li.append(who, acts2);
     ul.appendChild(li);
   }
 
@@ -572,16 +504,11 @@ function pintarLicenca() {
     acts.appendChild(bt);
   }
 
-  if (lic.expires_at && lic.period !== 'trial') {
+  if (lic.expires_at) {
     acts.hidden = false;
     const bt = el('button', vencida ? 'key orange' : 'key cream', t('conta.renovar')); bt.type = 'button';
     bt.addEventListener('click', () => $('panel-buy').scrollIntoView({ behavior: 'smooth', block: 'center' }));
     acts.appendChild(bt);
-  }
-
-  if (lic.period === 'trial' && !vencida) {
-    const dias = Math.max(0, Math.ceil((Date.parse(lic.expires_at) - Date.now()) / 864e5));
-    $('lic-text').textContent = t(dias === 1 ? 'presente.falta-1' : 'presente.faltam-n', { n: dias });
   }
 }
 
@@ -889,37 +816,25 @@ function escapar(s) {
 function pintarEscolhido() {
   const antigo = document.getElementById('plano-escolhido');
   if (antigo) antigo.remove();
-  const g = presenteGuardado();
-  if (!planoPedido && !g) return;
+  if (!planoPedido) return;
+  const plano = plans.find((p) => p.id === planoPedido) || PLANOS_PADRAO.find((p) => p.id === planoPedido);
+  if (!plano) return;
+  const periodoEscolhido = params.get('periodo') === 'annual' ? 'annual' : 'monthly';
+  const v = precosDoPlano(plano);
+  const linhaTexto = periodoEscolhido === 'annual'
+    ? t('conta.escolhido-anual', { total: BRL(v.anualTotal) })
+    : t('conta.escolhido-mensal', { total: BRL(v.mensal) });
 
   const fs = document.createElement('fieldset');
   fs.className = 'panel escolhido';
   fs.id = 'plano-escolhido';
-  const legend = el('legend', null, t(planoPedido ? 'conta.escolhido-legend' : 'presente.legenda'));
-  fs.appendChild(legend);
-
-  if (planoPedido) {
-    const plano = plans.find((p) => p.id === planoPedido) || PLANOS_PADRAO.find((p) => p.id === planoPedido);
-    if (!plano) return;
-    const periodoEscolhido = params.get('periodo') === 'annual' ? 'annual' : 'monthly';
-    const v = precosDoPlano(plano);
-    const linhaTexto = periodoEscolhido === 'annual'
-      ? t('conta.escolhido-anual', { total: BRL(v.anualTotal) })
-      : t('conta.escolhido-mensal', { total: BRL(v.mensal) });
-    const linha = el('p', 'legend');
-    linha.textContent = `${nomePlanoBonito(plano.name)} · ${linhaTexto} · ${seatsLabel(plano.seats)} `;
-    const link = el('a', 'trocar-plano', t('conta.trocar-plano'));
-    link.href = './#precos';
-    linha.appendChild(link);
-    fs.appendChild(linha);
-  }
-
-  if (g) {
-    const lp = el('p', 'legend');
-    lp.textContent = g.days ? t('presente.auth-linha', { n: g.days }) : t('presente.conta-texto-sem-dias');
-    fs.appendChild(lp);
-  }
-
+  const legend = el('legend', null, t('conta.escolhido-legend'));
+  const linha = el('p', 'legend');
+  linha.textContent = `${nomePlanoBonito(plano.name)} · ${linhaTexto} · ${seatsLabel(plano.seats)} `;
+  const link = el('a', 'trocar-plano', t('conta.trocar-plano'));
+  link.href = './#precos';
+  linha.appendChild(link);
+  fs.append(legend, linha);
   $('view-auth').prepend(fs);
 }
 
@@ -1011,7 +926,6 @@ async function depoisDoLogin(session) {
   // Mesmo assim, nunca é a única forma de baixar — o link permanente do aviso é que garante.
   if (baixarPedido && DOWNLOADS[baixarPedido]) dispararDownload(baixarPedido);
   await abrirConta(session);
-  await pintarPresente();
   if (planoPedido && plans.some((p) => p.id === planoPedido)) {
     history.replaceState(null, '', 'conta.html#licenca');
     location.hash = '#licenca';
@@ -1030,10 +944,9 @@ async function esperarLicenca() {
   for (let i = 0; i < 12; i++) {
     await carregar();
     pintarTudo();
-    if (est.lic) { await pintarPresente(); aviso(t('conta.pagamento-confirmado-lic'), 'ok'); if (pagamento === 'sucesso') avisarAbaOriginalEFechar(); return; }
+    if (est.lic) { aviso(t('conta.pagamento-confirmado-lic'), 'ok'); if (pagamento === 'sucesso') avisarAbaOriginalEFechar(); return; }
     await new Promise((r) => setTimeout(r, 2500));
   }
-  await pintarPresente();
   aviso(t('conta.pagamento-recebido-sem-lic'));
 }
 
@@ -1071,6 +984,6 @@ async function esperarLicenca() {
 
 // idioma: repinta a página logada (ou a tela de entrar) sem recarregar nem repetir chamadas de rede
 document.addEventListener('dd-lang-changed', () => {
-  if (est.session) { pintarTudo(); pintarPresente(); if (avisoDownloadAtivo) mostrarAvisoDownload(avisoDownloadAtivo); }
+  if (est.session) { pintarTudo(); if (avisoDownloadAtivo) mostrarAvisoDownload(avisoDownloadAtivo); }
   else renderAuth();
 });

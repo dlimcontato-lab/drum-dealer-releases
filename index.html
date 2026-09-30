@@ -104,23 +104,6 @@ RISK: aço demais sem cor; a cor mora nas teclas e nos LEDs, nunca no fundo. -->
   document.addEventListener('click', (e) => { if (e.target.closest('a.key.chamada')) registrar('clique_comprar'); });
 </script>
 
-<!-- 26/09: presente de boas-vindas (dd-presente.js). Abre por interesse, nunca no carregamento. -->
-<dialog class="presente" id="presente" aria-labelledby="presente-titulo">
-  <button class="key small presente-x" type="button" id="presente-fechar" aria-label="Fechar" data-i18n-attr="aria-label:presente.fechar">×</button>
-  <p class="legend" data-i18n="presente.legenda">Presente de boas-vindas</p>
-  <h2 id="presente-titulo" data-i18n="presente.titulo">Seu próximo beat começa de graça</h2>
-  <p id="presente-texto" data-i18n="presente.texto">Gire e ganhe de 1 a 7 dias grátis do BRDRUM completo.</p>
-  <div class="presente-steps" role="img" aria-label="Prêmios de 1 a 7 dias" data-i18n-attr="aria-label:presente.steps-aria">
-    <span class="presente-step" data-dias="1">1</span><span class="presente-step" data-dias="2">2</span><span class="presente-step" data-dias="3">3</span><span class="presente-step" data-dias="4">4</span><span class="presente-step" data-dias="5">5</span><span class="presente-step" data-dias="6">6</span><span class="presente-step" data-dias="7">7</span>
-  </div>
-  <p class="presente-dias" data-i18n="presente.dias">dias grátis</p>
-  <button class="key orange big" type="button" id="presente-girar" autofocus data-i18n="presente.girar">Girar</button>
-  <a class="key orange big" id="presente-ativar" hidden href="conta.html#licenca" data-i18n="presente.ativar">Ativar meu presente</a>
-  <p class="msg" id="presente-msg" aria-live="polite"></p>
-  <p class="presente-regra" data-i18n="presente.regra">Cada prazo tem a mesma chance. Um teste por computador. O presente vale 48 horas para ativar.</p>
-</dialog>
-<script type="module" src="dd-presente.js?v=20260925p13"></script>
-
 <section class="wrap" id="precos">
   <div class="sec-head">
     <h2 data-i18n="plans.title">Adquirir</h2>
