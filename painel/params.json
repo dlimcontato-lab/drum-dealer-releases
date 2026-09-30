@@ -98,12 +98,12 @@
   },
   {
     "id": "masterGain",
-    "min": -24.0,
+    "min": -60.0,
     "max": 6.0,
     "interval": 0.1,
-    "skew": 1.0,
+    "skew": 2.1766,
     "def": 0.0,
-    "curve": "linear",
+    "curve": "skew",
     "type": "float"
   },
   {
