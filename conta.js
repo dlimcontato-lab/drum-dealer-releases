@@ -437,7 +437,7 @@ function pintarLicenca() {
   } else {
     setStatus(t('conta.licenca-ativa-status', { email: est.session.user.email }), true);
     $('lic-text').textContent = t('conta.licenca-texto', { plano: nomePlano(v && v.plan_id), usadas, total, acessos: seatWord(total) });
-    $('lic-sub').innerHTML = (usadas >= total ? t('conta.licenca-sub-cheia-html') : t('conta.licenca-sub-livre-html')) + ` <span class="legend">${prazo}</span>`;
+    $('lic-sub').innerHTML = (usadas >= total ? t(temPlanoMaior(lic) ? 'conta.licenca-sub-cheia-html' : 'conta.licenca-sub-cheia-sem-upgrade-html') : t('conta.licenca-sub-livre-html')) + ` <span class="legend">${prazo}</span>`;
   }
 
   if (est.vagasErro) {
@@ -468,14 +468,19 @@ function pintarLicenca() {
   if (usadas >= total) {
     acts.hidden = false;
     const w = el('div', 'recess warn');
-    w.innerHTML = t('conta.licenca-cheia-aviso-html');
+    // 07/10 (Diogo): sem plano com mais computadores à venda, não há upgrade: some o botão
+    // e o texto só manda remover um computador
+    const upgrade = temPlanoMaior(lic);
+    w.innerHTML = t(upgrade ? 'conta.licenca-cheia-aviso-html' : 'conta.licenca-cheia-aviso-sem-upgrade-html');
     w.style.flex = '1 1 100%';
     acts.appendChild(w);
-    const bt = el('button', 'key orange', t('plans.fazer-upgrade')); bt.type = 'button';
-    bt.addEventListener('click', () => {
-      $('panel-buy').scrollIntoView({ behavior: 'smooth', block: 'center' });
-    });
-    acts.appendChild(bt);
+    if (upgrade) {
+      const bt = el('button', 'key orange', t('plans.fazer-upgrade')); bt.type = 'button';
+      bt.addEventListener('click', () => {
+        $('panel-buy').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+      acts.appendChild(bt);
+    }
   }
 
   if (lic.expires_at) {
@@ -484,6 +489,11 @@ function pintarLicenca() {
     bt.addEventListener('click', () => $('panel-buy').scrollIntoView({ behavior: 'smooth', block: 'center' }));
     acts.appendChild(bt);
   }
+}
+
+// existe plano à venda com mais computadores que a licença? (07/10: só o Solo está à venda)
+function temPlanoMaior(lic) {
+  return plans.some((p) => p.seats > lic.seats);
 }
 
 function linhaVaga(s) {
