@@ -42,7 +42,7 @@ for (const largura of [390, 1440]) {
     ok(r.temEscolhido, `[${largura}px] .panel.escolhido existe`);
     ok(r.escolhidoAntes, `[${largura}px] .panel.escolhido vem antes de #form-login`);
     ok(r.textoEscolhido.includes('Solo'), `[${largura}px] resumo cita "Solo" (${r.textoEscolhido})`);
-    ok(r.textoEscolhido.includes('358,80'), `[${largura}px] resumo cita "358,80" (${r.textoEscolhido})`);
+    ok(r.textoEscolhido.includes('39,90') && /vital[íi]cia/i.test(r.textoEscolhido), `[${largura}px] resumo cita "39,90" e "vitalícia" (${r.textoEscolhido})`);
     ok(r.textoEscolhido.includes('1 computador'), `[${largura}px] resumo cita "1 computador" (${r.textoEscolhido})`);
     ok(r.maiorQueViewport.length === 0, `[${largura}px] nenhum elemento passa de innerWidth (${JSON.stringify(r.maiorQueViewport)})`);
     ok(s.erros.length === 0, `[${largura}px] sem console.error (${JSON.stringify(s.erros)})`);

@@ -3,7 +3,7 @@
 // Sem cookie e sem id que dure: a sessão é um código aleatório da aba (sessionStorage), que
 // some quando a aba fecha. Quem pede para não ser rastreado (GPC / Do Not Track) e navegador
 // automatizado (robô, headless, testes) não são contados. Nunca quebra a página.
-import { SUPABASE_URL, ANON_KEY } from './dd-api.js?v=20260925p13';
+import { SUPABASE_URL, ANON_KEY } from './dd-api.js?v=20261007a';
 
 function naoConta() {
   try {

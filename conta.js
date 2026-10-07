@@ -5,14 +5,14 @@ import {
   signIn, signUp, signOut, getSession, select, call, loadPlans, loadProfile, saveProfile,
   uploadAvatar, changePassword, logoutAll, seats as fnSeats, quote, packDownload, loadPacks,
   precosDoPlano, BRL, ApiError, DOWNLOADS, TIPOS_PACK, publicUrl, nomeNoTopo, nomePlanoBonito, PLANOS_PADRAO,
-} from './dd-api.js?v=20260925p13';
-import { montarTopo, avatarNode } from './dd-topo.js?v=20260925p13';
+} from './dd-api.js?v=20261007a';
+import { montarTopo, avatarNode } from './dd-topo.js?v=20261007a';
 import {
   $, el, msg, aviso as avisoUI, confirmar, perguntar, recado, abas, quando, dataHora,
   statusPedidoLabel, corStatus, tamanho, copiar, recortarQuadrado,
-} from './dd-ui.js?v=20260925p13';
-import { t, seatsLabel, seatWord, fmtDate, getLang, fmtBRLCompact } from './dd-i18n.js';
-import { textoChave } from './dd-textos.js?v=20260925p13';
+} from './dd-ui.js?v=20261007a';
+import { t, seatsLabel, seatWord, fmtDate, getLang } from './dd-i18n.js';
+import { textoChave } from './dd-textos.js?v=20261007a';
 
 const params = new URLSearchParams(location.search);
 const planoPedido = params.get('plano');
@@ -25,9 +25,8 @@ const est = {                 // estado da página
   session: null, perfil: null, lic: null, vagas: null, vagasErro: null,
   orders: [], packs: [], cupom: '', cotacoes: new Map(), planoSel: null, periodo: 'annual',
 };
-
-const periodoUrl = new URLSearchParams(location.search).get('periodo');
-if (periodoUrl === 'monthly' || periodoUrl === 'annual') est.periodo = periodoUrl;
+// 07/10: só existe a oferta única (licença vitalícia, paga uma vez); o servidor trata qualquer pedido de
+// plano como anual. ?periodo= da URL é ignorado. Licença e pedido antigos 'monthly' só são exibidos.
 const chaveCotacao = (planId) => planId + '|' + est.periodo + '|' + est.cupom;
 const licVencida = (lic) => !!lic && !!lic.expires_at && Date.parse(lic.expires_at) < Date.now();
 const licPerpetua = (lic) => !!lic && !lic.expires_at;
@@ -56,7 +55,7 @@ async function cotar(planId) {
     if (e.code === 'plan_smaller_than_current' || e.code === 'plan_not_upgrade') throw e;
     // servidor fora: estimativa local só para mostrar o valor (sem crédito, decisão 23/09)
     const v = precosDoPlano(plano);
-    const cheio = est.periodo === 'annual' ? v.anualTotal : v.mensal;
+    const cheio = v.anualTotalEfetivo;
     r = { list_price_cents: cheio, discount_cents: 0, final_cents: cheio, period: est.periodo,
           is_upgrade: !!est.lic && plano.seats > est.lic.seats, is_renewal: !!est.lic && !licPerpetua(est.lic), estimado: true };
   }
@@ -72,7 +71,7 @@ async function cotar(planId) {
 async function comprar(planId) {
   msg($('msg-buy'), t('conta.abrindo-pagamento'));
   // funil (25/09): clique em Pagar, anônimo; nunca atrasa nem quebra a compra
-  import('./dd-funil.js?v=20260925p13').then((m) => m.registrar('clique_pagar')).catch(() => {});
+  import('./dd-funil.js?v=20261007a').then((m) => m.registrar('clique_pagar')).catch(() => {});
   let aba = null;
   try { aba = window.open('', '_blank'); if (aba) aba.opener = null; } catch { aba = null; }
   try {
@@ -187,7 +186,6 @@ function avisarAbaOriginalEFechar() {
 }
 
 async function pintarCompra() {
-  pintarSeletorConta();
   const up = $('upgrade');
   up.innerHTML = '';
   const lic = est.lic;
@@ -239,14 +237,14 @@ async function pintarCompra() {
       const valor = BRL(q.final_cents);
       if (lic && p.seats > seats) esq.textContent = t('conta.upgrade-e-acessos', { nome: p.name, n: p.seats });
       else if (lic && !perpetua) esq.textContent = t('conta.renovar-e-acessos', { nome: p.name, n: seatsLabel(p.seats) });
-      const legenda = est.periodo === 'annual'
-        ? t('conta.periodo-anual-legend')
-        : t('conta.periodo-mensal-legend');
+      // 07/10: pagando o preço vigente a licença é vitalícia (period nulo); cupom que reduz o
+      // valor entrega 1 ano (o servidor devolve period 'annual')
+      const legenda = q.period ? t('conta.cupom-1-ano-legend') : t('conta.periodo-anual-legend');
       dir.innerHTML = (q.discount_cents > 0 ? `<span class="was">${BRL(q.list_price_cents)}</span> ` : '')
         + `${valor} <span class="legend">${legenda}</span>`;
     }).catch((e) => {
       const v = precosDoPlano(p);
-      dir.textContent = BRL(est.periodo === 'annual' ? v.anualTotal : v.mensal);
+      dir.textContent = BRL(v.anualTotalEfetivo);
       if (e.code === 'invalid_coupon') msg($('msg-buy'), e.message, 'err');
     });
     b.addEventListener('click', () => selecionarPlano(p.id));
@@ -278,24 +276,15 @@ async function mostrarValor() {
     const q = await cotar(plano.id);
     const valor = BRL(q.final_cents);
     const gratis = q.is_free || q.final_cents === 0;
-    const prefixoPeriodo = t(est.periodo === 'annual' ? 'conta.periodo-anual' : 'conta.periodo-mensal') + ' · ';
+    const prefixoPeriodo = (q.period ? t('conta.cupom-1-ano-legend') : t('conta.licenca-sem-prazo')) + ' · ';
     v.hidden = false;
     v.innerHTML = q.discount_cents > 0
       ? `<span class="legend">${prefixoPeriodo}${t('conta.valor-com-cupom', { nome: plano.name, codigo: q.coupon ? q.coupon.code : est.cupom })}</span>
          <span class="was">${BRL(q.list_price_cents)}</span><span class="agora">${valor}</span>`
-      // 25/09 (Diogo + designer): o número grande é o preço por mês, como na home; o total cobrado
-      // fica na linha de baixo e no botão Pagar, que é onde a pessoa se compromete
-      : `<span class="agora">${BRL(est.periodo === 'annual' ? Math.round(q.final_cents / 12) : q.final_cents)}<small class="por-mes">${t('plans.por-mes')}</small></span>
-         <span class="oc-linha">${est.periodo === 'annual'
-          ? t('plans.period-line-annual', { total: valor })
-          : t('plans.period-line-monthly')}</span>`;
+      // 07/10 (Diogo): o número grande é o valor do ano, como na home; sem preço por mês
+      : `<span class="agora">${valor}</span>
+         <span class="oc-linha">${t('plans.period-line-annual', { total: valor })}</span>`;
     pagar.textContent = gratis ? t('conta.ativar-gratis') : t('conta.pagar-valor', { valor });
-    // mesma linha de economia da home (e o mesmo formato, sem centavos quando redondo)
-    const eco = $('economia-conta');
-    const pv = precosDoPlano(plano);
-    const poupa = pv.mensal * 12 - pv.anualTotal;
-    eco.hidden = !(est.periodo === 'annual' && poupa > 0 && !(q.discount_cents > 0));
-    eco.textContent = t('plans.economia', { valor: fmtBRLCompact(poupa) });
     pagar.hidden = false;
   } catch (e) {
     v.hidden = true; v.innerHTML = ''; pagar.hidden = true;
@@ -304,21 +293,6 @@ async function mostrarValor() {
 }
 
 $('btn-pagar').addEventListener('click', () => { if (est.planoSel) comprar(est.planoSel); });
-
-function pintarSeletorConta() {
-  for (const b of $('period-switch-conta').querySelectorAll('.period-opt')) {
-    const on = b.dataset.period === est.periodo;
-    b.classList.toggle('sel', on);
-    b.setAttribute('aria-selected', on ? 'true' : 'false');
-  }
-}
-$('period-switch-conta').addEventListener('click', (e) => {
-  const b = e.target.closest('.period-opt');
-  if (!b || b.dataset.period === est.periodo) return;
-  est.periodo = b.dataset.period;
-  est.cotacoes.clear();
-  pintarCompra();
-});
 
 $('btn-cupom').addEventListener('click', async () => {
   const code = $('cupom').value.trim().toUpperCase();
@@ -810,7 +784,7 @@ function escapar(s) {
 
 // ============================ auth ============================
 // resumo do plano escolhido (Task 2, F5/F9): só quando a URL tem ?plano=; período da URL,
-// padrão mensal (diferente do período padrão anual do painel de compra logado). Preço vem de
+// sempre a oferta única (07/10: licença vitalícia). Preço vem de
 // `plans` (loadPlans(), já carregado antes de renderAuth) com fallback em PLANOS_PADRAO, pra
 // funcionar mesmo sem rede.
 function pintarEscolhido() {
@@ -819,11 +793,8 @@ function pintarEscolhido() {
   if (!planoPedido) return;
   const plano = plans.find((p) => p.id === planoPedido) || PLANOS_PADRAO.find((p) => p.id === planoPedido);
   if (!plano) return;
-  const periodoEscolhido = params.get('periodo') === 'annual' ? 'annual' : 'monthly';
   const v = precosDoPlano(plano);
-  const linhaTexto = periodoEscolhido === 'annual'
-    ? t('conta.escolhido-anual', { total: BRL(v.anualTotal) })
-    : t('conta.escolhido-mensal', { total: BRL(v.mensal) });
+  const linhaTexto = t('conta.escolhido-anual', { mes: BRL(v.anualMesEfetivo), total: BRL(v.anualTotalEfetivo) });
 
   const fs = document.createElement('fieldset');
   fs.className = 'panel escolhido';

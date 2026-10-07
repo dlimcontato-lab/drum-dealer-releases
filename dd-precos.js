@@ -1,12 +1,11 @@
 // Preços da home: os valores no HTML são o placeholder; a tabela `plans` manda.
-// Seletor MENSAL | ANUAL (referência de 23/09): o anual é o padrão. A etiqueta -N% é a
-// economia do anual sobre o mensal; o bullet "% por computador em relação ao Solo" é
-// calculado do período mostrado. Quem já tem licença vê Renovar/Upgrade/Seu plano.
-import { loadPlans, getSession, select, quote, precosDoPlano, emPromocao, BRL, PLANOS_PADRAO, nomePlanoBonito } from './dd-api.js?v=20260925p13';
+// 07/10: oferta única, licença vitalícia paga uma vez (vitrine: R$ 39,90). Sem seletor de
+// período, sem economia nem selo de desconto. A promoção (se vigente) vale sobre o anual.
+// Quem já tem licença vê Renovar/Upgrade/Seu plano.
+import { loadPlans, getSession, select, quote, precosDoPlano, BRL, PLANOS_PADRAO, nomePlanoBonito } from './dd-api.js?v=20261007a';
 import { t, seatsLabel, fmtBRLCompact, getLang, DICT } from './dd-i18n.js';
 
-let periodo = 'annual';
-// 25/09 (Diogo): a home abre sempre no anual (R$ 29,90/mês); o período clicado não é mais lembrado
+const periodo = 'annual'; // 07/10: não existe mais venda mensal
 
 // PLANOS_PADRAO (fallback sem rede) mora em dd-api.js desde a Task 2 da jornada de compra
 // (24/09): conta.html também precisa dele pro resumo do plano antes do cadastro.
@@ -89,21 +88,13 @@ function pintarPreco(card, cents) {
   card.querySelector('.cents').textContent = resto ? ',' + String(resto).padStart(2, '0') : '';
 }
 
+// preço da vitrine: o valor cheio do ano (07/10, Diogo: "só o valor de 39,90", sem preço por mês),
+// já com a promoção vigente, se houver
 function precoMostrado(p) {
-  const v = precosDoPlano(p);
-  return periodo === 'annual' ? v.anualMes : v.mensal;
-}
-
-function pintarSeletor() {
-  for (const b of document.querySelectorAll('#period-switch .period-opt')) {
-    const on = b.dataset.period === periodo;
-    b.classList.toggle('sel', on);
-    b.setAttribute('aria-selected', on ? 'true' : 'false');
-  }
+  return precosDoPlano(p).anualTotalEfetivo;
 }
 
 async function pintarTudo() {
-  pintarSeletor();
   let plans;
   try { plans = (await loadPlans()).map(completar); } catch { plans = PLANOS_PADRAO; }
 
@@ -119,21 +110,16 @@ async function pintarTudo() {
     if (ps) ps.textContent = fmtBRLCompact(cents / p.seats);
     const sn = card.querySelector('.seats-n');
     if (sn) sn.textContent = seatsLabel(p.seats);
-    // 25/09: a economia do anual em reais (12 × mensal − anual), só no anual
-    const eco = card.querySelector('[data-economia]');
-    if (eco) {
-      const poupa = v.mensal * 12 - v.anualTotal;
-      eco.hidden = !(periodo === 'annual' && poupa > 0);
-      eco.textContent = t('plans.economia', { valor: fmtBRLCompact(poupa) });
-    }
-    card.querySelector('[data-period-line]').textContent = periodo === 'annual'
-      ? t('plans.period-line-annual', { total: BRL(v.anualTotal) })
-      : t('plans.period-line-monthly');
-    const off = card.querySelector('.off');
-    if (off) {
-      const pct = v.mensal > 0 ? Math.round((1 - v.anualMes / v.mensal) * 100) : 0;
-      off.hidden = !(periodo === 'annual' && pct > 0);
-      off.textContent = t('plans.off-annual', { pct });
+    // linha do período; em promoção, o total de lista aparece riscado antes do total cobrado
+    const linhaPeriodo = card.querySelector('[data-period-line]');
+    if (linhaPeriodo) {
+      linhaPeriodo.textContent = t('plans.period-line-annual', { total: BRL(v.anualTotalEfetivo) });
+      if (v.anualTotalEfetivo !== v.anualTotal) {
+        const w = document.createElement('span');
+        w.className = 'was';
+        w.textContent = BRL(v.anualTotal);
+        linhaPeriodo.prepend(w, ' ');
+      }
     }
     const li = card.querySelector('[data-li-desconto]');
     if (li) {
@@ -141,16 +127,7 @@ async function pintarTudo() {
       li.hidden = pct <= 0;
       li.innerHTML = t('plans.li-desconto-solo-html', { pct });
     }
-    const linha = card.querySelector('.per-line');
-    const wasWrap = linha && linha.querySelector('.was-wrap');
-    if (wasWrap) wasWrap.remove();
-    if (periodo === 'monthly' && emPromocao({ ...p, price_cents: p.monthly_cents ?? p.price_cents }) && linha) {
-      const w = document.createElement('span');
-      w.className = 'was-wrap';
-      w.innerHTML = `<span class="was">${BRL(p.monthly_cents ?? p.price_cents)}</span> · `;
-      linha.prepend(w);
-    }
-    // pintarTudo roda a cada clique na pílula: o CTA original fica guardado e é
+    // pintarTudo roda de novo ao trocar o idioma: o CTA original fica guardado e é
     // restaurado antes de qualquer troca por botão desabilitado
     let cta = card.querySelector('.key');
     if (cta && !card.dataset.ctaHtml) card.dataset.ctaHtml = cta.outerHTML;
@@ -196,13 +173,6 @@ async function pintarTudo() {
     } catch { /* fica o texto sem valor */ }
   }
 }
-
-document.getElementById('period-switch')?.addEventListener('click', (e) => {
-  const b = e.target.closest('.period-opt');
-  if (!b) return;
-  periodo = b.dataset.period;
-  pintarTudo();
-});
 
 pintarTudo();
 document.addEventListener('dd-lang-changed', pintarTudo);

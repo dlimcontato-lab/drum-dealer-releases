@@ -130,8 +130,9 @@ export function formatBRL(cents) {
 // Movido de dd-precos.js (24/09, Task 2 da jornada de compra) para servir também o resumo do
 // plano em conta.html antes do cadastro (view-auth), sem depender de rede.
 export const PLANOS_PADRAO = [
-  // 25/09: só o Solo fica à venda (Studio e Equipe desativados no banco). Mensal 39,90; anual 29,90/mês.
-  { id: 'solo',   name: 'Solo',   seats: 1, price_cents: 3990,  monthly_cents: 3990,  annual_month_cents: 2990,  annual_cents: 35880,  badge: null,          sort: 1 },
+  // 07/10: Solo a 39,90, licença vitalícia paga uma vez. Não existe mais venda mensal:
+  // o servidor trata qualquer pedido de plano como anual.
+  { id: 'solo',   name: 'Solo',   seats: 1, price_cents: 3990,  monthly_cents: 3990,  annual_month_cents: 333,   annual_cents: 3990,   badge: null,          sort: 1 },
 ];
 
 export async function loadPlans() {
@@ -147,12 +148,18 @@ export async function loadPlans() {
   }
   throw erro;
 }
-// os três valores de um plano; o servidor é quem cobra, aqui é só para mostrar
+// os valores de um plano; o servidor é quem cobra, aqui é só para mostrar.
+// 07/10: a venda é só anual. anualTotal é o preço de lista; anualTotalEfetivo já leva a promoção
+// vigente (promo_price_cents vale sobre o anual) e anualMesEfetivo é o valor da vitrine por mês.
+// `mensal` fica só para licença e pedido antigos; não deriva mais anual como mês x 12 quando
+// annual_cents existe.
 export function precosDoPlano(p) {
   const mensal = p.monthly_cents ?? p.price_cents;
   const anualMes = p.annual_month_cents ?? mensal;
   const anualTotal = p.annual_cents ?? anualMes * 12;
-  return { mensal: precoEfetivo({ ...p, price_cents: mensal }), anualMes, anualTotal };
+  const anualTotalEfetivo = precoEfetivo({ ...p, price_cents: anualTotal });
+  const anualMesEfetivo = anualTotalEfetivo === anualTotal ? anualMes : Math.round(anualTotalEfetivo / 12);
+  return { mensal: precoEfetivo({ ...p, price_cents: mensal }), anualMes, anualTotal, anualTotalEfetivo, anualMesEfetivo };
 }
 
 // 24/09: o download virou um zip (instalador + tutorial PT/EN + LEIA-ME). Os .pkg/.exe soltos

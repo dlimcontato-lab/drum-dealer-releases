@@ -4,13 +4,13 @@
 import {
   SUPABASE_URL, getSession, select, admin, ehAdmin, loadPlans, loadPacks, publicUrl,
   avatarUrl, BRL, iniciais, TIPOS_PACK, ApiError,
-} from './dd-api.js?v=20260925p13';
-import { montarTopo } from './dd-topo.js?v=20260925p13';
+} from './dd-api.js?v=20261007a';
+import { montarTopo } from './dd-topo.js?v=20261007a';
 import { fmtDate } from './dd-i18n.js';
 import {
   $, el, msg, aviso as avisoUI, confirmar, perguntar, recado, abas, dataHora, quando,
   STATUS_PEDIDO, corStatus, tamanho, copiar,
-} from './dd-ui.js?v=20260925p13';
+} from './dd-ui.js?v=20261007a';
 
 const est = {
   session: null, plans: [], packs: [], packAtual: null,
@@ -549,7 +549,7 @@ export function textoCupom(c) {
   const primeiraLinhaDesconto = gratis ? 'acesso grátis, 100% de desconto' : `${valorCru} de desconto`;
   const passo2 = c.applies_to === 'packs'
     ? 'Em Minha conta, na aba Packs, escolha o pack.'
-    : 'Em Minha conta, na aba Licença, escolha o plano (mensal ou anual).';
+    : 'Em Minha conta, na aba Licença, escolha o plano. Com cupom, a licença vale 1 ano.';
   const passo4 = gratis
     ? 'Clique em Ativar grátis.'
     : 'Clique em Pagar (ou em Ativar grátis, quando o valor for zero).';
@@ -695,8 +695,9 @@ function linhaPromo(item, { plano }) {
     form.appendChild(l);
     return i;
   };
-  const preco = campo('Preço (centavos)', 'number', item.price_cents, { min: 1 });
-  const promo = campo('Promocional (centavos)', 'number', item.promo_price_cents ?? '', { min: 1, placeholder: 'sem promoção' });
+  // 07/10: preço único da licença vitalícia (o banco grava anual = mensal = preço; a vitrine mostra esse valor)
+  const preco = campo(plano ? 'Preço (vitalícia, em centavos)' : 'Preço (centavos)', 'number', item.price_cents, { min: 1 });
+  const promo = campo(plano ? 'Promocional (vitalícia, em centavos)' : 'Promocional (centavos)', 'number', item.promo_price_cents ?? '', { min: 1, placeholder: 'sem promoção' });
   const de = campo('Começa', 'datetime-local', paraLocal(item.promo_starts_at));
   const ate = campo('Termina', 'datetime-local', paraLocal(item.promo_ends_at));
   const acao = el('div');

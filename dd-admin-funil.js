@@ -1,7 +1,7 @@
 // Painel › Visão geral › Visitas e funil (25/09). Lê a Edge Function `funil` (só admin; a
 // checagem é no servidor). Forma: funil em barras horizontais de uma série só (verde LED =
 // "valor" no DESIGN.md), com número e taxa escritos ao lado, e a tabela por dia embaixo.
-import { SUPABASE_URL, ANON_KEY, getSession, BRL } from './dd-api.js?v=20260925p13';
+import { SUPABASE_URL, ANON_KEY, getSession, BRL } from './dd-api.js?v=20261007a';
 
 const PASSOS = [
   ['visitas', 'Visitas na home'],
