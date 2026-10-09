@@ -89,7 +89,7 @@ a:hover{text-decoration-color:var(--orange)}
 .key:active:not([disabled]),.key.down{transform:translateY(2px);box-shadow:0 1px 0 var(--body)}
 .key.cream{--face-a:#efebdd;--face-b:#dfd9ca;--body:#98948a;--edge:#8b877e;--txt:var(--ink);--engrave:rgba(255,255,255,.35)}
 .key.orange{--face-a:#e68a50;--face-b:#d36a28;--body:#91481b;--edge:#844219}
-.key.green{--face-a:#5adc8f;--face-b:#33c86f;--body:#23894c;--edge:#207d45;--txt:var(--ink);--engrave:rgba(255,255,255,.35)}
+.key.green{--face-a:#5adc8f;--face-b:#33c86f;--body:#23894c;--edge:#207d45;--txt:var(--ink);--engrave:rgba(255,255,255,.35);--halo:54,212,118}
 .key.pad{--face-a:#4b4b4c;--face-b:#212123;--body:#171718;--edge:#151516}
 .key.small{height:22px;font-size:10px;letter-spacing:.03em;padding:0 10px;box-shadow:0 2px 0 var(--body),var(--sh-key)}
 .key.small:active:not([disabled]),.key.small.down{transform:translateY(1px);box-shadow:0 1px 0 var(--body)}
@@ -1356,9 +1356,10 @@ select.recess.p-abs{font-size:11px;padding:0 20px 0 6px;background-position:righ
      background:linear-gradient(90deg,rgba(255,255,255,0),rgba(255,255,255,.5),rgba(255,255,255,0));
      transform:translateX(-130%) skewX(-20deg);animation:cta-brilho 3.2s ease-in-out 1.2s infinite}
 @keyframes cta-brilho{0%{transform:translateX(-130%) skewX(-20deg)}28%,100%{transform:translateX(330%) skewX(-20deg)}}
-@keyframes cta-halo{0%,100%{box-shadow:0 3px 0 var(--body),var(--sh-key),0 0 0 0 rgba(224,112,42,0)}
-     14%{box-shadow:0 3px 0 var(--body),var(--sh-key),0 0 0 5px rgba(224,112,42,.35)}
-     36%{box-shadow:0 3px 0 var(--body),var(--sh-key),0 0 0 12px rgba(224,112,42,0)}}
+/* o halo segue a cor da tecla: laranja por padrão, verde na tecla verde (botão Comprar, 09/10) */
+@keyframes cta-halo{0%,100%{box-shadow:0 3px 0 var(--body),var(--sh-key),0 0 0 0 rgba(var(--halo,224,112,42),0)}
+     14%{box-shadow:0 3px 0 var(--body),var(--sh-key),0 0 0 5px rgba(var(--halo,224,112,42),.35)}
+     36%{box-shadow:0 3px 0 var(--body),var(--sh-key),0 0 0 12px rgba(var(--halo,224,112,42),0)}}
 .key.chamada:hover,.key.chamada:focus-visible,.key.chamada:active{animation:none}
 .key.chamada:hover::after,.key.chamada:focus-visible::after,.key.chamada:active::after{animation:none;opacity:0}
 @media (prefers-reduced-motion:reduce){.key.chamada,.key.chamada::after{animation:none}.key.chamada::after{opacity:0}}
@@ -1373,3 +1374,17 @@ select.recess.p-abs{font-size:11px;padding:0 20px 0 6px;background-position:righ
 .funil-valor b{color:var(--silk);font-size:1rem}
 .funil-nota{font-size:var(--t-small);color:var(--silk-dim);margin:10px 0 0}
 @media (max-width:700px){.funil-linha{grid-template-columns:1fr auto}.funil-trilho{grid-column:1 / -1;grid-row:2}}
+
+/* Entrar com Google (plano 2026-10-09-login-google): mesma tecla creme do painel, com o "G" oficial
+   à esquerda (regra de marca do Google: logo colorido, sem recolorir, texto "Continuar com Google").
+   "Esqueci a senha" é texto, não tecla: ação secundária embaixo do Entrar. */
+.account .panel.google-panel{grid-column:1/-1;display:flex;flex-direction:column;align-items:center}
+.btn-google{display:inline-flex;align-items:center;justify-content:center;gap:10px;width:100%;max-width:420px}
+.google-panel > .legend{max-width:420px;margin-top:10px;text-align:center;line-height:1.5}
+.btn-google .g-logo{flex:none;background:#fff;border-radius:50%;padding:3px;box-sizing:content-box}
+.google-panel .msg:empty{display:none}
+.link-esqueci{align-self:flex-start;background:none;border:0;padding:4px 0;cursor:pointer;
+  font-family:var(--silk-font);font-weight:600;font-size:var(--t-small);color:var(--silk-dim);
+  text-decoration:underline;text-decoration-color:var(--silk-dim);text-underline-offset:.2em}
+.link-esqueci:hover,.link-esqueci:focus-visible{color:var(--silk)}
+.aviso-sem-senha{margin-top:10px}

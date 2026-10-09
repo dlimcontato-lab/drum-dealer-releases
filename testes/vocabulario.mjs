@@ -70,7 +70,28 @@ for (const arquivo of ['index.html', 'conta.html']) {
   ok(!achado, `${arquivo}: texto visível sem vocabulário proibido${achado ? ` (achou "${achado[0]}")` : ''}`);
 }
 
+// ---------- regra do dia (24/09, central de ajuda): nenhum @gmail nem "diogo" em lugar nenhum ----------
+// (site, admin, i18n). O único e-mail que aparece é o do cliente, nunca o do dono do produto.
+const PROIBIDO_EXPOSICAO = /@gmail|diogo/i;
+
+let ocorrenciasExposicao = 0;
+for (const [chave, valor] of pt) {
+  if (PROIBIDO_EXPOSICAO.test(valor)) { ocorrenciasExposicao++; ok(false, `pt['${chave}'] sem @gmail/diogo (${JSON.stringify(valor)})`); }
+}
+for (const [chave, valor] of en) {
+  if (PROIBIDO_EXPOSICAO.test(valor)) { ocorrenciasExposicao++; ok(false, `en['${chave}'] sem @gmail/diogo (${JSON.stringify(valor)})`); }
+}
+ok(true, `dd-i18n.js sem @gmail/diogo (${pt.size + en.size} chaves varridas)`);
+
+for (const arquivo of ['index.html', 'conta.html', 'ajuda.html', 'termos.html', 'admin.html']) {
+  const html = readFileSync(join(RAIZ, arquivo), 'utf8');
+  const texto = textoVisivel(html);
+  const achado = texto.match(PROIBIDO_EXPOSICAO);
+  if (achado) ocorrenciasExposicao++;
+  ok(!achado, `${arquivo}: texto visível sem @gmail/diogo${achado ? ` (achou "${achado[0]}")` : ''}`);
+}
+
 console.log(falhas === 0
-  ? `vocabulario ok (${pt.size} chaves PT, ${en.size} chaves EN, ${ocorrencias} ocorrências)`
+  ? `vocabulario ok (${pt.size} chaves PT, ${en.size} chaves EN, ${ocorrencias} ocorrências, ${ocorrenciasExposicao} exposições)`
   : `${falhas} falhas`);
 process.exit(falhas === 0 ? 0 : 1);

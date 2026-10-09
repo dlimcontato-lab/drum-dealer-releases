@@ -11,7 +11,7 @@ export const LINKS = {
   facebook: '',
   youtube: '',
   whatsapp: '',          // ex.: 'https://wa.me/55XXXXXXXXXXX'
-  ajuda: 'conta.html',   // Central de ajuda
+  ajuda: 'ajuda.html',   // Central de ajuda
 };
 
 const ICONS = {

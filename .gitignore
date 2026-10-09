@@ -6,3 +6,6 @@
 .impeccable/mocks/decision/
 .impeccable/review/
 .impeccable/questions/
+
+# Briefs de subagente da sessão (material interno; o repositório é público)
+.ciclo-*-brief.md

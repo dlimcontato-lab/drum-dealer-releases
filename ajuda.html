@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title data-i18n="ajuda.head-title">Central de ajuda — BRDRUM</title>
+<meta name="description" content="Central de ajuda do BRDRUM: escreva o problema e o e-mail para resposta." data-i18n-attr="content:ajuda.head-description">
+<meta name="theme-color" content="#2a2a2c">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Yellowtail&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='4' y='4' width='92' height='92' rx='10' fill='%232a2a2c' stroke='%230e0e10' stroke-width='3'/><rect x='22' y='16' width='56' height='68' rx='6' fill='%23e0702a' stroke='%23844219' stroke-width='3'/><circle cx='50' cy='34' r='8' fill='%23ff3b2f'/><circle cx='50' cy='34' r='14' fill='%23ff3b2f' opacity='.3'/></svg>">
+<link rel="stylesheet" href="dd.css?v=20261009a">
+</head>
+<body>
+
+<div class="wrap-wide">
+  <header class="topbar">
+    <a class="brand" href="./" data-i18n-html="brand.wordmark-html">
+      <img src="img/brdrum-logo-oficial.png" alt="BRDRUM Rhythm Composer - 001">
+    </a>
+    <nav aria-label="Seções" data-i18n-attr="aria-label:nav.aria">
+      <a href="./#precos" data-i18n="nav.precos">Preços</a>
+      <a href="./#download" data-i18n="nav.download">Download</a>
+      <a href="./#instalacao" data-i18n="nav.instalacao">Instalação</a>
+      <a href="conta.html" id="nav-conta" data-i18n="nav.conta">Conta</a>
+    </nav>
+  </header>
+</div>
+
+<div class="wrap">
+  <div class="sec-head" style="margin-top:var(--s3)">
+    <h2 data-i18n="ajuda.titulo">Central de ajuda</h2>
+  </div>
+  <p class="legend" data-i18n="ajuda.intro">Escreva o problema e o e-mail para resposta. Respondemos pelo e-mail que você deixar.</p>
+
+  <fieldset class="panel" style="margin-top:var(--s3);max-width:560px">
+    <legend data-i18n="ajuda.form-legend">Escreva sua mensagem</legend>
+    <form class="form" id="form-ajuda" novalidate>
+      <label><span class="legend" data-i18n="conta.email-label">E-mail</span><input class="recess" type="email" name="email" autocomplete="email" required placeholder="voce@exemplo.com" data-i18n-attr="placeholder:conta.email-placeholder"></label>
+      <label><span class="legend" data-i18n="ajuda.mensagem-label">Escreva aqui o problema</span><textarea class="recess" name="body" rows="6" minlength="10" maxlength="2000" required data-i18n-attr="placeholder:ajuda.mensagem-placeholder"></textarea></label>
+      <span class="legend" id="ajuda-contador">0/2000</span>
+      <!-- honeypot: campo de armadilha para robô, invisível para gente. Qualquer valor aqui
+           descarta o envio em silêncio no servidor (contrato da função support, action "send"). -->
+      <input type="text" name="hp" id="ajuda-hp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
+      <p class="msg" id="msg-ajuda" aria-live="polite"></p>
+      <button class="key orange" type="submit" data-i18n="ajuda.enviar-cta">Enviar</button>
+    </form>
+  </fieldset>
+</div>
+
+<div class="close">
+  <div class="wrap">
+    <footer class="legend">
+      <span data-i18n="footer.signature">BRDRUM · Rhythm Composer - 001 · criado por Brazilian Waves</span>
+      <a href="termos.html" data-i18n="footer.termos-link">Termos de Uso</a>
+      <span data-i18n="footer.vendedor">BRDRUM · Brazilian Waves</span>
+    </footer>
+  </div>
+</div>
+
+<script type="module" src="dd-topo.js?v=20261009a"></script>
+<script type="module" src="ajuda.js?v=20261009a"></script>
+</body>
+</html>

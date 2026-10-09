@@ -1,24 +1,26 @@
 // Painel do administrador. Quem decide é o servidor (`is_admin` em toda ação do
 // `admin`); esta página só esconde, mostra e pede confirmação no próprio painel.
-// Contrato: ~/Sistema AI/drum-dealer-backend/docs/SPEC-conta-loja-admin.md (seção 3).
+// Contrato: ~/Sistema AI/drum-dealer-backend/docs/SPEC-conta-loja-admin.md (seção 3) e
+// ~/Sistema AI/drum-dealer-backend/docs/ciclo/2026-09-24-central-de-ajuda-spec.md (aba Mensagens).
 import {
   SUPABASE_URL, getSession, select, admin, ehAdmin, loadPlans, loadPacks, publicUrl,
-  avatarUrl, BRL, iniciais, TIPOS_PACK, ApiError,
-} from './dd-api.js?v=20261007a';
-import { montarTopo } from './dd-topo.js?v=20261007a';
+  avatarUrl, BRL, iniciais, TIPOS_PACK, ApiError, nomePlanoBonito,
+} from './dd-api.js?v=20261009a';
+import { montarTopo } from './dd-topo.js?v=20261009a';
 import { fmtDate } from './dd-i18n.js';
 import {
   $, el, msg, aviso as avisoUI, confirmar, perguntar, recado, abas, dataHora, quando,
   STATUS_PEDIDO, corStatus, tamanho, copiar,
-} from './dd-ui.js?v=20261007a';
+} from './dd-ui.js?v=20261009a';
 
 const est = {
   session: null, plans: [], packs: [], packAtual: null,
   uPage: 1, uQ: '', lPage: 1, lQ: '', lStatus: '', oPage: 1,
+  mPage: 1, mOpenCount: 0,
 };
 let pronto = false;          // só carrega tabela depois de confirmar o acesso
 const aviso = (t, tipo) => avisoUI($('aviso'), t, tipo);
-const lista = (r) => (Array.isArray(r) ? r : r && (r.users || r.items || r.rows || r.data || r.licenses || r.orders || r.coupons || r.packs)) || [];
+const lista = (r) => (Array.isArray(r) ? r : r && (r.users || r.items || r.rows || r.data || r.licenses || r.orders || r.coupons || r.packs || r.threads)) || [];
 const num = (x) => (Array.isArray(x) ? x.length : (x == null ? 0 : x));
 const temMais = (r, arr) => {
   if (r && typeof r.total === 'number') return (r.page || 1) * 25 < r.total;
@@ -941,6 +943,117 @@ async function enviarArquivo(s, file, fill, estado) {
   msg(estado, 'Enviado.', 'ok');
 }
 
+// ============================ mensagens (central de ajuda) ============================
+// Escopo mínimo (24/09, decisão do Diogo): o admin não responde pelo painel — só lê, copia o
+// e-mail do cliente e encerra/reabre a conversa. Cada envio é uma conversa com uma mensagem só
+// (a função `support` só tem `action: 'send'`, sem continuar thread).
+const STATUS_MSG = { open: 'aguardando', closed: 'encerrada', answered: 'respondida' };
+
+function pintarContadorMensagens() {
+  $('m-tab-count').textContent = est.mOpenCount > 0 ? ` (${est.mOpenCount})` : '';
+}
+
+function celulaConta(th) {
+  const td = el('td');
+  if (th.user_id) {
+    const a = document.createElement('a');
+    a.href = '#usuarios';
+    a.className = 'key small cream';
+    a.textContent = 'ver conta';
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      location.hash = '#usuarios';
+      abrirUsuario(th.user_id, { email: th.email });
+    });
+    td.appendChild(a);
+  } else td.textContent = '—';
+  return td;
+}
+
+async function carregarMensagens() {
+  msg($('msg-mensagens'), 'Buscando…');
+  try {
+    const r = await admin('support.list', { status: $('m-status').value, page: est.mPage });
+    const rows = lista(r);
+    if (typeof r.open_count === 'number') est.mOpenCount = r.open_count;
+    pintarContadorMensagens();
+    const tb = $('tbl-mensagens').querySelector('tbody');
+    tb.innerHTML = '';
+    $('m-empty').hidden = rows.length > 0;
+    for (const th of rows) {
+      const tr = document.createElement('tr');
+      const primeira = (th.messages || [])[0] || null;
+      const inicio = primeira ? (primeira.body.length > 60 ? primeira.body.slice(0, 60) + '…' : primeira.body) : '';
+      tr.append(
+        el('td', null, th.email || '—'),
+        celulaConta(th),
+        el('td', null, th.plan ? nomePlanoBonito(th.plan) + (th.seats ? ` · ${th.seats}` : '') : '—'),
+        el('td', null, dataHora(th.last_message_at)),
+        el('td', null, inicio),
+        el('td', null, STATUS_MSG[th.status] || th.status),
+      );
+      const acts = el('td', 'acts');
+      acts.appendChild(teclinha('Abrir', 'cream', () => abrirMensagem(th)));
+      tr.appendChild(acts);
+      tb.appendChild(tr);
+    }
+    $('m-page').textContent = 'página ' + est.mPage;
+    $('m-prev').disabled = est.mPage <= 1;
+    $('m-next').disabled = !temMais(r, rows);
+    msg($('msg-mensagens'), '');
+  } catch (e) { erro($('msg-mensagens'), e); }
+}
+
+function pintarDetalheMensagem(corpo, th) {
+  corpo.innerHTML = '';
+  const info = el('div');
+  info.style.display = 'grid'; info.style.gap = '4px'; info.style.marginBottom = 'var(--s3)';
+  info.appendChild(el('p', null, 'E-mail: ' + (th.email || '—')));
+  info.appendChild(el('p', null, 'Plano: ' + (th.plan ? nomePlanoBonito(th.plan) + (th.seats ? ` · ${th.seats}` : '') : '—')));
+  info.appendChild(el('p', null, 'Data: ' + dataHora(th.last_message_at)));
+  info.appendChild(el('p', null, 'Status: ' + (STATUS_MSG[th.status] || th.status)));
+  corpo.appendChild(info);
+
+  const texto = el('div', 'recess');
+  texto.style.padding = '14px';
+  texto.style.whiteSpace = 'pre-wrap';
+  texto.textContent = ((th.messages || [])[0] || {}).body || '';
+  corpo.appendChild(texto);
+
+  const row = el('div', 'form-row');
+  row.style.marginTop = 'var(--s3)';
+  row.appendChild(teclinha('Copiar e-mail', 'cream', async () => {
+    const ok = await copiar(th.email || '');
+    recado(ok ? 'E-mail copiado.' : 'Não consegui copiar.', ok ? 'ok' : 'err');
+  }));
+  const fechar = th.status !== 'closed';
+  row.appendChild(teclinha(fechar ? 'Encerrar' : 'Reabrir', fechar ? null : 'green', async () => {
+    if (fechar && !await confirmar({
+      titulo: 'Encerrar conversa', texto: 'Sai da lista de abertas. O cliente não vê nada mudar e pode escrever outra mensagem quando quiser.', ok: 'Encerrar', perigo: true,
+    })) return;
+    try {
+      await admin(fechar ? 'support.close' : 'support.reopen', { thread_id: th.id });
+      recado(fechar ? 'Conversa encerrada.' : 'Conversa reaberta.', 'ok');
+      abrirMensagem({ ...th, status: fechar ? 'closed' : 'open' });
+      carregarMensagens();
+    } catch (e) { recado(e.message, 'err'); }
+  }));
+  corpo.appendChild(row);
+}
+
+async function abrirMensagem(th) {
+  const painel = $('m-det');
+  const corpo = $('m-det-body');
+  painel.hidden = false;
+  $('m-det-legend').textContent = 'Conversa · ' + (th.email || th.id);
+  pintarDetalheMensagem(corpo, th);
+  painel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+$('m-buscar').addEventListener('click', () => { est.mPage = 1; carregarMensagens(); });
+$('m-prev').addEventListener('click', () => { if (est.mPage > 1) { est.mPage--; carregarMensagens(); } });
+$('m-next').addEventListener('click', () => { est.mPage++; carregarMensagens(); });
+
 // ============================ início ============================
 (async () => {
   abas($('tabs'), {
@@ -950,6 +1063,7 @@ async function enviarArquivo(s, file, fill, estado) {
     '#pagamentos': { node: $('pane-pagamentos'), abrir: () => { if (pronto) carregarPedidos(); } },
     '#promocoes': { node: $('pane-promocoes'), abrir: () => { if (pronto) carregarPromocoes(); } },
     '#packs': { node: $('pane-packs'), abrir: () => { if (pronto) carregarPacks(); } },
+    '#mensagens': { node: $('pane-mensagens'), abrir: () => { if (pronto) carregarMensagens(); } },
   }, '#visao');
 
   await montarTopo();
@@ -973,12 +1087,19 @@ async function enviarArquivo(s, file, fill, estado) {
 
   try { est.plans = await loadPlans(); } catch { est.plans = []; }
   try { est.packs = lista(await admin('packs.list', {})); } catch { est.packs = await loadPacks(); }
+  // contagem de abertas na aba, visível antes mesmo de abri-la
+  try {
+    const r = await admin('support.list', { status: 'open', page: 1 });
+    est.mOpenCount = typeof r.open_count === 'number' ? r.open_count : lista(r).length;
+  } catch { est.mOpenCount = 0; }
+  pintarContadorMensagens();
 
   pronto = true;
   const hash = location.hash || '#visao';
   const mapa = {
     '#visao': carregarVisao, '#usuarios': carregarUsuarios, '#licencas': carregarLicencas,
     '#pagamentos': carregarPedidos, '#promocoes': carregarPromocoes, '#packs': carregarPacks,
+    '#mensagens': carregarMensagens,
   };
   (mapa[hash] || carregarVisao)();
 })();

@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@500;600;700&family=Yellowtail&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='4' y='4' width='92' height='92' rx='10' fill='%232a2a2c' stroke='%230e0e10' stroke-width='3'/><rect x='22' y='16' width='56' height='68' rx='6' fill='%23e0702a' stroke='%23844219' stroke-width='3'/><circle cx='50' cy='34' r='8' fill='%23ff3b2f'/><circle cx='50' cy='34' r='14' fill='%23ff3b2f' opacity='.3'/></svg>">
-<link rel="stylesheet" href="dd.css?v=20261007a">
+<link rel="stylesheet" href="dd.css?v=20261009a">
 </head>
 <body>
 
@@ -50,6 +50,7 @@
       <button class="key" type="button" role="tab" data-aba="pagamentos"><span class="led" aria-hidden="true"></span>Pagamentos</button>
       <button class="key" type="button" role="tab" data-aba="promocoes"><span class="led" aria-hidden="true"></span>Promoções</button>
       <button class="key" type="button" role="tab" data-aba="packs"><span class="led" aria-hidden="true"></span>Packs</button>
+      <button class="key" type="button" role="tab" data-aba="mensagens"><span class="led" aria-hidden="true"></span>Mensagens<span id="m-tab-count"></span></button>
     </div>
 
     <!-- ---------- visão geral ---------- -->
@@ -281,6 +282,41 @@
         </div>
       </fieldset>
     </div>
+
+    <!-- ---------- mensagens ---------- -->
+    <div class="pane" id="pane-mensagens" hidden>
+      <fieldset class="panel">
+        <legend>Mensagens</legend>
+        <div class="filtros">
+          <label><span class="legend">Status</span>
+            <select class="recess" id="m-status">
+              <option value="open">abertas</option>
+              <option value="closed">encerradas</option>
+              <option value="all">todas</option>
+            </select>
+          </label>
+          <button class="key small cream" type="button" id="m-buscar">Filtrar</button>
+        </div>
+        <div class="tbl-wrap recess">
+          <table class="tbl" id="tbl-mensagens">
+            <thead><tr><th>E-mail</th><th>Conta</th><th>Plano</th><th>Última mensagem</th><th>Começo do texto</th><th>Status</th><th></th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p class="empty" id="m-empty" hidden>Nenhuma conversa com esse filtro.</p>
+        <div class="pager">
+          <button class="key small" type="button" id="m-prev">Anterior</button>
+          <span class="legend" id="m-page">página 1</span>
+          <button class="key small" type="button" id="m-next">Próxima</button>
+        </div>
+        <p class="msg" id="msg-mensagens" aria-live="polite" style="min-height:1.3em;font-size:var(--t-small)"></p>
+      </fieldset>
+
+      <fieldset class="panel" id="m-det" hidden>
+        <legend id="m-det-legend">Conversa</legend>
+        <div id="m-det-body"></div>
+      </fieldset>
+    </div>
   </div>
 </div>
 
@@ -293,8 +329,8 @@
   </div>
 </div>
 
-<script type="module" src="dd-topo.js?v=20261007a"></script>
-<script type="module" src="dd-admin.js?v=20261007a"></script>
-<script type="module" src="dd-admin-funil.js?v=20261007a"></script>
+<script type="module" src="dd-topo.js?v=20261009a"></script>
+<script type="module" src="dd-admin.js?v=20261009a"></script>
+<script type="module" src="dd-admin-funil.js?v=20261009a"></script>
 </body>
 </html>

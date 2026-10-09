@@ -1,19 +1,25 @@
-// Página da conta: entrar / criar conta e cinco abas — perfil, licença (vagas e
-// chaves), meus packs, pedidos e segurança. Contrato:
-// ~/Sistema AI/drum-dealer-backend/docs/SPEC-conta-loja-admin.md
+// Página da conta: entrar / criar conta e seis abas — perfil, licença (vagas e
+// chaves), meus packs, pedidos, segurança e ajuda. Contrato:
+// ~/Sistema AI/drum-dealer-backend/docs/SPEC-conta-loja-admin.md (abas) e
+// ~/Sistema AI/drum-dealer-backend/docs/ciclo/2026-09-24-central-de-ajuda-spec.md (aba Ajuda)
 import {
   signIn, signUp, signOut, getSession, select, call, loadPlans, loadProfile, saveProfile,
   uploadAvatar, changePassword, logoutAll, seats as fnSeats, quote, packDownload, loadPacks,
   precosDoPlano, BRL, ApiError, DOWNLOADS, TIPOS_PACK, publicUrl, nomeNoTopo, nomePlanoBonito, PLANOS_PADRAO,
-} from './dd-api.js?v=20261007a';
-import { montarTopo, avatarNode } from './dd-topo.js?v=20261007a';
+  supportSend, mensagemSupport,
+  startGoogle, sendRecovery, lerRetornoOAuth, finishOAuth, getAuthUser, contaSemSenha, updateUserMeta, setPassword,
+} from './dd-api.js?v=20261009a';
+import { montarTopo, avatarNode } from './dd-topo.js?v=20261009a';
 import {
   $, el, msg, aviso as avisoUI, confirmar, perguntar, recado, abas, quando, dataHora,
   statusPedidoLabel, corStatus, tamanho, copiar, recortarQuadrado,
-} from './dd-ui.js?v=20261007a';
+} from './dd-ui.js?v=20261009a';
 import { t, seatsLabel, seatWord, fmtDate, getLang } from './dd-i18n.js';
-import { textoChave } from './dd-textos.js?v=20261007a';
+import { textoChave } from './dd-textos.js?v=20261009a';
 
+// Volta do Google ou do e-mail de recuperação: precisa rodar antes de ler os parâmetros abaixo, porque troca
+// conta.html?code=... pela URL da página de antes (?plano=, ?baixar=, ?renovar=). Ver dd-api.js.
+const retornoOAuth = lerRetornoOAuth();
 const params = new URLSearchParams(location.search);
 const planoPedido = params.get('plano');
 const pagamento = params.get('pagamento');
@@ -24,6 +30,8 @@ let plans = [];
 const est = {                 // estado da página
   session: null, perfil: null, lic: null, vagas: null, vagasErro: null,
   orders: [], packs: [], cupom: '', cotacoes: new Map(), planoSel: null, periodo: 'annual',
+  semSenha: false,            // conta do Google que ainda não definiu senha (o plugin entra com senha ou chave)
+  recuperando: false,         // sessão aberta pelo link de "Esqueci a senha": a aba Segurança pede só a senha nova
 };
 // 07/10: só existe a oferta única (licença vitalícia, paga uma vez); o servidor trata qualquer pedido de
 // plano como anual. ?periodo= da URL é ignorado. Licença e pedido antigos 'monthly' só são exibidos.
@@ -71,7 +79,7 @@ async function cotar(planId) {
 async function comprar(planId) {
   msg($('msg-buy'), t('conta.abrindo-pagamento'));
   // funil (25/09): clique em Pagar, anônimo; nunca atrasa nem quebra a compra
-  import('./dd-funil.js?v=20261007a').then((m) => m.registrar('clique_pagar')).catch(() => {});
+  import('./dd-funil.js?v=20261009a').then((m) => m.registrar('clique_pagar')).catch(() => {});
   let aba = null;
   try { aba = window.open('', '_blank'); if (aba) aba.opener = null; } catch { aba = null; }
   try {
@@ -184,6 +192,7 @@ function avisarAbaOriginalEFechar() {
   canalPagamento.addEventListener('message', ouvir);
   canalPagamento.postMessage({ tipo: 'licenca-confirmada', id });
 }
+
 
 async function pintarCompra() {
   const up = $('upgrade');
@@ -673,16 +682,26 @@ $('form-senha').addEventListener('submit', async (e) => {
   e.preventDefault();
   const f = e.target;
   const nova = f.nova.value;
+  const semAtual = est.semSenha || est.recuperando;
   if (nova.length < 8) return msg($('msg-senha'), t('conta.senha-min'), 'err');
   if (nova !== f.confirm.value) return msg($('msg-senha'), t('conta.senhas-novas-diferentes'), 'err');
-  if (nova === f.atual.value) return msg($('msg-senha'), t('conta.senha-nova-igual-atual'), 'err');
+  if (!semAtual && nova === f.atual.value) return msg($('msg-senha'), t('conta.senha-nova-igual-atual'), 'err');
   const botao = f.querySelector('button[type=submit]');
   botao.disabled = true;
   msg($('msg-senha'), t('conta.trocando-senha'));
   try {
-    await changePassword(est.session.user.email, f.atual.value, nova);
-    f.reset();
-    msg($('msg-senha'), t('conta.senha-trocada'), 'ok');
+    if (semAtual) {
+      await setPassword(nova);
+      est.semSenha = false;
+      est.recuperando = false;
+      f.reset();
+      pintarSenha();
+      msg($('msg-senha'), t('conta.senha-definida'), 'ok');
+    } else {
+      await changePassword(est.session.user.email, f.atual.value, nova);
+      f.reset();
+      msg($('msg-senha'), t('conta.senha-trocada'), 'ok');
+    }
   } catch (err) {
     msg($('msg-senha'), err.message, 'err');
   } finally { botao.disabled = false; }
@@ -704,6 +723,41 @@ $('btn-logout-all').addEventListener('click', async () => {
 $('btn-logout').addEventListener('click', async () => {
   await signOut();
   location.href = 'conta.html';
+});
+
+// ============================ ajuda ============================
+// Só `action: 'send'`: sem histórico de conversa dentro da conta (decisão do Diogo, 24/09,
+// escopo mínimo). Mesmo formulário de ajuda.html, com o e-mail da conta pré-preenchido.
+function pintarAjuda() {
+  const email = $('form-ajuda-conta').email;
+  if (!email.dataset.tocado) email.value = est.session.user.email;
+}
+
+function atualizarContadorAjuda() {
+  $('ajuda-conta-contador').textContent = t('ajuda.contador', { n: $('form-ajuda-conta').body.value.length });
+}
+
+$('form-ajuda-conta').email.addEventListener('input', (e) => { e.target.dataset.tocado = '1'; });
+$('form-ajuda-conta').body.addEventListener('input', atualizarContadorAjuda);
+atualizarContadorAjuda();
+
+$('form-ajuda-conta').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const f = e.target;
+  const email = f.email.value.trim().toLowerCase();
+  const corpo = f.body.value.trim();
+  if (corpo.length < 10 || corpo.length > 2000) return msg($('msg-ajuda-conta'), t('ajuda.mensagem-tamanho'), 'err');
+  const botao = f.querySelector('button[type=submit]');
+  botao.disabled = true;
+  msg($('msg-ajuda-conta'), t('ajuda.enviando'));
+  try {
+    await supportSend({ email, body: corpo });
+    msg($('msg-ajuda-conta'), t('ajuda.sucesso'), 'ok');
+    f.body.value = '';
+    atualizarContadorAjuda();
+  } catch (err) {
+    msg($('msg-ajuda-conta'), mensagemSupport(err), 'err');
+  } finally { botao.disabled = false; }
 });
 
 // ============================ dados ============================
@@ -780,12 +834,26 @@ async function carregar() {
   await carregarVagas();
 }
 
+// Aba Segurança: conta sem senha (Google) ou vinda do link de recuperação define a senha sem pedir a atual.
+// Na aba Licença, quem entrou pelo Google vê como ativar o plugin (senha ou chave).
+function pintarSenha() {
+  const semAtual = est.semSenha || est.recuperando;
+  const f = $('form-senha');
+  f.atual.closest('label').hidden = semAtual;
+  f.atual.required = !semAtual;
+  $('senha-legend').textContent = t(semAtual ? 'conta.definir-senha-legend' : 'conta.trocar-senha-legend');
+  f.querySelector('button[type=submit]').textContent = t(semAtual ? 'conta.definir-senha-cta' : 'conta.trocar-senha-cta');
+  $('aviso-sem-senha').hidden = !est.semSenha;
+}
+
 function pintarTudo() {
+  pintarSenha();
   pintarPerfil();
   pintarLicenca();
   pintarPacks();
   pintarPedidos();
   pintarCompra();
+  pintarAjuda();
 }
 
 function escapar(s) {
@@ -856,7 +924,7 @@ $('form-signup').addEventListener('submit', async (e) => {
   if (f.password.value !== f.confirm.value) return msg($('msg-signup'), t('conta.senhas-diferentes'), 'err');
   msg($('msg-signup'), t('conta.criando'));
   try {
-    const meta = { terms_version: 'v1', terms_accepted_at: new Date().toISOString() };
+    const meta = { terms_version: 'v2', terms_accepted_at: new Date().toISOString() };
     let s = await signUp(f.email.value.trim(), f.password.value, meta);
     if (!s) s = await signIn(f.email.value.trim(), f.password.value);
     msg($('msg-signup'), '');
@@ -864,8 +932,41 @@ $('form-signup').addEventListener('submit', async (e) => {
   } catch (err) { msg($('msg-signup'), err.message, 'err'); }
 });
 
+// Entrar com Google e Esqueci a senha (plano 2026-10-09-login-google, tasks 4 e 5)
+$('btn-google').addEventListener('click', async () => {
+  const b = $('btn-google');
+  b.disabled = true;
+  msg($('msg-google'), t('conta.google-indo'));
+  try { await startGoogle(); }
+  catch { b.disabled = false; msg($('msg-google'), t('api.auth-generico'), 'err'); }
+});
+
+$('btn-esqueci').addEventListener('click', async () => {
+  const email = $('form-login').email.value.trim();
+  if (!email || !email.includes('@')) return msg($('msg-login'), t('conta.esqueci-digite-email'), 'err');
+  msg($('msg-login'), t('conta.esqueci-enviando'));
+  try {
+    await sendRecovery(email);
+    msg($('msg-login'), t('conta.esqueci-enviado'), 'ok');
+  } catch (err) { msg($('msg-login'), err.message, 'err'); }
+});
+
+// Depois de qualquer login: lê as identidades para saber se a conta tem senha. Primeiro login pelo Google
+// sem aceite gravado: grava o aceite dos Termos (a frase embaixo do botão é o aceite, decisão do plano).
+async function conferirContaAuth() {
+  try {
+    const u = await getAuthUser();
+    est.semSenha = contaSemSenha(u);
+    const social = ((u && u.identities) || []).some((i) => i.provider !== 'email');
+    if (social && !(u.user_metadata && u.user_metadata.terms_accepted_at)) {
+      await updateUserMeta({ terms_version: 'v2', terms_accepted_at: new Date().toISOString() });
+    }
+  } catch { /* sem rede: a aba Segurança fica no modo de sempre */ }
+}
+
 async function abrirConta(session) {
   est.session = session;
+  await conferirContaAuth();
   $('view-auth').hidden = true;
   $('view-account').hidden = false;
   $('titulo').textContent = t('conta.titulo');
@@ -939,9 +1040,30 @@ async function esperarLicenca() {
     '#packs': { node: $('pane-packs') },
     '#pedidos': { node: $('pane-pedidos') },
     '#seguranca': { node: $('pane-seguranca') },
+    '#ajuda': { node: $('pane-ajuda') },
   }, planoPedido || baixarPedido || renovar ? '#licenca' : '#perfil');
 
   try { plans = await loadPlans(); } catch { plans = []; }
+  if (retornoOAuth) {
+    if (retornoOAuth.code && retornoOAuth.temVerifier) {
+      try {
+        const r = await finishOAuth(retornoOAuth.code);
+        est.recuperando = r.tipo === 'recovery';
+        if (est.recuperando) location.hash = '#seguranca';
+      } catch {
+        renderAuth();
+        msg($('msg-google'), t(retornoOAuth.tipo === 'recovery' ? 'conta.esqueci-link-invalido' : 'conta.google-falhou'), 'err');
+        await montarTopo();
+        return;
+      }
+    } else {
+      // ?error= (cancelou, ou a conta já tem senha: o servidor não diz qual) ou código sem verifier deste navegador
+      renderAuth();
+      msg($('msg-google'), t(retornoOAuth.code || retornoOAuth.tipo === 'recovery' ? 'conta.esqueci-link-invalido' : 'conta.google-falhou'), 'err');
+      await montarTopo();
+      return;
+    }
+  }
   await montarTopo();
   const session = await getSession();
   if (!session) { renderAuth(); return; }

@@ -2,7 +2,7 @@
 // 07/10: oferta única, licença vitalícia paga uma vez (vitrine: R$ 39,90). Sem seletor de
 // período, sem economia nem selo de desconto. A promoção (se vigente) vale sobre o anual.
 // Quem já tem licença vê Renovar/Upgrade/Seu plano.
-import { loadPlans, getSession, select, quote, precosDoPlano, BRL, PLANOS_PADRAO, nomePlanoBonito } from './dd-api.js?v=20261007a';
+import { loadPlans, getSession, select, quote, precosDoPlano, BRL, PLANOS_PADRAO, nomePlanoBonito } from './dd-api.js?v=20261009a';
 import { t, seatsLabel, fmtBRLCompact, getLang, DICT } from './dd-i18n.js';
 
 const periodo = 'annual'; // 07/10: não existe mais venda mensal

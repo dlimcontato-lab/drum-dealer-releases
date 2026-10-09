@@ -261,6 +261,139 @@ export async function logoutAll() {
   save(null);
 }
 
+// ---------- entrar com Google e recuperar senha (PKCE, plano 2026-10-09-login-google) ----------
+// Os dois fluxos saem do site e voltam para conta.html?code=... (ou ?error=...). O code_verifier fica
+// no localStorage (o link de recuperação abre em outra aba, vindo do e-mail) com validade curta, e os
+// parâmetros da página de antes (?plano=, ?baixar=, ?renovar=) viajam junto para sobreviver à ida e volta.
+// O token nunca passa pela URL: só o código, que vale uma vez e só com o verifier deste navegador.
+const OAUTH_KEY = 'dd.oauth';
+// Google: 30 min (a ida e volta leva segundos). Recuperação: 60 min, a mesma validade do link do e-mail (otp_exp 3600).
+const ttlDe = (tipo) => (tipo === 'recovery' ? 60 : 30) * 60 * 1000;
+// Volta sempre para a conta no mesmo endereço em que a pessoa está (brdrum.com ou localhost de teste);
+// os dois estão na lista de retorno do Supabase. Qualquer outra origem cai em brdrum.com.
+// (fora do navegador, como nos testes em Node, não há location: cai em brdrum.com)
+const ORIGEM = typeof location !== 'undefined' ? location.origin : '';
+const RETORNO = (/^https:\/\/(www\.)?brdrum\.com$/.test(ORIGEM) || /^http:\/\/localhost:\d+$/.test(ORIGEM))
+  ? ORIGEM + '/conta.html' : 'https://brdrum.com/conta.html';
+
+function b64url(bytes) {
+  let s = '';
+  for (const b of bytes) s += String.fromCharCode(b);
+  return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+async function novoPkce(tipo, query) {
+  const verifier = b64url(crypto.getRandomValues(new Uint8Array(32)));
+  const challenge = b64url(new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(verifier))));
+  try { localStorage.setItem(OAUTH_KEY, JSON.stringify({ v: verifier, tipo, q: query || '', t: Date.now() })); } catch {}
+  return challenge;
+}
+
+// Só os parâmetros da página que precisam voltar; nada de code/error de uma volta anterior.
+function queryDeRetorno() {
+  const p = new URLSearchParams(location.search);
+  const q = new URLSearchParams();
+  for (const k of ['plano', 'baixar', 'renovar']) if (p.get(k)) q.set(k, p.get(k));
+  const s = q.toString();
+  return s ? '?' + s : '';
+}
+
+export async function startGoogle() {
+  const challenge = await novoPkce('google', queryDeRetorno());
+  const u = new URL(`${SUPABASE_URL}/auth/v1/authorize`);
+  u.searchParams.set('provider', 'google');
+  u.searchParams.set('redirect_to', RETORNO);
+  u.searchParams.set('code_challenge', challenge);
+  u.searchParams.set('code_challenge_method', 's256');
+  location.assign(u.toString());
+}
+
+// Resposta sempre igual, exista ou não a conta (anti-enumeração); só falha em erro de rede ou limite.
+export async function sendRecovery(email) {
+  const challenge = await novoPkce('recovery', '');
+  const r = await fetch(`${SUPABASE_URL}/auth/v1/recover?redirect_to=${encodeURIComponent(RETORNO)}`, {
+    method: 'POST',
+    headers: { apikey: ANON_KEY, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, code_challenge: challenge, code_challenge_method: 's256' }),
+  });
+  if (r.status === 429) throw new ApiError(t('api.auth-rate-limit'), 'rate_limit', 429);
+  if (r.status >= 500) throw new ApiError(t('api.auth-generico'), 'server_error', r.status);
+  return true;
+}
+
+// Chamada síncrona no topo de conta.js, ANTES de ler ?plano=/?baixar=/?renovar=: se a página é a volta
+// do Google ou do e-mail de recuperação, troca a URL pela da página de antes (sem code/error) e devolve
+// o que veio. Fora de uma volta, devolve null e não mexe em nada.
+export function lerRetornoOAuth() {
+  const p = new URLSearchParams(location.search);
+  const code = p.get('code');
+  const error = p.get('error');
+  if (!code && !error) return null;
+  let guardado = null;
+  try { guardado = JSON.parse(localStorage.getItem(OAUTH_KEY) || 'null'); } catch {}
+  const valido = !!(guardado && guardado.v && Date.now() - (guardado.t || 0) < ttlDe(guardado.tipo));
+  history.replaceState(null, '', 'conta.html' + (valido ? guardado.q : '') + location.hash);
+  return { code, error, tipo: valido ? guardado.tipo : null, temVerifier: valido };
+}
+
+// Troca o código pela sessão. O verifier é apagado antes da chamada: código e verifier valem uma vez.
+export async function finishOAuth(code) {
+  let guardado = null;
+  try { guardado = JSON.parse(localStorage.getItem(OAUTH_KEY) || 'null'); localStorage.removeItem(OAUTH_KEY); } catch {}
+  if (!guardado || !guardado.v || Date.now() - (guardado.t || 0) >= ttlDe(guardado.tipo)) {
+    throw new ApiError(t('api.oauth-expirado'), 'oauth_expired', 400);
+  }
+  const json = await auth('token?grant_type=pkce', { auth_code: code, code_verifier: guardado.v });
+  const s = fromAuth(json);
+  save(s);
+  return { session: s, user: json.user || {}, tipo: guardado.tipo };
+}
+
+// Usuário completo do Auth (identidades e metadata): diz se a conta veio do Google e se já tem senha.
+export async function getAuthUser() {
+  const r = await fetch(`${SUPABASE_URL}/auth/v1/user`, { headers: await bearerHeaders() });
+  if (!r.ok) throw new ApiError(t('api.no-session'), 'no_session', r.status);
+  return r.json();
+}
+
+// Conta sem senha = só identidade social e nunca definiu senha pelo site (o GoTrue não diz se há senha).
+export function contaSemSenha(user) {
+  const ids = (user && user.identities) || [];
+  if (!ids.length) return false;
+  const temEmail = ids.some((i) => i.provider === 'email');
+  return !temEmail && !(user.user_metadata && user.user_metadata.password_set_at);
+}
+
+export async function updateUserMeta(data) {
+  const r = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+    method: 'PUT',
+    headers: { ...(await bearerHeaders()), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ data }),
+  });
+  if (!r.ok) throw new ApiError(t('api.auth-generico'), 'auth_error', r.status);
+  return r.json();
+}
+
+// Definir senha sem a atual: conta do Google sem senha, ou sessão que veio do link de recuperação.
+// Grava password_set_at junto, no mesmo PUT, para o site saber depois que a conta já tem senha.
+export async function setPassword(nova) {
+  const r = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+    method: 'PUT',
+    headers: { ...(await bearerHeaders()), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ password: nova, data: { password_set_at: new Date().toISOString() } }),
+  });
+  const json = await r.json().catch(() => ({}));
+  if (!r.ok) {
+    const razoes = json.weak_password?.reasons || [];
+    if (razoes.includes('pwned')) throw new ApiError(t('api.auth-senha-vazada'), 'pwned', r.status);
+    if (razoes.includes('length')) throw new ApiError(t('api.auth-senha-curta'), 'short', r.status);
+    throw new ApiError(
+      traduzAuth(json.error_code || json.code || json.error || '', json.msg || json.message || '', r.status),
+      json.error_code || 'auth_error', r.status);
+  }
+  return true;
+}
+
 // ---------- vagas e chaves ----------
 export async function seats(action, extra = {}) {
   return call('seats', { action, ...extra });
@@ -303,6 +436,29 @@ export async function meusPacks() {
 
 export async function packDownload(pack_id) {
   return call('pack-download', { pack_id });
+}
+
+// ---------- central de ajuda (support) ----------
+// Só `action: 'send'`: funciona logado ou anônimo (usa a sessão quando existir, sem exigi-la —
+// ao contrário de `call()`, que sempre pede bearer). Contrato:
+// ~/Sistema AI/drum-dealer-backend/docs/ciclo/2026-09-24-central-de-ajuda-spec.md
+export async function supportSend({ email, body, hp } = {}) {
+  const s = await getSession();
+  const headers = { apikey: ANON_KEY, 'Content-Type': 'application/json' };
+  if (s) headers.Authorization = `Bearer ${s.access_token}`;
+  const r = await fetch(`${SUPABASE_URL}/functions/v1/support`, {
+    method: 'POST', headers,
+    body: JSON.stringify({ action: 'send', email, body, ...(hp !== undefined ? { hp } : {}) }),
+  });
+  const json = await r.json().catch(() => ({}));
+  if (!r.ok) throw new ApiError(json.message || t('api.fn-error'), json.error || 'fn_error', r.status, json);
+  return json;
+}
+
+const ERROS_SUPPORT = { bad_request: 'ajuda.erro-bad-request', rate_limited: 'ajuda.erro-rate-limited' };
+export function mensagemSupport(e) {
+  const chave = e && e.code && ERROS_SUPPORT[e.code];
+  return chave ? t(chave) : (e && e.message) || t('ajuda.erro-generico');
 }
 
 // ---------- admin ----------
