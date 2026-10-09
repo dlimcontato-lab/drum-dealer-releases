@@ -2,7 +2,7 @@
 // instância na thread principal (o "espelho") para o Pal e para a curva do EDIT.
 import { t } from './dd-i18n.js';
 
-export const ENGINE_V = '8';
+export const ENGINE_V = '9';
 const FILES = ['kick', 'snare', 'clap', 'chat', 'ohat', 'tom'];
 const VARIANTS = 4;
 const TESTE = new URLSearchParams(location.search).get('teste') === '1';
@@ -32,7 +32,7 @@ export function criarAudio(cb) {
   const enviar = (m) => { if (node) node.port.postMessage(m); };
   const empurrarAmostra = (i) => {
     const d = amostras[i] && amostras[i][atual[i]];
-    if (d) enviar({ type: 'sample', inst: i, data: d });
+    if (d) enviar({ type: 'sample', inst: i, data: d.l, right: d.r });
   };
 
   // iOS só conta o AudioContext como criado "dentro do gesto do usuário" se resume() roda logo. Se
@@ -84,10 +84,14 @@ export function criarAudio(cb) {
     await Promise.all(FILES.map((f, i) => {
       amostras[i] = [];
       return Promise.all(Array.from({ length: VARIANTS }, (_, v) =>
-        fetch('audio/' + f + v + '.m4a')
+        fetch('audio/' + f + v + '.m4a?v=' + ENGINE_V)   // 1.7.0: mesmos nomes, áudio novo; o ?v= fura o cache
           .then((r) => { if (!r.ok) throw new Error('audio/' + f + v + '.m4a ' + r.status); return r.arrayBuffer(); })
           .then((ab) => ctx.decodeAudioData(ab))
-          .then((buf) => { amostras[i][v] = buf.getChannelData(0).slice(); })
+          // 1.7.0: estéreo (antes só o canal esquerdo chegava ao motor)
+          .then((buf) => {
+            const l = buf.getChannelData(0).slice();
+            amostras[i][v] = { l, r: buf.numberOfChannels > 1 ? buf.getChannelData(1).slice() : l };
+          })
           .catch((err) => { console.error('amostra:', f, v, err); })
       )).then(() => { if (!amostras[i].some(Boolean)) falhas.push(f.toUpperCase()); });
     }));

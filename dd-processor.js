@@ -1,7 +1,7 @@
 // AudioWorkletProcessor que roda o motor C++ do BRDRUM (WASM). A página fala o ID de parâmetro do
 // plugin; aqui ele vira índice uma vez (cache) e vai para web_set.
 import './url-shim.js'; // precisa vir antes: o glue referencia URL no top-level
-import createEngine from './engine.mjs?v=8'; // casa com ENGINE_V em dd-audio.js
+import createEngine from './engine.mjs?v=9'; // casa com ENGINE_V em dd-audio.js
 
 const BLOCK = 128;
 
@@ -68,7 +68,14 @@ class DrumDealerProcessor extends AudioWorkletProcessor {
         const arr = m.data;
         const ptr = M._malloc(arr.length * 4);
         M.HEAPF32.set(arr, ptr / 4);
-        M._web_load_sample(m.inst, ptr, arr.length);
+        if (m.right && m.right.length === arr.length) {   // 1.7.0: estéreo
+          const pr = M._malloc(arr.length * 4);
+          M.HEAPF32.set(m.right, pr / 4);
+          M._web_load_sample_stereo(m.inst, ptr, pr, arr.length);
+          M._free(pr);
+        } else {
+          M._web_load_sample(m.inst, ptr, arr.length);
+        }
         M._free(ptr);
         break;
       }

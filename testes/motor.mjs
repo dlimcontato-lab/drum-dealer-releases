@@ -182,6 +182,8 @@ try {
     M._web_set_step(0, 0, 0);
 
     // ---------- 3) kickRelease alto alonga a cauda do kick (RMS depois do note-off) ----------
+    // MASTER em 0 dB: os limites abaixo são absolutos e foram medidos antes do padrão -6 dB (1.7.0)
+    setar('masterGain', 0);
     const renderRelease = (releaseVal, ms) => {
       setar('kickRelease', releaseVal);
       for (let i = 0; i < 16; i++) M._web_set_step(0, i, i === 0 ? 1 : 0);
