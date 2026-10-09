@@ -131,9 +131,12 @@ async function pintarTudo() {
     // restaurado antes de qualquer troca por botão desabilitado
     let cta = card.querySelector('.key');
     if (cta && !card.dataset.ctaHtml) card.dataset.ctaHtml = cta.outerHTML;
-    if (cta && card.dataset.ctaHtml && cta.tagName !== 'A') {
+    // 09/10: restaura sempre (a tecla "Ver minha licença" também é <a>) e reaplica o texto no idioma
+    // atual, para uma repintura sem licença (sessão vencida) não herdar a tecla da pintura anterior
+    if (cta && card.dataset.ctaHtml && cta.outerHTML !== card.dataset.ctaHtml) {
       cta.outerHTML = card.dataset.ctaHtml;
       cta = card.querySelector('.key');
+      if (cta && cta.dataset.i18n) cta.textContent = t(cta.dataset.i18n);
     }
     if (cta) cta.href = `conta.html?plano=${p.id}&periodo=${periodo}`;
   }
@@ -156,14 +159,16 @@ async function pintarTudo() {
     if (!card) continue;
     const cta = card.querySelector('.key');
     if (!cta) continue;
-    const desabilita = (texto) => {
-      const b = document.createElement('button');
-      b.type = 'button'; b.className = 'key'; b.disabled = true; b.textContent = texto;
-      cta.replaceWith(b);
+    // 09/10: quem já tem licença que cobre este plano não vê tecla morta ("Menor que o seu plano"),
+    // vê o caminho útil: a própria licença. Creme (ação secundária; verde é só comprar) e com a
+    // mesma classe big da tecla de compra, senão cai em `.plan2 .key{margin-top:auto}` e abre um vão.
+    const jaTem = () => {
+      const a = document.createElement('a');
+      a.className = 'key cream big'; a.href = 'conta.html#licenca'; a.textContent = t('plans.ja-tem-cta');
+      cta.replaceWith(a);
     };
-    if (perpetua && p.seats === lic.seats) { desabilita(t('plans.seu-plano')); continue; }
-    if (perpetua && p.seats < lic.seats) { desabilita(t('plans.menor-que-seu')); continue; }
-    if (!perpetua && !vencida && p.seats < lic.seats) { desabilita(t('plans.menor-que-seu')); continue; }
+    if (perpetua && p.seats <= lic.seats) { jaTem(); continue; }
+    if (!perpetua && !vencida && p.seats < lic.seats) { jaTem(); continue; }
     cta.href = `conta.html?plano=${p.id}&periodo=${periodo}#licenca`;
     cta.textContent = p.seats > lic.seats ? t('plans.fazer-upgrade') : t('conta.periodo-renovar');
     try {
